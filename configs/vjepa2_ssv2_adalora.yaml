@@ -1,0 +1,28 @@
+experiment:
+  name: vjepa2_ssv2_adalora
+  seed: 42
+model:
+  type: hf_peft
+  family: vjepa2
+  backbone: facebook/vjepa2-vitl-fpc16-256-ssv2
+  adapter: { type: adalora, r: 16, alpha: 32, dropout: 0.15 }
+dataset:
+  path: UlkuTuncerKucuktas/StimBench
+  classes: [armflapping, headbanging, normal, spinning]
+preprocessing:
+  num_frames: 16
+  stride: 4
+  resize: 256
+  augmentation: { horizontal_flip: 0.5, temporal_reverse: 0.1 }
+training:
+  epochs: 30
+  batch_size: 4
+  balanced_sampling: true
+  fp16: true
+  optimizer: { type: adamw, lr: 0.0003, weight_decay: 0.05 }
+  scheduler: { type: cosine, eta_min: 0.000001 }
+  loss: { type: cross_entropy, class_weighted: true, label_smoothing: 0.1 }
+evaluation:
+  protocols: [1x1]
+  save_misclassified: true
+  sliding_window: { overlap: 0.2 }
