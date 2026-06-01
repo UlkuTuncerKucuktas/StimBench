@@ -1,0 +1,25 @@
+experiment:
+  name: video_swin_t
+  seed: 42
+model:
+  type: video_swin
+  variant: t
+dataset:
+  path: UlkuTuncerKucuktas/StimBench
+  classes: [armflapping, headbanging, normal, spinning]
+preprocessing:
+  num_frames: 16
+  stride: 4
+  resize: 224
+  augmentation: { horizontal_flip: 0.5, temporal_reverse: 0.1 }
+training:
+  epochs: 30
+  batch_size: 4
+  balanced_sampling: true
+  optimizer: { type: adamw, lr: 0.0001, weight_decay: 0.01 }
+  scheduler: { type: cosine, eta_min: 0.000001 }
+  loss: { type: cross_entropy, class_weighted: true, label_smoothing: 0.1 }
+evaluation:
+  protocols: [1x1, 5x1, sliding_window]
+  save_misclassified: true
+  sliding_window: { overlap: 0.2 }
