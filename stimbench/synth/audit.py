@@ -40,18 +40,18 @@ def check(records: Iterable[dict], max_setting_spread: float = 0.05) -> List[Tup
             problems.append((name, n))
 
     add("prompt without a pace instruction",
-        ["slowly and deliberately" not in r["prompt"]
+        ["slowly and evenly" not in r["prompt"]
          and "natural pace" not in r["prompt"] for r in records])
     add("Normal behaviour that stops or pauses, against the continuity clause",
         [r["cls"] == "Normal" and any(w in r["topography"] for w in STOP_WORDS)
          for r in records])
-    add("seated posture asked to lift heels",
-        [r["posture"] == "seated" and "heels lift" in r["severity_text"]
+    add("seated or kneeling posture given a standing severity text",
+        [r["posture"] in ("seated", "kneeling") and ("step" in r["severity_text"]
+                                                     or "heels" in r["severity_text"])
          for r in records])
-    add("seated posture given a standing severity text",
-        [r["posture"] == "seated" and ("step" in r["severity_text"]
-                                       or "heels" in r["severity_text"])
-         for r in records])
+    add("prompt contains a negation in the behaviour clause",
+        [any(w in r["topography"] + r["severity_text"] + r["secondary"]
+             for w in (" not ", "never", " no ")) and r["cls"] != "Normal" for r in records])
     add("topography placed in an environment lacking what it needs",
         [_needs_unmet(r) for r in records])
     add("duplicate prompt", [n > 1 for n in Counter(r["prompt"] for r in records).values()])

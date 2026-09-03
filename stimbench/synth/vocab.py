@@ -33,7 +33,7 @@ TOPOGRAPHIES = {
            "standing with both elbows bent and held a little away from the ribs, "
            "flapping both forearms and hands up and down together in unison, the "
            "wrists loose so the hands trail behind the forearms, the upper arms "
-           "moving less than the forearms but not locked in place",
+           "swinging a little with them",
            "standing"),
         _t("af_fingers",
            "holding both hands up near the chest and fluttering and flicking the "
@@ -48,8 +48,8 @@ TOPOGRAPHIES = {
         _t("af_seated",
            "seated on the ground with the back straight, both arms lifted to "
            "chest height with the elbows flexed, shaking the hands and forearms "
-           "up and down in a repeated bilateral pattern, the legs settled but "
-           "not rigid",
+           "up and down in a repeated bilateral pattern, the legs settled and "
+           "loose",
            "seated"),
     ],
     # Rocking without head contact is a different stereotypy, so every variant
@@ -57,35 +57,38 @@ TOPOGRAPHIES = {
     "HeadBanging": [
         _t("hb_sofa",
            "sitting on the floor with the back against the soft padded front of "
-           "a sofa, knees drawn up, hands loose in the lap, rocking the head "
-           "backwards against the cushioned upholstery and forwards again in a "
-           "fixed repeating arc",
+           "a sofa, knees drawn up, hands loose in the lap, knocking the back of "
+           "the head against the cushioned upholstery and bringing it forward "
+           "again in a fixed repeating arc, a clear bump each time",
            "seated", {"sofa"}),
         _t("hb_bed",
-           "sitting up in bed with the back against a thick pillow, moving the "
-           "head forwards and then back against the soft pillow in a regular "
-           "repeating rhythm, the arms resting loosely at the sides",
+           "sitting up in bed with the back against a thick pillow, knocking the "
+           "back of the head into the pillow and bringing it forward again in a "
+           "regular repeating rhythm, a clear bump each time, the arms resting "
+           "loosely at the sides",
            "seated", {"bed"}),
         _t("hb_cushion",
            "kneeling on a padded play mat in front of a large soft cushion, "
-           "bringing the forehead down onto the cushion and lifting it back up "
-           "again in a fixed repeating cycle, hands flat on the mat",
-           "seated", {"mat"}),
+           "knocking the forehead down onto the cushion and lifting it back up "
+           "again in a fixed repeating cycle, a clear bump each time, hands flat "
+           "on the mat",
+           "kneeling", {"mat"}),
         _t("hb_stacked",
            "sitting on a soft mat with the back against a stacked pile of floor "
-           "cushions, tipping the head back against the cushions and bringing it "
-           "forward again in a fixed repeating arc, the hands resting on the mat",
+           "cushions, knocking the back of the head against the cushions and "
+           "bringing it forward again in a fixed repeating arc, a clear bump "
+           "each time, the hands resting on the mat",
            "seated", {"mat"}),
         _t("hb_wall",
-           "kneeling upright facing a bare stretch of wall, bringing the forehead "
-           "forward to meet the wall and drawing it back again in a fixed "
-           "repeating cycle, the hands resting on the thighs",
-           "seated", {"wall"}),
+           "kneeling upright facing a bare stretch of wall, knocking the forehead "
+           "against the wall and pulling it back again in a fixed repeating "
+           "cycle, a clear knock each time, the hands resting on the thighs",
+           "kneeling", {"wall"}),
         _t("hb_floor",
-           "kneeling on hands and knees, lowering the forehead down to meet the "
-           "ground and lifting it back up again in a fixed repeating cycle, the "
-           "hands staying planted",
-           "seated"),
+           "kneeling on hands and knees, knocking the forehead down against the "
+           "floor and lifting it back up again in a fixed repeating cycle, a "
+           "clear bump each time, the hands staying planted",
+           "kneeling"),
     ],
     "Spinning": [
         _t("sp_shuffle",
@@ -114,7 +117,17 @@ TOPOGRAPHIES = {
            "kneeling at a low table drawing on a sheet of paper with a crayon, "
            "head bent over the drawing, one hand steadying the paper, changing "
            "crayons once partway through and carrying on drawing",
-           "seated", {"table"}),
+           "kneeling", {"table"}),
+        _t("nm_sofa_book",
+           "sitting on the floor with the back resting against the front of a "
+           "sofa, a picture book open on the knees, turning the pages one after "
+           "another and looking down at them",
+           "seated", {"sofa"}),
+        _t("nm_bed_toy",
+           "sitting up in bed against a thick pillow, holding a soft toy up in "
+           "both hands and turning it over and over, looking at it and talking "
+           "to it",
+           "seated", {"bed"}),
         _t("nm_carry",
            "walking slowly across the space carrying a soft toy, weaving around "
            "a cushion on the ground and circling back the other way, looking "
@@ -132,14 +145,14 @@ TOPOGRAPHIES = {
            "walking a few steps, bending down to pick up a ball, standing back "
            "up with it and walking on, then bending down again for a second ball",
            "standing"),
-        _t("nm_sway",
-           "stepping from side to side while holding a soft toy, turning to face "
-           "one way and then the other",
-           "standing"),
+        _t("nm_car",
+           "kneeling on the floor pushing a toy car along the ground and "
+           "following it around in loops, reaching ahead to steer it",
+           "kneeling"),
         _t("nm_dance",
            "dancing to music, swaying from side to side and stepping in place, "
-           "arms moving loosely and unevenly, the movements varied and never "
-           "settling into a fixed repeating pattern",
+           "the arms swinging in big loose loops, each move different from the "
+           "last",
            "standing"),
         _t("nm_wave",
            "standing and waving one hand overhead in a goodbye wave aimed at "
@@ -147,15 +160,14 @@ TOPOGRAPHIES = {
            "and then lifting it to wave again as they come back into view",
            "standing", goal_directed=True),
         _t("nm_look",
-           "turning around to look at something behind, then turning back and "
-           "looking at something else on the other side, the head and body "
-           "following the gaze from place to place",
+           "turning around to look at something behind, then walking a few "
+           "steps toward it and bending down to look at it closely",
            "standing", goal_directed=True),
         _t("nm_nod",
-           "sitting on a chair nodding along and talking to someone out of "
-           "shot, gesturing with the hands, leaning forward and back as the "
-           "conversation goes on",
-           "seated", {"chair"}, goal_directed=True),
+           "sitting on a chair at a table nodding along and talking to someone "
+           "out of shot, gesturing with the hands, then picking up a cup from "
+           "the table and drinking from it",
+           "seated", {"chair", "table"}, goal_directed=True),
         _t("nm_clap",
            "clapping hands together in an uneven excited rhythm while watching "
            "someone out of shot, then reaching to pick up a toy from the table "
@@ -169,8 +181,8 @@ TOPOGRAPHIES = {
 # apart from frequency. Keyed by posture so a seated child is never asked to lift
 # the heels. Weighted toward the middle, like the overt cases that reach public video.
 SEVERITY_LEVELS = ("subtle", "moderate", "pronounced", "whole_body")
-SEVERITY_WEIGHTS = {"subtle": 0.15, "moderate": 0.30, "pronounced": 0.35,
-                    "whole_body": 0.20}
+SEVERITY_WEIGHTS = {"subtle": 0.25, "moderate": 0.25, "pronounced": 0.25,
+                    "whole_body": 0.25}
 
 SEVERITY = {
     ("ArmFlapping", "standing"): {
@@ -184,7 +196,7 @@ SEVERITY = {
                       "the shoulders raised and tight, the face tense",
         "whole_body": "the whole body involved, the arms covering their fullest "
                       "range while the trunk tenses and the heels lift clear of "
-                      "the ground, the whole frame shaking with it",
+                      "the ground, the whole body shaking with it",
     },
     ("ArmFlapping", "seated"): {
         "subtle": "the excursion small, the hands travelling only a few "
@@ -197,9 +209,23 @@ SEVERITY = {
                       "the shoulders raised and tight, the face tense",
         "whole_body": "the whole body involved, the arms covering their fullest "
                       "range while the trunk rocks and the legs bounce against "
-                      "the ground with it, the whole frame shaking",
+                      "the ground with it, the whole body shaking",
     },
     ("HeadBanging", "seated"): {
+        "subtle": "the head covering only a short distance, barely lifting clear "
+                  "of the surface, the shoulders and trunk carried along only "
+                  "slightly",
+        "moderate": "the head covering a clear and visible distance, the neck "
+                    "doing the work while the shoulders stay largely settled",
+        "pronounced": "the head covering a wide arc and meeting the surface "
+                      "firmly, the shoulders lifting with each cycle, the "
+                      "excursion unmistakable",
+        "whole_body": "the whole upper body involved, the shoulders and trunk "
+                      "swinging with the head so that the back bends away from "
+                      "the surface and returns each cycle, the head covering a "
+                      "long distance, hair carried along with it",
+    },
+    ("HeadBanging", "kneeling"): {
         "subtle": "the head covering only a short distance, barely lifting clear "
                   "of the surface, the shoulders and trunk carried along only "
                   "slightly",
@@ -248,12 +274,27 @@ SEVERITY = {
                       "the position shifting often",
     },
 }
+SEVERITY[("Normal", "kneeling")] = SEVERITY[("Normal", "seated")]
 
-# Clinical definition of a stereotypy; separates a flap from a wave.
+# a topography whose amplitude lives in a different body part than its posture text
+SEVERITY_BY_TOPOGRAPHY = {
+    "af_fingers": {
+        "subtle": "the fingers moving only slightly, the hands staying almost "
+                  "still at the chest, simple to overlook",
+        "moderate": "the fingers flicking clearly, the wrists bending a little "
+                    "with them, the rest of the body loose",
+        "pronounced": "the fingers and wrists flicking hard, the forearms joining "
+                      "in, the shoulders raised and tight, the face tense",
+        "whole_body": "the whole body involved, the hands flicking hard while "
+                      "the trunk tenses and the heels lift clear of the ground, "
+                      "the whole body shaking with it",
+    },
+}
+
+# Clinical definition of a stereotypy in positive wording: video models drop negations.
 STEREOTYPY_QUALIFIER = (
-    "the movement not directed at anyone or anything and serving no purpose, "
-    "the same pattern repeating again and again rather than developing into "
-    "any other action"
+    "the gaze drifting and unfocused, the movement carried on for its own sake, "
+    "the same pattern repeating again and again"
 )
 
 
@@ -265,7 +306,7 @@ SECONDARY = {
         "drifting a step or two across the ground and carrying on",
         "turning the head to one side and back while the arms keep going",
         "rocking gently forward and back at the same time",
-        "swaying a little at the trunk, the weight never quite settled",
+        "swaying a little at the trunk, the weight shifting all the time",
         "bobbing slightly at the knees in time with the arms",
         "turning slowly on the spot to face a different way while continuing",
         "looking down and then up again as the movement goes on",
@@ -286,7 +327,6 @@ SECONDARY = {
         "turning the head to look around while the body keeps rotating",
         "letting the hair and clothing trail outward with the turn",
         "brushing hair back from the face mid turn",
-        "drifting slowly across the ground as the turning continues",
         "looking up and then down again while turning",
         "letting the free hand open and close while turning",
         "breathing visibly, the mouth slightly open",
@@ -303,17 +343,32 @@ SECONDARY = {
     ],
 }
 
+_SEATED_BLOCK = {"shifting weight from one foot to the other",
+                 "shifting weight from one foot to the other as the movement "
+                 "continues",
+                 "drifting a step or two across the ground and carrying on",
+                 "turning slowly on the spot to face a different way while "
+                 "continuing",
+                 "bobbing slightly at the knees in time with the arms"}
 SECONDARY_POSTURE_BLOCK = {
     "standing": {"shifting the legs, one knee dropping out to the side",
                  "shifting the hands in the lap and gripping at the fabric"},
-    "seated": {"shifting weight from one foot to the other",
-               "shifting weight from one foot to the other as the movement "
-               "continues",
-               "drifting a step or two across the ground and carrying on",
-               "turning slowly on the spot to face a different way while "
-               "continuing",
-               "bobbing slightly at the knees in time with the arms"},
+    "seated": _SEATED_BLOCK,
+    "kneeling": _SEATED_BLOCK | {"shifting the legs, one knee dropping out to the side"},
     "rotating": set(),
+}
+_HANDS_PLANTED = {"shifting the hands in the lap and gripping at the fabric",
+                  "bringing one hand up to touch the face briefly"}
+SECONDARY_TOPOGRAPHY_BLOCK = {
+    "hb_cushion": _HANDS_PLANTED,
+    "hb_floor": _HANDS_PLANTED | {"resettling the body against the surface between cycles"},
+    "hb_wall": {"shifting the hands in the lap and gripping at the fabric",
+                "resettling the body against the surface between cycles"},
+}
+# a head that is knocking cannot also be held tilted or turned away
+POSE_CLASS_BLOCK = {
+    "HeadBanging": {"the head tilted over to one side", "the head turned away to one side",
+                    "the chin tucked down toward the chest"},
 }
 
 SHORT_HAIR = ("buzz cut", "bowl cut", "short bob", "closely cropped",
@@ -610,6 +665,16 @@ POSE = {
         "the gaze directed down and unfocused",
         "the head turned away to one side",
     ],
+    "kneeling": [
+        "the head tilted over to one side",
+        "the chin tucked down toward the chest",
+        "the shoulders hunched up toward the ears",
+        "the eyes half closed",
+        "the mouth slightly open and the jaw slack",
+        "the back rounded and the spine curved",
+        "the gaze directed down and unfocused",
+        "the head turned away to one side",
+    ],
     "rotating": [
         "the head carried upright",
         "the chin lifted",
@@ -663,7 +728,7 @@ CAMERA = [
            "oblique angle", "landscape", "static"),
     Camera("off_axis",
            "an off axis viewpoint round to one side rather than square on to the "
-           "child", "portrait", "static"),
+           "child", "landscape", "static"),
     Camera("tilted_horizon",
            "a tilted viewpoint with the horizon line noticeably not level",
            "landscape", "static"),
@@ -672,7 +737,7 @@ CAMERA = [
            "landscape", "static"),
     Camera("obstructed",
            "a framing partly obstructed along one edge by something dark in the "
-           "foreground", "portrait", "static"),
+           "foreground", "landscape", "static"),
 ]
 
 SHOT = [
@@ -735,7 +800,6 @@ EXTRA = {
         ", a parent sitting nearby in the background looking down at something "
         "in their lap",
         ", two other children playing together in the far background",
-        ", an adult walking past behind and out of the frame partway through",
     ],
     "outdoor": [
         "", "", "", "", "",
@@ -748,7 +812,6 @@ EXTRA = {
         ", an adult partly visible at the very edge of the frame, only an arm "
         "and shoulder in shot",
         ", two other children running about in the far background",
-        ", an adult walking past behind and out of the frame partway through",
     ],
 }
 
@@ -769,6 +832,7 @@ AESTHETIC = [
 # "still"/"motionless" are absent on purpose: severity texts ask for stillness,
 # and guidance must not be pushed both ways. Frozen video is "static image".
 NEGATIVE = (
+    "nude, nudity, naked, undressed, underwear, bare chest, nsfw, sexual, "
     "cinematic, film still, professional lighting, shallow depth of field, "
     "bokeh, colour graded, teal and orange, dramatic, slow motion, timelapse, "
     "studio, staged, model, posed, "

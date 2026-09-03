@@ -116,14 +116,14 @@ class Plan:
 def pace_clause(cls: str, slow: float, duration: float, min_cycles: int) -> str:
     # Only a count is stated, never a rate as well, so the two cannot disagree.
     # The same pace words go to every class, so pace cannot become a class cue.
-    pace = "slowly and deliberately" if slow > 1.05 else "at a natural pace"
+    pace = "slowly and evenly" if slow > 1.05 else "at a natural pace"
     if cls == "Normal":
         return (f"carrying out every action {pace}, moving continuously "
                 f"throughout and never freezing in place")
     hz = V.TARGET_HZ[cls] / slow
     reps = min(12, max(min_cycles, int(hz * duration)))
     unit = "full turn" if cls == "Spinning" else "repetition"
-    return (f"repeating {pace} and evenly, completing about {V.WORD[reps]} "
+    return (f"repeating {pace}, completing about {V.WORD[reps]} "
             f"{unit}s across the clip, the motion continuing without stopping "
             f"partway through")
 
@@ -152,13 +152,16 @@ def _short_hair_fix(sev_text: str, secondary: str, hair: str):
 def render_prompt(c: ClipSpec) -> str:
     place = "place" if c.setting == "outdoor" else "room"
     qualifier = "" if c.cls == "Normal" else ", " + V.STEREOTYPY_QUALIFIER
+    # the behaviour comes before the room: a long scene description ahead of
+    # it dilutes the motion tokens the text encoder attends to
     return (
         f"{c.aesthetic}. {c.age} {c.gender}, {c.build}, with {c.hair} and "
-        f"{c.skin}, wearing {c.clothing}{c.detail}, {c.environment}. "
-        f"The {place} is untidy and lived in, {c.clutter}{c.extra}. "
+        f"{c.skin}, wearing {c.clothing}{c.detail}. "
         f"The child is {c.topography}, {c.severity_text}, {c.pace}{qualifier}. "
         f"At the same time the child is {c.secondary}, {c.pose}, the body "
         f"loose and natural like a real child rather than stiff or posed. "
+        f"The scene is {c.environment}; the {place} is untidy and lived in, "
+        f"{c.clutter}{c.extra}. "
         f"{c.shot}, {c.camera}, {c.light}. "
         f"One continuous unbroken shot of the same scene from start to finish."
     )
@@ -190,7 +193,10 @@ def make_plan(classes=V.CLASSES, n_per_class: int = 130, seed: int = 0,
 
         envs = dealt(V.ENVIRONMENTS, n, rng)
         cams = dealt(V.CAMERA, n, rng)
+        shots = dealt(V.SHOT, n, rng)
         aesthetics = dealt(range(len(V.AESTHETIC)), n, rng)
+        builds = dealt(V.BUILD, n, rng)
+        skins = dealt(V.SKIN, n, rng)
         topo_quota = {t.id: n / len(V.TOPOGRAPHIES[cls]) for t in V.TOPOGRAPHIES[cls]}
         pace = pace_clause(cls, slow, duration, min_cycles)
 
@@ -212,9 +218,9 @@ def make_plan(classes=V.CLASSES, n_per_class: int = 130, seed: int = 0,
 
             age = rng.choice(V.AGE)
             years = _years(age)
-            build = rng.choice(V.BUILD)
+            build = builds[i]
             hair = rng.choice(V.HAIR[g])
-            skin = rng.choice(V.SKIN)
+            skin = skins[i]
 
             def clothing_ok(tag):
                 if tag == "school":
@@ -228,12 +234,13 @@ def make_plan(classes=V.CLASSES, n_per_class: int = 130, seed: int = 0,
             clutter = rng.choice(V.CLUTTER[clutter_key])
             light = rng.choice(V.LIGHT[io])
             extra = rng.choice(V.EXTRA[io])
-            pose = rng.choice(V.POSE[topo.posture])
-            shot = rng.choice(V.SHOT)
+            pose = rng.choice([p for p in V.POSE[topo.posture]
+                               if p not in V.POSE_CLASS_BLOCK.get(cls, ())])
+            shot = shots[i]
             cam = cams[i]
 
-            sev_text = V.SEVERITY[(cls, topo.posture)][severity]
-            blocked = V.SECONDARY_POSTURE_BLOCK[topo.posture]
+            sev_text = V.SEVERITY_BY_TOPOGRAPHY.get(topo.id, V.SEVERITY[(cls, topo.posture)])[severity]
+            blocked = V.SECONDARY_POSTURE_BLOCK[topo.posture] | V.SECONDARY_TOPOGRAPHY_BLOCK.get(topo.id, set())
             secondary = rng.choice([s for s in V.SECONDARY[cls] if s not in blocked])
             sev_text, secondary = _short_hair_fix(sev_text, secondary, hair)
             aesthetic_id = aesthetics[i]
