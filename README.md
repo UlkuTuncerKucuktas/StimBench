@@ -62,6 +62,55 @@ cat RESULTS.md
 
 Gender metrics on stimming test clips only (M=14, F=17). Gap = F − M.
 
+## StimBench-Syn: controlled synthetic clips
+
+`stimbench/synth/` generates synthetic stimming clips with an open text-to-video
+model (Wan 2.2 T2V-A14B) from a factorial prompt sampler. Movement topography,
+severity and tempo are sampled independently of child appearance, environment,
+lighting, camera and framing; gender is exactly 50/50 per class; severity has the
+same mix in every class; environments and viewpoints are dealt evenly across
+classes so no class can be recognised from its setting. Every clip is logged
+with its seed, every sampled slot and the full prompt (`manifest.csv`), and the
+root gets a StimBench-schema `metadata.csv` so it loads like the real data.
+
+```bash
+# inspect the plan and its cue audit without a GPU
+python gen_synth.py plan --config configs/synth/wan22_a14b_480p.yaml
+
+# generate (resumable; ~5 min per clip on one H200 with the reference recipe)
+bash run_synth.sh                       # detached, logs to <output.root>/gen.log
+
+# rebuild metadata.csv and composition.md from an existing manifest
+python gen_synth.py report --config configs/synth/wan22_a14b_480p.yaml
+```
+
+Editing the pools in `stimbench/synth/vocab.py`: topography texts describe motion
+only (speed belongs to the pace clause, amplitude to severity); severity texts are
+keyed by posture; Normal activities never stop or pause; incidental motion never
+stops or changes tempo; every environment carries tags and every gated pool is
+keyed on them; no Normal activity may look identical to a stimming class at some
+severity. `gen_synth.py plan` checks the result and refuses to generate if a
+check fails.
+
+Speed options live in the `speed:` block of the config (`compile`, `cache`,
+`attention_backend`, experimental `lightning_lora`). The released set was
+generated with `configs/synth/wan22_a14b_480p_fast.yaml` (torch.compile on, 241 s
+per clip on one H200 against 293 s uncompiled). Prompts, seeds and metadata are
+reproducible from the config alone (`plan` is deterministic across machines);
+pixels are not, because compiled kernels change floating-point order, so every
+clip's `speed_mode` is recorded in the manifest and the release ships checksums.
+
+Train with synthetic clips mixed into the real training split only:
+
+```bash
+python run.py --config configs/synth_train/vjepa2_ssv2_lora_realsyn.yaml   # real + synthetic
+python run.py --config configs/synth_train/vjepa2_ssv2_lora_synonly.yaml   # synthetic only
+```
+
+The `dataset.synthetic` block takes `path`, `fraction` and optional metadata
+`filters` (for example `{severity: [subtle]}`); `dataset.real_train_fraction`
+thins the real training clips. The test split is never touched.
+
 ## Configs
 
 27 YAML configs in `configs/`:

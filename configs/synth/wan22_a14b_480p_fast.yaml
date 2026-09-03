@@ -1,0 +1,32 @@
+# Reference recipe with torch.compile on both experts: same prompts, seeds, steps and
+# guidance, 17.7% faster in steady state on an H200 (241 s vs 293 s per clip).
+# Compile changes floating-point reduction order, so the same seed yields a different
+# sample than the uncompiled path: reproduce a released clip from the manifest and its
+# checksum, not from this config. Used for the StimBench-Syn v2 release run.
+experiment:
+  name: stimbench_syn_v2
+  seed: 0
+model:
+  key: wan2.2-14b-480p
+  repo: Wan-AI/Wan2.2-T2V-A14B-Diffusers
+  size: [480, 832]
+  frames: 81
+  fps: 16
+  steps: 40
+  guidance: 4.0
+  guidance_2: 3.0
+  flow_shift: 3.0
+speed:
+  offload: false
+  attention_backend: null
+  compile: true
+  compile_mode: default
+  cache: none             # pab or fastercache trade a little quality for 1.3-2x; off here
+  lightning_lora: null
+sampling:
+  classes: [ArmFlapping, HeadBanging, Spinning, Normal]
+  n_per_class: 130
+  slow_factor: 2.0
+  min_cycles: 2
+output:
+  root: /storage/pvc-trubaai-1tb/siu/synth_v2

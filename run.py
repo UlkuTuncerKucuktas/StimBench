@@ -155,6 +155,22 @@ def main():
     print(f"\n  Loading dataset...")
     train_ds = StimBenchDataset(data_dir, 'train', model.processor, config, mode='train')
     test_ds = StimBenchDataset(data_dir, 'test', model.processor, config, mode='test')
+    # Optional: keep only a seeded fraction of the REAL training clips
+    # (0.0 for synthetic-only training; the real test split is unaffected).
+    real_frac = config['dataset'].get('real_train_fraction', 1.0)
+    if real_frac < 1.0:
+        n_before = len(train_ds)
+        train_ds.subsample(real_frac, seed=config['experiment'].get('seed', 42))
+        print(f"  Real train clips kept: {len(train_ds)}/{n_before} (fraction {real_frac})")
+
+    # Optional synthetic clips (StimBench-Syn) mixed into TRAINING only.
+    syn = config['dataset'].get('synthetic')
+    if syn:
+        n_syn = train_ds.add_root(syn['path'], split='train',
+                                  fraction=syn.get('fraction', 1.0),
+                                  seed=config['experiment'].get('seed', 42),
+                                  filters=syn.get('filters'))
+        print(f"  Synthetic: {n_syn} clips from {syn['path']} (fraction {syn.get('fraction', 1.0)})")
     print(f"  Train: {len(train_ds)} | Test: {len(test_ds)}")
     train_ds.cache_all()
     test_ds.cache_all()

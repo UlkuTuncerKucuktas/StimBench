@@ -1,0 +1,31 @@
+# EXPERIMENTAL: 4-step distilled LoRA (Wan2.2-Lightning). Roughly an order of
+# magnitude faster than the reference, but distillation changes the look and
+# can flatten motion; inspect a small batch before trusting it.
+experiment:
+  name: stimbench_syn_v2_lightning
+  seed: 0
+model:
+  key: wan2.2-14b-480p-lightning
+  repo: Wan-AI/Wan2.2-T2V-A14B-Diffusers
+  size: [480, 832]
+  frames: 81
+  fps: 16
+speed:
+  offload: false
+  compile: false
+  cache: none
+  lightning_lora:
+    repo: lightx2v/Wan2.2-Lightning
+    high: Wan2.2-T2V-A14B-4steps-lora-rank64-Seko-V1.1/high_noise_model.safetensors
+    low: Wan2.2-T2V-A14B-4steps-lora-rank64-Seko-V1.1/low_noise_model.safetensors
+    steps: 4
+    guidance: 1.0
+    guidance_2: 1.0
+    flow_shift: 5.0
+sampling:
+  classes: [ArmFlapping, HeadBanging, Spinning, Normal]
+  n_per_class: 130
+  slow_factor: 2.0
+  min_cycles: 2
+output:
+  root: /storage/pvc-trubaai-1tb/siu/synth_v2_lightning

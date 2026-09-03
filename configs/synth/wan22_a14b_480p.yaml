@@ -1,0 +1,28 @@
+# StimBench-Syn reference recipe: Wan 2.2 T2V-A14B at its 480p native size.
+# `python gen_synth.py plan --config configs/synth/wan22_a14b_480p.yaml`
+experiment:
+  name: stimbench_syn_v2
+  seed: 0
+model:
+  key: wan2.2-14b-480p
+  repo: Wan-AI/Wan2.2-T2V-A14B-Diffusers
+  size: [480, 832]        # [height, width]; the camera slot picks portrait or landscape
+  frames: 81
+  fps: 16
+  steps: 40
+  guidance: 4.0           # high-noise expert
+  guidance_2: 3.0         # low-noise expert
+  flow_shift: 3.0         # value shipped in the repo's scheduler config for both sizes
+speed:
+  offload: false          # only under ~40 GB VRAM
+  attention_backend: null # e.g. flash, sage; lossless if the kernel is installed
+  compile: false          # torch.compile both experts; lossless
+  cache: none             # none | pab | fastercache; faster, small quality cost
+  lightning_lora: null    # see wan22_a14b_480p_lightning.yaml (experimental)
+sampling:
+  classes: [ArmFlapping, HeadBanging, Spinning, Normal]
+  n_per_class: 130
+  slow_factor: 2.0        # generate at half tempo, restore with ffmpeg; same for all classes
+  min_cycles: 2           # every stimming clip shows at least this many full cycles
+output:
+  root: /storage/pvc-trubaai-1tb/siu/synth_v2
