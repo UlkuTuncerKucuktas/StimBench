@@ -182,14 +182,18 @@ def make_plan(classes=V.CLASSES, n_per_class: int = 130, seed: int = 0,
         n = n_per_class
         genders = [V.GENDER[i % 2] for i in range(n)]
 
-        sev_by_gender = {}
-        for g in V.GENDER:
-            n_g = genders.count(g)
-            counts = largest_remainder(V.SEVERITY_WEIGHTS, n_g)
-            deck = [lvl for lvl in V.SEVERITY_LEVELS for _ in range(counts[lvl])]
-            rng.shuffle(deck)
-            sev_by_gender[g] = deck
-        sev_iter = {g: iter(sev_by_gender[g]) for g in V.GENDER}
+        if n < 2 * len(V.SEVERITY_LEVELS):
+            # too few clips for a per-gender mix; walk the levels so a smoke set
+            # still spans the axis instead of collapsing onto the first level
+            deck = dealt(list(V.SEVERITY_LEVELS), n, rng)
+            sev_iter = {g: iter(deck[i % 2::2]) for i, g in enumerate(V.GENDER)}
+        else:
+            sev_iter = {}
+            for g in V.GENDER:
+                counts = largest_remainder(V.SEVERITY_WEIGHTS, genders.count(g))
+                deck = [lvl for lvl in V.SEVERITY_LEVELS for _ in range(counts[lvl])]
+                rng.shuffle(deck)
+                sev_iter[g] = iter(deck)
 
         envs = dealt(V.ENVIRONMENTS, n, rng)
         cams = dealt(V.CAMERA, n, rng)
