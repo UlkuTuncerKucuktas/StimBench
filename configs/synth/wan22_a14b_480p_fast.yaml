@@ -21,7 +21,6 @@ speed:
   attention_backend: null
   compile: true
   compile_mode: default
-  cache: none             # pab or fastercache trade a little quality for 1.3-2x; off here
   lightning_lora: null
 sampling:
   classes: [ArmFlapping, HeadBanging, Spinning, Normal]

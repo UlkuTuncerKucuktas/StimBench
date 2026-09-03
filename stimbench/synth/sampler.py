@@ -59,7 +59,6 @@ class ClipSpec:
     environment: str
     setting: str
     setting_family: str
-    reassigned: bool
     camera_id: str
     camera: str
     camera_motion: str
@@ -169,10 +168,6 @@ def _compatible(cls: str, env: V.Environment) -> List[V.Topography]:
     return [t for t in V.TOPOGRAPHIES[cls] if t.needs <= env.tags]
 
 
-def _hosts(topo: V.Topography) -> List[V.Environment]:
-    return [e for e in V.ENVIRONMENTS if topo.needs <= e.tags]
-
-
 def make_plan(classes=V.CLASSES, n_per_class: int = 130, seed: int = 0,
               slow_factor: float = 2.0, min_cycles: int = 2,
               duration: float = 81 / 16) -> Plan:
@@ -193,24 +188,21 @@ def make_plan(classes=V.CLASSES, n_per_class: int = 130, seed: int = 0,
             sev_by_gender[g] = deck
         sev_iter = {g: iter(sev_by_gender[g]) for g in V.GENDER}
 
-        env_deck = dealt(V.ENVIRONMENTS, n, rng)
-        topo_deck = dealt(V.TOPOGRAPHIES[cls], n, rng)
+        envs = dealt(V.ENVIRONMENTS, n, rng)
         cams = dealt(V.CAMERA, n, rng)
+        aesthetics = dealt(range(len(V.AESTHETIC)), n, rng)
+        topo_quota = {t.id: n / len(V.TOPOGRAPHIES[cls]) for t in V.TOPOGRAPHIES[cls]}
         pace = pace_clause(cls, slow, duration, min_cycles)
 
         for i in range(n):
             g = genders[i]
             severity = next(sev_iter[g])
-
-            # rooms stay exactly balanced; variants as balanced as the rooms allow
-            topo = topo_deck[i]
-            j = next((k for k, e in enumerate(env_deck) if topo.needs <= e.tags), None)
-            reassigned = j is None
-            if reassigned:
-                env = env_deck.pop(0)
-                topo = rng.choice(_compatible(cls, env))
-            else:
-                env = env_deck.pop(j)
+            env = envs[i]
+            # rooms are dealt exactly; each room takes the compatible variant with
+            # the most quota left, so variants are as even as the rooms allow
+            options = _compatible(cls, env)
+            topo = max(options, key=lambda t: (topo_quota[t.id], rng.random()))
+            topo_quota[topo.id] -= 1
 
             outdoor = "outdoor" in env.tags
             io = "outdoor" if outdoor else "indoor"
@@ -244,14 +236,14 @@ def make_plan(classes=V.CLASSES, n_per_class: int = 130, seed: int = 0,
             blocked = V.SECONDARY_POSTURE_BLOCK[topo.posture]
             secondary = rng.choice([s for s in V.SECONDARY[cls] if s not in blocked])
             sev_text, secondary = _short_hair_fix(sev_text, secondary, hair)
-            aesthetic_id = rng.randrange(len(V.AESTHETIC))
+            aesthetic_id = aesthetics[i]
 
             spec = ClipSpec(
                 cls=cls, index=i, gender=g, severity=severity,
                 topography_id=topo.id, topography=topo.text,
                 posture=topo.posture, goal_directed=topo.goal_directed,
                 environment_id=env.id, environment=env.text, setting=io,
-                setting_family=env.family, reassigned=reassigned,
+                setting_family=env.family,
                 camera_id=cam.id, camera=cam.text, camera_motion=cam.motion,
                 aspect=cam.aspect, age=age, build=build, hair=hair, skin=skin,
                 clothing=clothing, detail=detail, clutter=clutter, light=light,

@@ -5,7 +5,8 @@ from . import vocab as V
 
 FACTORS = ("gender", "severity", "setting", "setting_family", "aspect",
            "camera_motion", "environment_id", "topography_id", "posture",
-           "age", "skin", "people_visible", "goal_directed", "aesthetic_id")
+           "age", "skin", "people_visible", "goal_directed", "aesthetic_id",
+           "out_fps", "out_frames", "retimed", "speed_mode")
 
 STOP_WORDS = ("stopping", "pausing", "then settling", "sitting down",
               "coming to rest", "standing still")
@@ -17,7 +18,7 @@ def composition(records: Iterable[dict]) -> Dict:
     out = OrderedDict()
     out["n"] = {c: sum(r["cls"] == c for r in records) for c in classes}
     for f in FACTORS:
-        out[f] = {c: dict(Counter(str(r[f]) for r in records if r["cls"] == c))
+        out[f] = {c: dict(Counter(str(r.get(f, "")) for r in records if r["cls"] == c))
                   for c in classes}
     words = [len(r["prompt"].split()) for r in records]
     out["prompt_words"] = {"min": min(words), "mean": round(sum(words) / len(words), 1),
@@ -60,9 +61,20 @@ def check(records: Iterable[dict], max_setting_spread: float = 0.05) -> List[Tup
         [r["cls"] != "Normal" and V.STEREOTYPY_QUALIFIER not in r["prompt"]
          for r in records])
 
-    slows = {float(r["slow_factor"]) for r in records}
-    if len(slows) > 1:
-        problems.append(("slow factor differs between clips", len(slows)))
+    for f in ("slow_factor", "out_fps", "out_frames", "out_duration_s", "retimed",
+              "speed_mode", "steps", "plan_hash_config"):
+        vals = {str(r[f]) for r in records if f in r}
+        if len(vals) > 1:
+            problems.append((f"{f} differs between clips", len(vals)))
+    for aspect in ("portrait", "landscape"):
+        sizes = {(r["width"], r["height"]) for r in records
+                 if r["aspect"] == aspect and "width" in r}
+        if len(sizes) > 1:
+            problems.append((f"{aspect} clips have more than one frame size", len(sizes)))
+    add("generated record missing probe data",
+        ["out_frames" in r and r["out_frames"] == "" for r in records])
+    add("prompt over the 512-token encoder limit",
+        [r.get("tokens", 0) > 512 for r in records])
 
     by_cls = {}
     for r in records:
@@ -73,6 +85,10 @@ def check(records: Iterable[dict], max_setting_spread: float = 0.05) -> List[Tup
     for c, cnt in genders.items():
         if abs(cnt.get("boy", 0) - cnt.get("girl", 0)) > 1:
             problems.append((f"gender imbalance in {c}", abs(cnt["boy"] - cnt["girl"])))
+    for c, rs in by_cls.items():
+        share = Counter(r["topography_id"] for r in rs).most_common(1)[0]
+        if share[1] > 0.5 * len(rs):
+            problems.append((f"one topography holds over half of {c}", share[1]))
     outdoor = {c: sum(r["setting"] == "outdoor" for r in rs) / len(rs)
                for c, rs in by_cls.items()}
     if outdoor and max(outdoor.values()) - min(outdoor.values()) > max_setting_spread:

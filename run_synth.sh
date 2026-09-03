@@ -7,9 +7,10 @@ set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG=${CONFIG:-configs/synth/wan22_a14b_480p.yaml}
+[[ "$CONFIG" = /* ]] || CONFIG="$HERE/$CONFIG"
 PY=${PY:-python3}
 
-OUT=${OUT:-$($PY -c "import yaml,sys;print(yaml.safe_load(open(sys.argv[1]))['output']['root'])" "$HERE/$CONFIG")}
+OUT=${OUT:-$($PY -c "import yaml,sys;print(yaml.safe_load(open(sys.argv[1]))['output']['root'])" "$CONFIG")}
 EXTRA=()
 [[ -n "${N:-}" ]] && EXTRA+=(--n-per-class "$N")
 
@@ -25,12 +26,12 @@ if [[ -f "$PIDFILE" ]] && [[ "$(ps -o stat= -p "$(cat "$PIDFILE")" 2>/dev/null)"
   exit 1
 fi
 
-if ! "$PY" "$HERE/gen_synth.py" plan --config "$HERE/$CONFIG" --out "$OUT" --show 0 "${EXTRA[@]}" "$@" >"$OUT/plan.txt" 2>&1; then
+if ! "$PY" "$HERE/gen_synth.py" plan --config "$CONFIG" --out "$OUT" --show 0 "${EXTRA[@]}" "$@" >"$OUT/plan.txt" 2>&1; then
   echo "plan failed its audit or crashed; not starting. Output:"; cat "$OUT/plan.txt"; exit 1
 fi
 
 # -u: unbuffered log; setsid: SIGHUP cannot reach it
-setsid nohup "$PY" -u "$HERE/gen_synth.py" generate --config "$HERE/$CONFIG" \
+setsid nohup "$PY" -u "$HERE/gen_synth.py" generate --config "$CONFIG" \
   --out "$OUT" "${EXTRA[@]}" "$@" >>"$ERR" 2>&1 &
 PID=$!
 echo "$PID" >"$PIDFILE"

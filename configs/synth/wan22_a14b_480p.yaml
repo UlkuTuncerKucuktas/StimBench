@@ -17,7 +17,6 @@ speed:
   offload: false          # only under ~40 GB VRAM
   attention_backend: null # e.g. flash, sage; lossless if the kernel is installed
   compile: false          # torch.compile both experts; lossless
-  cache: none             # none | pab | fastercache; faster, small quality cost
   lightning_lora: null    # see wan22_a14b_480p_lightning.yaml (experimental)
 sampling:
   classes: [ArmFlapping, HeadBanging, Spinning, Normal]

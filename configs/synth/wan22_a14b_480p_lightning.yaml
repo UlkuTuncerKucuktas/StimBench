@@ -13,7 +13,6 @@ model:
 speed:
   offload: false
   compile: false
-  cache: none
   lightning_lora:
     repo: lightx2v/Wan2.2-Lightning
     high: Wan2.2-T2V-A14B-4steps-lora-rank64-Seko-V1.1/high_noise_model.safetensors

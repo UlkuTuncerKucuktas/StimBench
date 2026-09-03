@@ -7,11 +7,11 @@ FIELDS = [
     "file", "clip_id", "cls", "label", "index", "seed",
     "severity", "topography_id", "posture", "goal_directed", "pace", "slow_factor",
     "gender", "gender_label", "age", "build", "hair", "skin", "clothing", "detail",
-    "environment_id", "setting", "setting_family", "reassigned", "clutter",
+    "environment_id", "setting", "setting_family", "clutter",
     "light", "extra", "people_visible", "pose", "shot",
     "camera_id", "camera_motion", "aspect", "aesthetic_id",
     "model", "repo", "width", "height", "gen_frames", "gen_fps", "gen_duration_s",
-    "steps", "guidance", "guidance_2", "flow_shift", "speed_mode",
+    "steps", "guidance", "guidance_2", "flow_shift", "speed_mode", "plan_hash",
     "out_frames", "out_fps", "out_duration_s", "retimed", "gen_seconds",
     "generated_at",
     "topography", "severity_text", "secondary", "environment", "camera",
@@ -26,51 +26,51 @@ METADATA_FIELDS = ["file_name", "label", "split", "type", "source_dataset",
 
 
 def read_records(path: Path) -> List[dict]:
-    # a kill -9 mid-append leaves one truncated line; skip it
-    out = []
+    # a kill -9 mid-append leaves one truncated line; the last record per file wins
+    by_file = {}
     if not path.exists():
-        return out
+        return []
     with path.open(encoding="utf-8") as fh:
         for line in fh:
             line = line.strip()
             if not line:
                 continue
             try:
-                out.append(json.loads(line))
+                rec = json.loads(line)
             except json.JSONDecodeError:
                 continue
-    return out
+            by_file[rec["file"]] = rec
+    return list(by_file.values())
+
+
+def _repair_truncated_tail(path: Path):
+    if not path.exists() or path.stat().st_size == 0:
+        return
+    data = path.read_bytes()
+    if not data.endswith(b"\n"):
+        path.write_bytes(data[:data.rfind(b"\n") + 1])
 
 
 class ManifestWriter:
-
     def __init__(self, root: Path):
         self.root = Path(root)
         self.root.mkdir(parents=True, exist_ok=True)
-        self.csv_path = self.root / "manifest.csv"
         self.jsonl_path = self.root / "manifest.jsonl"
-        self.done: Set[str] = {r["file"] for r in read_records(self.jsonl_path)}
-        new = not self.csv_path.exists() or self.csv_path.stat().st_size == 0
-        self._csv = self.csv_path.open("a", newline="", encoding="utf-8")
-        self._w = csv.DictWriter(self._csv, fieldnames=FIELDS, extrasaction="ignore")
-        if new:
-            self._w.writeheader()
-            self._csv.flush()
+        _repair_truncated_tail(self.jsonl_path)
+        self.records = {r["file"]: r for r in read_records(self.jsonl_path)}
         self._jsonl = self.jsonl_path.open("a", encoding="utf-8")
 
-    def add(self, rec: dict) -> bool:
-        if rec["file"] in self.done:
-            return False
-        self.done.add(rec["file"])
+    def add(self, rec: dict):
+        self.records[rec["file"]] = rec
         self._jsonl.write(json.dumps(rec, ensure_ascii=False) + "\n")
         self._jsonl.flush()
-        self._w.writerow({k: rec.get(k, "") for k in FIELDS})
-        self._csv.flush()
-        return True
 
     def close(self):
-        self._csv.close()
         self._jsonl.close()
+
+
+def write_manifest_csv(root: Path, records: Iterable[dict]):
+    write_plan_csv(Path(root) / "manifest.csv", sorted(records, key=lambda r: r["file"]))
 
 
 def write_plan_csv(path: Path, records: Iterable[dict]):

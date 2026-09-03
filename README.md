@@ -74,8 +74,8 @@ with its seed, every sampled slot and the full prompt (`manifest.csv`), and the
 root gets a StimBench-schema `metadata.csv` so it loads like the real data.
 
 ```bash
-# inspect the plan and its cue audit without a GPU
-python gen_synth.py plan --config configs/synth/wan22_a14b_480p.yaml
+# inspect the plan and its cue audit without a GPU (writes plan.csv, plan_composition.md)
+python gen_synth.py plan --config configs/synth/wan22_a14b_480p.yaml --check-tokens
 
 # generate (resumable; ~5 min per clip on one H200 with the reference recipe)
 bash run_synth.sh                       # detached, logs to <output.root>/gen.log
@@ -92,7 +92,7 @@ keyed on them; no Normal activity may look identical to a stimming class at some
 severity. `gen_synth.py plan` checks the result and refuses to generate if a
 check fails.
 
-Speed options live in the `speed:` block of the config (`compile`, `cache`,
+Speed options live in the `speed:` block of the config (`compile`,
 `attention_backend`, experimental `lightning_lora`). The released set was
 generated with `configs/synth/wan22_a14b_480p_fast.yaml` (torch.compile on, 241 s
 per clip on one H200 against 293 s uncompiled). Prompts, seeds and metadata are

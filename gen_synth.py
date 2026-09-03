@@ -7,7 +7,7 @@ import yaml
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from stimbench.synth import audit  # noqa: E402
 from stimbench.synth import vocab as V  # noqa: E402
-from stimbench.synth.generate import resolve, run, setup_logging, finish  # noqa: E402
+from stimbench.synth.generate import resolve, run, setup_logging, finish, previous_run_matches  # noqa: E402
 from stimbench.synth.manifest import read_records, write_plan_csv  # noqa: E402
 from stimbench.synth.sampler import make_plan  # noqa: E402
 
@@ -44,8 +44,11 @@ def cmd_plan(cfg, args, root):
             print(f"  token check skipped, no tokenizer could be loaded: {note}")
         else:
             print(f"  tokenizer: {note}")
+            for r, t in zip(records, tokens):
+                r["tokens"] = t
+            problems = audit.check(records)
     md = audit.render_markdown(comp, problems, f"StimBench-Syn plan ({len(plan)} clips)", tokens)
-    (root / "composition.md").write_text(md)
+    (root / "plan_composition.md").write_text(md)
 
     print(f"{'='*60}\nStimBench-Syn plan\n{'='*60}")
     print(f"  Config:   {args.config}")
@@ -65,7 +68,7 @@ def cmd_plan(cfg, args, root):
     for c in plan.clips[:args.show]:
         print(f"\n--- {c.cls} #{c.index} {c.gender} {c.severity} {c.environment_id} "
               f"{c.camera_id} ---\n{c.prompt}")
-    print(f"\n  plan.csv and composition.md written to {root}")
+    print(f"\n  plan.csv and plan_composition.md written to {root}")
     return 1 if problems else 0
 
 
@@ -85,6 +88,10 @@ def cmd_generate(cfg, args, root):
         for name, n in problems:
             log.error("plan check FAILED: %s (%d)", name, n)
         log.error("refusing to generate from a plan that fails its checks; use --force to override")
+        return 2
+    if not previous_run_matches(root, cfg, plan) and not args.force:
+        log.error("%s was started with a different model, speed or sampling config; "
+                  "use a new --out or --force (stale clips are then regenerated)", root)
         return 2
     run(cfg, plan, root, log)
     return 0

@@ -1,15 +1,16 @@
+import hashlib
+import json
 import logging
 import statistics
 import sys
 import time
-import traceback
 from datetime import datetime, timezone
 from pathlib import Path
 
 from . import audit
 from . import vocab as V
-from .manifest import (ManifestWriter, write_metadata_csv, write_run_config,
-                       read_records)
+from .manifest import (ManifestWriter, write_manifest_csv, write_metadata_csv,
+                       write_run_config, read_records)
 from .sampler import Plan, clip_seed
 from .video import have_ffmpeg, probe, retime_cfr
 
@@ -30,7 +31,6 @@ DEFAULT_SPEED = {
     "attention_backend": None,
     "compile": False,
     "compile_mode": "default",
-    "cache": "none",
     "lightning_lora": None,
 }
 
@@ -50,7 +50,7 @@ def resolve(cfg: dict) -> dict:
 
 def speed_mode(cfg: dict) -> str:
     m, s = cfg["model"], cfg["speed"]
-    parts = [f"steps{m['steps']}", f"cache={s['cache']}", f"compile={int(bool(s['compile']))}"]
+    parts = [f"steps{m['steps']}", f"compile={int(bool(s['compile']))}"]
     if s.get("attention_backend"):
         parts.append(f"attn={s['attention_backend']}")
     if s.get("lightning_lora"):
@@ -116,31 +116,11 @@ def load_pipeline(cfg: dict, log: logging.Logger):
             t.set_attention_backend(sp["attention_backend"])
         log.info("attention backend %s", sp["attention_backend"])
 
-    cache = (sp.get("cache") or "none").lower()
-    if cache == "pab":
-        from diffusers import PyramidAttentionBroadcastConfig
-        c = PyramidAttentionBroadcastConfig(
-            spatial_attention_block_skip_range=2,
-            spatial_attention_timestep_skip_range=(100, 800),
-            current_timestep_callback=lambda: pipe.current_timestep)
-        for t in experts:
-            t.enable_cache(c)
-        log.info("cache: pyramid attention broadcast")
-    elif cache == "fastercache":
-        from diffusers import FasterCacheConfig
-        c = FasterCacheConfig(
-            spatial_attention_block_skip_range=2,
-            spatial_attention_timestep_skip_range=(-1, 681),
-            current_timestep_callback=lambda: pipe.current_timestep,
-            attention_weight_callback=lambda _: 0.3,
-            unconditional_batch_skip_range=5,
-            unconditional_batch_timestep_skip_range=(-1, 641),
-            tensor_format="BCFHW")
-        for t in experts:
-            t.enable_cache(c)
-        log.info("cache: FasterCache")
-    elif cache != "none":
-        raise ValueError(f"unknown cache mode {cache!r}")
+    if sp.get("cache") not in (None, "none"):
+        # WanPipeline runs cond/uncond as separate batch-1 passes; diffusers' PAB and
+        # FasterCache hooks assume one concatenated batch and either crash or feed
+        # the conditional cache into the unconditional pass
+        raise ValueError("attention caches are not supported with WanPipeline")
 
     if sp.get("compile"):
         for t in experts:
@@ -157,6 +137,27 @@ def clip_relpath(cfg: dict, cls: str, index: int) -> str:
     return f"{cls}/{cfg['model']['key']}_{cls}_{index:04d}.mp4"
 
 
+def plan_hash(cfg: dict, spec, seed: int) -> str:
+    # everything that decides the pixels of a clip; a resumed run must match it
+    m = cfg["model"]
+    key = "|".join(str(x) for x in (spec.prompt, seed, m["repo"], m["steps"], m["guidance"],
+                                    m.get("guidance_2"), m.get("flow_shift"), m["frames"],
+                                    m["fps"], m["size"], spec.aspect, spec.slow_factor,
+                                    speed_mode(cfg)))
+    return hashlib.sha256(key.encode()).hexdigest()[:16]
+
+
+def previous_run_matches(root: Path, cfg: dict, plan: Plan) -> bool:
+    path = Path(root) / "run_config.json"
+    if not path.exists():
+        return True
+    prev = json.loads(path.read_text())
+    same = lambda a, b: json.dumps(a, sort_keys=True) == json.dumps(b, sort_keys=True)
+    return (same(prev["config"].get("model"), cfg["model"])
+            and same(prev["config"].get("speed"), cfg["speed"])
+            and same(prev["plan"], plan.settings))
+
+
 def frame_size(cfg: dict, aspect: str):
     h, w = cfg["model"]["size"]
     return (w, h) if aspect == "portrait" else (h, w)
@@ -170,16 +171,24 @@ def run(cfg: dict, plan: Plan, root: Path, log: logging.Logger) -> dict:
     root = Path(root)
     writer = ManifestWriter(root)
     write_run_config(root, cfg, plan.settings)
-    todo = [c for c in plan.clips if clip_relpath(cfg, c.cls, c.index) not in writer.done]
-    log.info("plan       %d clips, %d already done, %d to generate",
-             len(plan), len(plan) - len(todo), len(todo))
+    seeds = {(c.cls, c.index): clip_seed(plan.settings["seed"], c.cls, c.index) for c in plan.clips}
+    hashes = {(c.cls, c.index): plan_hash(cfg, c, seeds[(c.cls, c.index)]) for c in plan.clips}
+
+    def done(c):
+        rec = writer.records.get(clip_relpath(cfg, c.cls, c.index))
+        return rec is not None and rec.get("plan_hash") == hashes[(c.cls, c.index)] \
+            and (root / rec["file"]).exists()
+
+    todo = [c for c in plan.clips if not done(c)]
+    stale = sum(clip_relpath(cfg, c.cls, c.index) in writer.records for c in todo)
+    log.info("plan       %d clips, %d already done, %d to generate (%d stale, will be regenerated)",
+             len(plan), len(plan) - len(todo), len(todo), stale)
     if not todo:
         writer.close()
         finish(root, log)
         return {"generated": 0, "failed": 0}
-    if not have_ffmpeg():
-        log.warning("ffmpeg/ffprobe not found: clips will stay at 1/%.2f tempo",
-                    plan.settings["slow_factor"])
+    if plan.settings["slow_factor"] > 1.0 and not have_ffmpeg():
+        raise RuntimeError("ffmpeg and ffprobe are required to retime clips")
 
     t0 = time.time()
     pipe = load_pipeline(cfg, log)
@@ -193,7 +202,7 @@ def run(cfg: dict, plan: Plan, root: Path, log: logging.Logger) -> dict:
         rel = clip_relpath(cfg, spec.cls, spec.index)
         dst = root / rel
         dst.parent.mkdir(parents=True, exist_ok=True)
-        seed = clip_seed(plan.settings["seed"], spec.cls, spec.index)
+        seed = seeds[(spec.cls, spec.index)]
         h, w = frame_size(cfg, spec.aspect)
         t_clip = time.time()
         try:
@@ -211,20 +220,24 @@ def run(cfg: dict, plan: Plan, root: Path, log: logging.Logger) -> dict:
             break
         except Exception as exc:
             failed += 1
-            log.error("[%d/%d] FAILED %s: %s: %s", n, len(todo), rel, type(exc).__name__, exc)
-            log.debug(traceback.format_exc())
+            log.error("[%d/%d] FAILED %s: %s: %s", n, len(todo), rel, type(exc).__name__, exc,
+                      exc_info=True)
             if dst.exists():
                 dst.unlink()
             if "out of memory" in str(exc).lower():
                 torch.cuda.empty_cache()
             continue
 
-        retimed, err = False, ""
-        if slow > 1.0 and have_ffmpeg():
+        retimed = False
+        if slow > 1.0:
             retimed, _, err = retime_cfr(dst, slow, m["fps"])
             if not retimed:
+                # an unretimed clip would be a half-tempo, 16 fps outlier; leave no
+                # record so the next run regenerates it
                 retime_failed += 1
-                log.error("retime failed for %s: %s", rel, err)
+                log.error("retime failed for %s, clip discarded: %s", rel, err)
+                dst.unlink(missing_ok=True)
+                continue
         info = probe(dst) or {}
         dt = time.time() - t_clip
         rec = {
@@ -235,7 +248,8 @@ def run(cfg: dict, plan: Plan, root: Path, log: logging.Logger) -> dict:
             "gen_duration_s": round(m["frames"] / m["fps"], 4),
             "steps": m["steps"], "guidance": m["guidance"],
             "guidance_2": m.get("guidance_2", ""), "flow_shift": m.get("flow_shift", ""),
-            "speed_mode": mode, "retimed": retimed, "gen_seconds": round(dt, 1),
+            "speed_mode": mode, "plan_hash": hashes[(spec.cls, spec.index)],
+            "retimed": retimed, "gen_seconds": round(dt, 1),
             "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "out_frames": info.get("out_frames", ""), "out_fps": info.get("out_fps", ""),
             "out_duration_s": info.get("out_duration_s", ""),
@@ -253,7 +267,7 @@ def run(cfg: dict, plan: Plan, root: Path, log: logging.Logger) -> dict:
         log.info("per clip   median %.1fs  min %.1fs  max %.1fs  (%s)",
                  statistics.median(times), min(times), max(times), mode)
     if retime_failed:
-        log.warning("%d clip(s) failed to retime and are at 1/%.2f tempo", retime_failed, slow)
+        log.warning("%d clip(s) failed to retime and were discarded; rerun to regenerate", retime_failed)
     if failed:
         log.warning("%d clip(s) failed; rerun the same command to fill the gaps", failed)
     finish(root, log)
@@ -264,6 +278,7 @@ def finish(root: Path, log: logging.Logger):
     records = read_records(Path(root) / "manifest.jsonl")
     if not records:
         return
+    write_manifest_csv(root, records)
     n = write_metadata_csv(root, records)
     comp = audit.composition(records)
     problems = audit.check(records)

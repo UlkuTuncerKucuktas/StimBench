@@ -93,8 +93,11 @@ class StimBenchDataset(Dataset):
         rows.sort()
         if fraction < 1.0:
             rng = np.random.RandomState(seed)
-            keep = rng.permutation(len(rows))[:int(round(fraction * len(rows)))]
-            rows = [rows[i] for i in sorted(keep)]
+            kept = []
+            for label in sorted({r[1] for r in rows}):
+                idx = [i for i, r in enumerate(rows) if r[1] == label]
+                kept.extend(rng.permutation(idx)[:int(round(fraction * len(idx)))].tolist())
+            rows = [rows[i] for i in sorted(kept)]
         self.samples.extend(rows)
         return len(rows)
 
@@ -123,7 +126,8 @@ class StimBenchDataset(Dataset):
             h = int(res)
         else:
             h = 224
-        key = f"{path}_{self.num_frames}_{self.stride}_{h}"
+        st = os.stat(path)
+        key = f"{path}_{st.st_size}_{st.st_mtime_ns}_{self.num_frames}_{self.stride}_{h}"
         return hashlib.md5(key.encode()).hexdigest()[:12]
 
     def _get_cache_dir(self):

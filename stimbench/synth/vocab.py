@@ -81,6 +81,11 @@ TOPOGRAPHIES = {
            "forward to meet the wall and drawing it back again in a fixed "
            "repeating cycle, the hands resting on the thighs",
            "seated", {"wall"}),
+        _t("hb_floor",
+           "kneeling on hands and knees, lowering the forehead down to meet the "
+           "ground and lifting it back up again in a fixed repeating cycle, the "
+           "hands staying planted",
+           "seated"),
     ],
     "Spinning": [
         _t("sp_shuffle",
@@ -787,6 +792,9 @@ def validate():
             assert t.posture in POSE, t.posture
             for tag in t.needs:
                 assert any(tag in e.tags for e in ENVIRONMENTS), (t.id, tag)
+    for cls in CLASSES:
+        for e in ENVIRONMENTS:
+            assert any(t.needs <= e.tags for t in TOPOGRAPHIES[cls]), (cls, e.id)
     for key, levels in SEVERITY.items():
         assert tuple(levels) == SEVERITY_LEVELS, key
     assert abs(sum(SEVERITY_WEIGHTS.values()) - 1.0) < 1e-9
