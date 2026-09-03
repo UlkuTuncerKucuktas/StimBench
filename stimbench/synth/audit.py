@@ -40,8 +40,8 @@ def check(records: Iterable[dict], max_setting_spread: float = 0.05) -> List[Tup
             problems.append((name, n))
 
     add("prompt without a pace instruction",
-        ["slowly and evenly" not in r["prompt"]
-         and "natural pace" not in r["prompt"] for r in records])
+        ["at a slow even rate" not in r["prompt"]
+         and "natural rate" not in r["prompt"] for r in records])
     add("Normal behaviour that stops or pauses, against the continuity clause",
         [r["cls"] == "Normal" and any(w in r["topography"] for w in STOP_WORDS)
          for r in records])
@@ -56,9 +56,10 @@ def check(records: Iterable[dict], max_setting_spread: float = 0.05) -> List[Tup
         [_needs_unmet(r) for r in records])
     add("duplicate prompt", [n > 1 for n in Counter(r["prompt"] for r in records).values()])
     add("stereotypy qualifier on a Normal prompt",
-        [r["cls"] == "Normal" and V.STEREOTYPY_QUALIFIER in r["prompt"] for r in records])
+        [r["cls"] == "Normal" and any(q in r["prompt"] for q in V.STEREOTYPY_QUALIFIER.values())
+         for r in records])
     add("stimming prompt without the stereotypy qualifier",
-        [r["cls"] != "Normal" and V.STEREOTYPY_QUALIFIER not in r["prompt"]
+        [r["cls"] != "Normal" and V.STEREOTYPY_QUALIFIER[r["cls"]] not in r["prompt"]
          for r in records])
 
     for f in ("slow_factor", "out_fps", "out_frames", "out_duration_s", "retimed",

@@ -79,6 +79,7 @@ class ClipSpec:
     aesthetic_id: int
     aesthetic: str
     severity_text: str
+    trigger: str
     pace: str
     slow_factor: float
     prompt: str = ""
@@ -116,7 +117,9 @@ class Plan:
 def pace_clause(cls: str, slow: float, duration: float, min_cycles: int) -> str:
     # Only a count is stated, never a rate as well, so the two cannot disagree.
     # The same pace words go to every class, so pace cannot become a class cue.
-    pace = "slowly and evenly" if slow > 1.05 else "at a natural pace"
+    # "rate" rather than "slowly": the knocks and flaps themselves stay quick, only
+    # the repetition rate is halved and restored by the retime
+    pace = "at a slow even rate" if slow > 1.05 else "at a natural rate"
     if cls == "Normal":
         return (f"carrying out every action {pace}, moving continuously "
                 f"throughout and never freezing in place")
@@ -151,13 +154,13 @@ def _short_hair_fix(sev_text: str, secondary: str, hair: str):
 
 def render_prompt(c: ClipSpec) -> str:
     place = "place" if c.setting == "outdoor" else "room"
-    qualifier = "" if c.cls == "Normal" else ", " + V.STEREOTYPY_QUALIFIER
+    qualifier = "" if c.cls == "Normal" else ", " + V.STEREOTYPY_QUALIFIER[c.cls]
     # the behaviour comes before the room: a long scene description ahead of
     # it dilutes the motion tokens the text encoder attends to
     return (
         f"{c.aesthetic}. {c.age} {c.gender}, {c.build}, with {c.hair} and "
         f"{c.skin}, wearing {c.clothing}{c.detail}. "
-        f"The child is {c.topography}, {c.severity_text}, {c.pace}{qualifier}. "
+        f"The child is {c.topography}{c.trigger}, {c.severity_text}, {c.pace}{qualifier}. "
         f"At the same time the child is {c.secondary}, {c.pose}, the body "
         f"loose and natural like a real child rather than stiff or posed. "
         f"The scene is {c.environment}; the {place} is untidy and lived in, "
@@ -234,7 +237,9 @@ def make_plan(classes=V.CLASSES, n_per_class: int = 130, seed: int = 0,
                 return True
 
             clothing = rng.choice([c for c, t in V.CLOTHING[g] if clothing_ok(t)])
-            detail = rng.choice([d for d, t in V.DETAIL if t in ("any", io)])
+            legwear = not any(w in clothing for w in ("dress", "skirt", "pinafore"))
+            detail = rng.choice([d for d, t in V.DETAIL
+                                 if t in ("any", io) or (t == "trousers" and legwear)])
             clutter = rng.choice(V.CLUTTER[clutter_key])
             light = rng.choice(V.LIGHT[io])
             extra = rng.choice(V.EXTRA[io])
@@ -248,6 +253,7 @@ def make_plan(classes=V.CLASSES, n_per_class: int = 130, seed: int = 0,
             secondary = rng.choice([s for s in V.SECONDARY[cls] if s not in blocked])
             sev_text, secondary = _short_hair_fix(sev_text, secondary, hair)
             aesthetic_id = aesthetics[i]
+            trigger = rng.choice(V.AF_TRIGGER) if cls == "ArmFlapping" else ""
 
             spec = ClipSpec(
                 cls=cls, index=i, gender=g, severity=severity,
@@ -262,7 +268,7 @@ def make_plan(classes=V.CLASSES, n_per_class: int = 130, seed: int = 0,
                 people_visible=any(m in extra for m in V.PEOPLE_MARKERS),
                 pose=pose, shot=shot, secondary=secondary,
                 aesthetic_id=aesthetic_id, aesthetic=V.AESTHETIC[aesthetic_id],
-                severity_text=sev_text, pace=pace, slow_factor=round(slow, 4),
+                severity_text=sev_text, trigger=trigger, pace=pace, slow_factor=round(slow, 4),
             )
             spec.prompt = render_prompt(spec)
             clips.append(spec)
