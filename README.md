@@ -116,6 +116,16 @@ best in a separate venv, and the two `.task` model files in
 storage.googleapis.com/mediapipe-models). Detection on real face-blurred YouTube
 clips is sparse (5-45% of frames), so compare distributions, not single clips.
 
+Deliberate asymmetry, stated because it is a measurable one: ArmFlapping is
+weighted to its base variant (`TOPOGRAPHY_WEIGHTS`, 90% `af_sides`) and to the
+overt severities (`SEVERITY_WEIGHTS_BY_CLASS`, 8/6/58/58 against 34/32/32/32 for
+the other classes) because subtle and moderate flapping prompts rendered as a
+child standing still, which would have put unlabelled Normal clips under a
+stimming label. The cost is that ArmFlapping carries more motion energy than the
+other classes for a prompt-weighting reason; the per-class energy and severity
+tables in `composition.md` and `motion.csv` make this visible, and the audit's
+concentration check is skipped only for classes listed in `TOPOGRAPHY_WEIGHTS`.
+
 Editing the pools in `stimbench/synth/vocab.py`: topography texts describe motion
 only (speed belongs to the pace clause, amplitude to severity); severity texts are
 keyed by posture; Normal activities never stop or pause; incidental motion never
