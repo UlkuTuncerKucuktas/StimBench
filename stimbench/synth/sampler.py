@@ -288,17 +288,22 @@ def make_plan(classes=V.CLASSES, n_per_class: int = 130, seed: int = 0,
 def ab_plan(ab: dict, rng, slow, duration, min_cycles, seed, requested) -> Plan:
     # one child, room, camera and severity drawn once; only the movement sentence
     # differs between clips, so a viewer compares wording and nothing else
+    # base scene: clip `base_index` of an n=`base_n` plan, so a clip the user liked
+    # in a smoke set can be reproduced exactly and varied one clause at a time
     cls = ab["cls"]
-    base = make_plan([cls], 1, seed, requested, min_cycles, duration).clips[0]
-    severity = ab.get("severity", base.severity)
+    base = make_plan([cls], int(ab.get("base_n", 1)), seed, requested, min_cycles,
+                     duration).clips[int(ab.get("base_index", 0))]
     clips = []
     for i, m in enumerate(ab["movements"]):
-        c = replace(base, index=i, topography_id=m["id"], topography=m["text"],
-                    posture=m.get("posture", base.posture), severity=severity,
-                    severity_text=V.SEVERITY_BY_TOPOGRAPHY.get(m["id"], V.SEVERITY[(cls, m.get("posture", base.posture))])[severity],
-                    trigger=ab.get("trigger", base.trigger),
-                    pose=rng.choice([p for p in V.POSE[m.get("posture", base.posture)]
-                                     if p not in V.POSE_CLASS_BLOCK.get(cls, ())]))
+        posture = m.get("posture", base.posture)
+        severity = m.get("severity", ab.get("severity", base.severity))
+        sev_text = m.get("severity_text") or V.SEVERITY_BY_TOPOGRAPHY.get(
+            m["id"], V.SEVERITY[(cls, posture)])[severity]
+        c = replace(base, index=i, topography_id=m["id"], topography=m.get("text", base.topography),
+                    posture=posture, severity=severity, severity_text=sev_text,
+                    trigger=m.get("trigger", ab.get("trigger", base.trigger)),
+                    pace=m.get("pace", base.pace), secondary=m.get("secondary", base.secondary),
+                    pose=m.get("pose", base.pose))
         c.prompt = render_prompt(c)
         clips.append(c)
     return Plan(clips, settings={

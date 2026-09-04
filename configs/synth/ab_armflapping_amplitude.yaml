@@ -1,0 +1,72 @@
+# Amplitude and rate test in the scene of smoke_v11 ArmFlapping_0002 (the clip the user chose):
+# same child, room and camera; the movement sentence is fixed and only severity text and flap count vary.
+experiment:
+  name: ab_armflapping_amplitude
+  seed: 0
+model:
+  key: wan2.2-14b-480p
+  repo: Wan-AI/Wan2.2-T2V-A14B-Diffusers
+  size:
+  - 480
+  - 832
+  frames: 81
+  fps: 16
+  steps: 40
+  guidance: 4.0
+  guidance_2: 3.0
+  flow_shift: 3.0
+speed:
+  compile: true
+sampling:
+  classes:
+  - ArmFlapping
+  slow_factor: 2.0
+  min_cycles: 2
+ab:
+  cls: ArmFlapping
+  base_n: 8
+  base_index: 2
+  trigger: ''
+  movements:
+  - id: c1_reference_subtle_5
+    text: standing with both arms hanging straight down at the sides, elbows soft, the forearms swinging a little forward and back from the elbows while the limp hands flick loosely at the wrists, the hands hanging limp from the wrists like a puppet's hands on slack strings, palms toward the floor, fingers soft and slightly parted, each hand lagging a beat behind its forearm and flopping loosely at the turn of every stroke
+    severity: subtle
+    severity_text: the forearms travelling only a few centimetres, the hands flicking softly close to the body, the shoulders low and relaxed, easy to miss
+    pace: at a steady easy beat, about five flaps across the clip, the motion continuing steadily from the first frame to the last
+  - id: c2_subtle_7flaps
+    text: standing with both arms hanging straight down at the sides, elbows soft, the forearms swinging a little forward and back from the elbows while the limp hands flick loosely at the wrists, the hands hanging limp from the wrists like a puppet's hands on slack strings, palms toward the floor, fingers soft and slightly parted, each hand lagging a beat behind its forearm and flopping loosely at the turn of every stroke
+    severity: subtle
+    severity_text: the forearms travelling only a few centimetres, the hands flicking softly close to the body, the shoulders low and relaxed, easy to miss
+    pace: at a steady easy beat, about seven flaps across the clip, the motion continuing steadily from the first frame to the last
+  - id: c3_subtle_visible_5
+    text: standing with both arms hanging straight down at the sides, elbows soft, the forearms swinging a little forward and back from the elbows while the limp hands flick loosely at the wrists, the hands hanging limp from the wrists like a puppet's hands on slack strings, palms toward the floor, fingers soft and slightly parted, each hand lagging a beat behind its forearm and flopping loosely at the turn of every stroke
+    severity: subtle
+    severity_text: the flicks small but clearly visible, the hands snapping up and down at the wrists a few centimetres each time, the shoulders low and relaxed
+    pace: at a steady easy beat, about five flaps across the clip, the motion continuing steadily from the first frame to the last
+  - id: c4_subtle_visible_7
+    text: standing with both arms hanging straight down at the sides, elbows soft, the forearms swinging a little forward and back from the elbows while the limp hands flick loosely at the wrists, the hands hanging limp from the wrists like a puppet's hands on slack strings, palms toward the floor, fingers soft and slightly parted, each hand lagging a beat behind its forearm and flopping loosely at the turn of every stroke
+    severity: subtle
+    severity_text: the flicks small but clearly visible, the hands snapping up and down at the wrists a few centimetres each time, the shoulders low and relaxed
+    pace: at a steady easy beat, about seven flaps across the clip, the motion continuing steadily from the first frame to the last
+  - id: c5_moderate_5
+    text: standing with both arms hanging straight down at the sides, elbows soft, the forearms swinging a little forward and back from the elbows while the limp hands flick loosely at the wrists, the hands hanging limp from the wrists like a puppet's hands on slack strings, palms toward the floor, fingers soft and slightly parted, each hand lagging a beat behind its forearm and flopping loosely at the turn of every stroke
+    severity: moderate
+    severity_text: the forearms swinging a clear distance from the elbows, the hands flicking freely at the wrists, the shoulders low and relaxed
+    pace: at a steady easy beat, about five flaps across the clip, the motion continuing steadily from the first frame to the last
+  - id: c6_moderate_7
+    text: standing with both arms hanging straight down at the sides, elbows soft, the forearms swinging a little forward and back from the elbows while the limp hands flick loosely at the wrists, the hands hanging limp from the wrists like a puppet's hands on slack strings, palms toward the floor, fingers soft and slightly parted, each hand lagging a beat behind its forearm and flopping loosely at the turn of every stroke
+    severity: moderate
+    severity_text: the forearms swinging a clear distance from the elbows, the hands flicking freely at the wrists, the shoulders low and relaxed
+    pace: at a steady easy beat, about seven flaps across the clip, the motion continuing steadily from the first frame to the last
+  - id: c7_moderate_10quick
+    text: standing with both arms hanging straight down at the sides, elbows soft, the forearms swinging a little forward and back from the elbows while the limp hands flick loosely at the wrists, the hands hanging limp from the wrists like a puppet's hands on slack strings, palms toward the floor, fingers soft and slightly parted, each hand lagging a beat behind its forearm and flopping loosely at the turn of every stroke
+    severity: moderate
+    severity_text: the forearms swinging a clear distance from the elbows, the hands flicking freely at the wrists, the shoulders low and relaxed
+    pace: at a quick steady beat, about ten flaps across the clip, the motion continuing steadily from the first frame to the last
+  - id: c8_rapid_wrists_7
+    text: standing with both arms hanging straight down at the sides, elbows soft, the forearms swinging a little forward and back from the elbows while the limp hands flapping rapidly at the wrists, the flapping clearly visible, the hands hanging limp from the wrists like a puppet's hands on slack strings, palms toward the floor, fingers soft and slightly parted, each hand lagging a beat behind its forearm and flopping loosely at the turn of every stroke
+    severity: moderate
+    severity_text: the forearms swinging a clear distance from the elbows, the hands flicking freely at the wrists, the shoulders low and relaxed
+    pace: at a steady easy beat, about seven flaps across the clip, the motion continuing steadily from the first frame to the last
+output:
+  root: /storage/pvc-trubaai-1tb/siu/ab_af2
