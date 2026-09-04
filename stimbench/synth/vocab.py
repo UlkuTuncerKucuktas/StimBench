@@ -169,9 +169,9 @@ TOPOGRAPHIES = {
            "kneeling", {"table"}),
         _t("nm_sofa_tablet",
            "sitting on the floor with the back against the front of a sofa, a tablet "
-           "held in both hands on the knees, tapping the screen with one finger, "
-           "tilting the tablet to look at it, then lifting the head to glance across "
-           "the room",
+           "held in both hands on the knees, swiping across the screen with one "
+           "finger, tilting the tablet to look at it, tapping once, then lifting the "
+           "head to glance across the room",
            "seated", {"sofa"}),
         _t("nm_tv",
            "sitting on the floor watching a cartoon on a television across the room, "
@@ -215,8 +215,9 @@ TOPOGRAPHIES = {
            "kneeling"),
         _t("nm_wall_stickers",
            "standing close to the wall sticking paper stickers onto a large poster "
-           "taped to the wall, peeling each sticker from a sheet held in one hand, "
-           "pressing it flat with the palm, stepping sideways to place the next one",
+           "taped to the wall, peeling a sticker from a sheet held in one hand, "
+           "pressing it flat with the palm, stepping back to look at the poster, then "
+           "choosing a spot for the next one",
            "standing", {"wall"}),
         _t("nm_dance",
            "dancing to music from a speaker on the shelf, stepping to one side and "

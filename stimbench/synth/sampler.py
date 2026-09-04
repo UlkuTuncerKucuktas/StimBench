@@ -82,7 +82,7 @@ class ClipSpec:
     trigger: str
     direction: str
     pace: str
-    requested_hz: float
+    requested_hz: object
     slow_factor: float
     prompt: str = ""
 
@@ -271,7 +271,7 @@ def make_plan(classes=V.CLASSES, n_per_class: int = 130, seed: int = 0,
                 pose=pose, shot=shot, secondary=secondary,
                 aesthetic_id=aesthetic_id, aesthetic=V.AESTHETIC[aesthetic_id],
                 severity_text=sev_text, trigger=trigger, direction=direction, pace=clip_pace,
-                requested_hz=V.TARGET_HZ.get(cls, 0.0), slow_factor=round(slow, 4),
+                requested_hz=V.TARGET_HZ.get(cls, ""), slow_factor=round(slow, 4),
             )
             spec.prompt = render_prompt(spec)
             clips.append(spec)

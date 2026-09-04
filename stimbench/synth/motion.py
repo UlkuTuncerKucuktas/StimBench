@@ -113,7 +113,7 @@ def summarise(rows: List[dict]) -> str:
         rs = [r for r in rows if r["cls"] == cls]
         hz = [r["achieved_hz"] for r in rs if r["resolved"]]
         energy = [r["motion_energy"] for r in rs]
-        req = rs[0]["requested_hz"]
+        req = rs[0]["requested_hz"] or "none (control class, measured only)"
         if len(hz) >= 10:
             hz_txt = (f"achieved Hz median {np.median(hz):.2f} (p10 {np.percentile(hz, 10):.2f}, "
                       f"p90 {np.percentile(hz, 90):.2f}) vs requested {req}")

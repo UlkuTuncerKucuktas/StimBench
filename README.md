@@ -98,7 +98,10 @@ the achieved period where one resolves. The period comes from the autocorrelatio
 of the signed vertical centre of frame change; `achieved_hz` is filled only where
 that peak reaches `--min-peak` (default 0.4, `resolved` column), the peak height
 is stored per clip so the cut can be revisited, and on smoke sets roughly a third
-of clips resolve at 0.4 (two thirds at 0.3). Report resolved counts with any
+of clips resolve at 0.4 (two thirds at 0.3). Normal has no requested rate; its
+`achieved_hz`, where a period resolves, is a control measurement (many ordinary
+activities are repetitive), reported but never used as a target. Report resolved
+counts with any
 distribution, and quote it from the release run's own `motion.csv`. Run every
 `gen_synth.py` command from the repository root, not from the output directory.
 
