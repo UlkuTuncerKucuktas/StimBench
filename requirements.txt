@@ -6,3 +6,4 @@ scikit-learn
 pyyaml
 tqdm
 huggingface_hub
+ftfy  # required by diffusers WanImageToVideoPipeline; the T2V pipeline guards the import, the I2V one does not
