@@ -84,11 +84,12 @@ bash run_synth.sh                       # detached, logs to <output.root>/gen.lo
 python gen_synth.py report --config configs/synth/wan22_a14b_480p.yaml
 ```
 
-Rates in `TARGET_HZ` are what the prompt asks for, not what the generator
-delivers: flapping renders on target, head banging at about half the requested
-rate, so the head-banging request is set above the real rate. Every clip records
-`requested_hz`; achieved period is measured after generation and reported with
-the set.
+Rates in `TARGET_HZ` are real-world rates and set the repetition count in the
+prompt. Measured on smoke sets: flapping renders at the requested rate; head
+banging renders near 1.1 Hz regardless of the request (13 clips across requests
+of 1.5, 2.5 and 4.0 Hz), so the prompt does not control that class's tempo.
+Every clip records `requested_hz`; the achieved period is measured after
+generation and released with the set.
 
 Editing the pools in `stimbench/synth/vocab.py`: topography texts describe motion
 only (speed belongs to the pace clause, amplitude to severity); severity texts are
