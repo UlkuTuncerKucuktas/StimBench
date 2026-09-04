@@ -7,7 +7,8 @@ STIMMING = CLASSES[:3]
 LABELS = {c: c.lower() for c in CLASSES}
 
 # cycles per second
-TARGET_HZ = {"ArmFlapping": 3.0, "HeadBanging": 2.5, "Spinning": 1.0}
+# the generator delivers roughly half the head-banging rate it is asked for
+TARGET_HZ = {"ArmFlapping": 3.0, "HeadBanging": 4.0, "Spinning": 1.0}
 
 WORD = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six",
         7: "seven", 8: "eight", 9: "nine", 10: "ten", 11: "eleven",
@@ -27,8 +28,9 @@ def _t(id, text, posture, needs=(), goal_directed=False):
     return Topography(id, text, posture, frozenset(needs), goal_directed)
 
 
-LIMP = ("the hands hanging limp from the wrists, flopping passively with all the "
-        "strength gone out of them, trailing behind the forearms on every beat")
+LIMP = ("the hands open and limp, fingers relaxed and slightly spread, the wrists "
+        "so loose that the hands twirl and flop passively, trailing the forearms on "
+        "every beat")
 STILL = 'the shoulders and trunk staying still, the neck doing all the work'
 
 TOPOGRAPHIES = {
@@ -72,41 +74,31 @@ TOPOGRAPHIES = {
            "sitting on the floor with the back against the soft padded front of "
            "a sofa, knees drawn up, hands loose in the lap, throwing the back of "
            "the head hard against the upholstery and snapping it forward again, "
-           "a sharp thump each time, " + STILL,
+           "quick sharp thumps in rapid succession, " + STILL,
            "seated", {"sofa"}),
         _t("hb_chair",
            "sitting on a chair with the back against the backrest, throwing the "
            "back of the head hard against the top of the backrest and snapping "
            "it forward again, a sharp knock each time, the hands gripping the "
-           "seat, " + STILL,
+           "seat, quick sharp knocks in rapid succession, " + STILL,
            "seated", {"chair"}),
         _t("hb_bed",
            "sitting up in bed with the back against the headboard and a thick "
            "pillow, throwing the back of the head hard into the pillow and "
            "snapping it forward again, a sharp thump each time, the arms loose "
-           "at the sides, " + STILL,
+           "at the sides, quick sharp thumps in rapid succession, " + STILL,
            "seated", {"bed"}),
         _t("hb_thrash",
            "sitting on the floor with nothing behind, throwing the head forward "
            "and down sharply and snapping it back up, like headbanging to loud "
            "music, the hair whipping with it, the same quick violent nod over "
-           "and over, " + STILL,
+           "and over in rapid succession, " + STILL,
            "seated"),
-        _t("hb_cushion",
-           "kneeling on a padded play mat in front of a large soft cushion, "
-           "slamming the forehead down onto the cushion and snapping it back "
-           "up, a sharp thump each time, hands flat on the mat, " + STILL,
-           "kneeling", {"mat"}),
         _t("hb_wall",
            "kneeling upright facing a bare stretch of wall, knocking the forehead "
            "hard against the wall and snapping it back, a sharp knock each time, "
-           "the hands resting on the thighs, " + STILL,
+           "the hands resting on the thighs, quick sharp knocks in rapid succession, " + STILL,
            "kneeling", {"wall"}),
-        _t("hb_floor",
-           "kneeling on hands and knees, knocking the forehead hard down against "
-           "the floor and snapping it back up, a sharp thump each time, the "
-           "hands staying planted, " + STILL,
-           "kneeling"),
     ],
     "Spinning": [
         _t("sp_shuffle",
@@ -396,8 +388,6 @@ SECONDARY_POSTURE_BLOCK = {
 _HANDS_PLANTED = {"shifting the hands in the lap and gripping at the fabric",
                   "bringing one hand up to touch the face briefly"}
 SECONDARY_TOPOGRAPHY_BLOCK = {
-    "hb_cushion": _HANDS_PLANTED,
-    "hb_floor": _HANDS_PLANTED | {"resettling the body against the surface between cycles"},
     "hb_wall": {"shifting the hands in the lap and gripping at the fabric",
                 "resettling the body against the surface between cycles"},
 }
@@ -877,6 +867,7 @@ NEGATIVE = (
     "someone recording, recording device, selfie, mirror reflection, "
     "cartoon, anime, illustration, 3d render, cgi, video game, watermark, "
     "text, subtitles, logo, split screen, static image, frozen frame, "
+    "clenched fists, fists, stiff hands, rigid wrists, "
     "stiff, rigid, mannequin, shop dummy, doll, statue, robotic, wooden, "
     "only one part of the body moving, distorted limbs, extra limbs, "
     "extra arms, deformed hands, fused fingers, melting body, warping face, "

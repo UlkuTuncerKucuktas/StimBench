@@ -162,11 +162,11 @@ def render_prompt(c: ClipSpec) -> str:
         f"{c.skin}, wearing {c.clothing}{c.detail}. "
         f"The child is {c.topography}{c.trigger}, {c.severity_text}, {c.pace}{qualifier}. "
         f"At the same time the child is {c.secondary}, {c.pose}, the body "
-        f"loose and natural like a real child rather than stiff or posed. "
+        f"loose and natural. "
         f"The scene is {c.environment}; the {place} is untidy and lived in, "
         f"{c.clutter}{c.extra}. "
         f"{c.shot}, {c.camera}, {c.light}. "
-        f"One continuous unbroken shot of the same scene from start to finish."
+        f"One continuous unbroken shot."
     )
 
 
