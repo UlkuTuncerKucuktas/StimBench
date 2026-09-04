@@ -116,11 +116,6 @@ def token_lengths(prompts: List[str], repo: str, subfolder: str = "tokenizer"):
     except ImportError as e:
         return None, f"transformers not installed ({e})"
     errors = []
-    try:
-        tok = AutoTokenizer.from_pretrained(repo, subfolder=subfolder)
-        return [len(tok(p).input_ids) for p in prompts], f"{repo}/{subfolder}"
-    except Exception as e:
-        errors.append(str(e).splitlines()[0][:120])
     import glob, os
     cache = os.environ.get("HF_HUB_CACHE") or os.environ.get("HF_HOME", "~/.cache/huggingface")
     pattern = os.path.expanduser(os.path.join(cache, "**", "models--" + repo.replace("/", "--"),
@@ -131,6 +126,11 @@ def token_lengths(prompts: List[str], repo: str, subfolder: str = "tokenizer"):
             return [len(tok(p).input_ids) for p in prompts], snap
         except Exception as e:
             errors.append(str(e).splitlines()[0][:120])
+    try:
+        tok = AutoTokenizer.from_pretrained(repo, subfolder=subfolder)
+        return [len(tok(p).input_ids) for p in prompts], f"{repo}/{subfolder}"
+    except Exception as e:
+        errors.append(str(e).splitlines()[0][:120])
     return None, "; ".join(errors) or "no cached snapshot found"
 
 

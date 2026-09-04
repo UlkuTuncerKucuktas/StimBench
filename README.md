@@ -84,6 +84,12 @@ bash run_synth.sh                       # detached, logs to <output.root>/gen.lo
 python gen_synth.py report --config configs/synth/wan22_a14b_480p.yaml
 ```
 
+Rates in `TARGET_HZ` are what the prompt asks for, not what the generator
+delivers: flapping renders on target, head banging at about half the requested
+rate, so the head-banging request is set above the real rate. Every clip records
+`requested_hz`; achieved period is measured after generation and reported with
+the set.
+
 Editing the pools in `stimbench/synth/vocab.py`: topography texts describe motion
 only (speed belongs to the pace clause, amplitude to severity); severity texts are
 keyed by posture; Normal activities never stop or pause; incidental motion never

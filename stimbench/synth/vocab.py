@@ -7,7 +7,9 @@ STIMMING = CLASSES[:3]
 LABELS = {c: c.lower() for c in CLASSES}
 
 # cycles per second
-# the generator delivers roughly half the head-banging rate it is asked for
+# requested rates, not achieved ones: measured renders deliver about half the
+# head-banging rate asked for and flapping on target; recorded per clip as
+# requested_hz, the achieved period is measured after generation
 TARGET_HZ = {"ArmFlapping": 3.0, "HeadBanging": 4.0, "Spinning": 1.0}
 
 WORD = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six",
