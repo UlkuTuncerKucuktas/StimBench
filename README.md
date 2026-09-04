@@ -88,8 +88,9 @@ Rates in `TARGET_HZ` are real-world rates and set the repetition count in the
 prompt. Measured on smoke sets: flapping renders at the requested rate; head
 banging renders near 1.1 Hz regardless of the request (13 clips across requests
 of 1.5, 2.5 and 4.0 Hz), so the prompt does not control that class's tempo.
-Every clip records `requested_hz`; the achieved period is measured after
-generation and released with the set.
+Every clip records `requested_hz`; `python gen_synth.py motion --config ... --out ROOT`
+measures motion energy, freeze fraction and achieved period per clip into
+`motion.csv`, released with the set.
 
 Editing the pools in `stimbench/synth/vocab.py`: topography texts describe motion
 only (speed belongs to the pace clause, amplitude to severity); severity texts are

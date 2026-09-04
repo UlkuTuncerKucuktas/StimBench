@@ -9,6 +9,7 @@ from stimbench.synth import audit  # noqa: E402
 from stimbench.synth import vocab as V  # noqa: E402
 from stimbench.synth.generate import resolve, run, setup_logging, finish, previous_run_matches  # noqa: E402
 from stimbench.synth.manifest import read_records, write_plan_csv  # noqa: E402
+from stimbench.synth.motion import measure_set, summarise  # noqa: E402
 from stimbench.synth.sampler import make_plan  # noqa: E402
 
 
@@ -106,13 +107,25 @@ def cmd_report(cfg, args, root):
     return 0
 
 
+def cmd_motion(cfg, args, root):
+    records = read_records(root / "manifest.jsonl")
+    if not records:
+        print(f"no manifest under {root}")
+        return 1
+    rows = measure_set(root, sorted(records, key=lambda r: r["file"]), root / "motion.csv")
+    print(summarise(rows))
+    print(f"\n  motion.csv written to {root} ({len(rows)} clips)")
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser(
         description="StimBench-Syn generator. plan: render prompts, run the cue audit, write "
                     "plan.csv and composition.md (no GPU). generate: resumable generation; "
                     "rerun the same command to continue. report: rebuild metadata.csv and "
-                    "composition.md from an existing manifest.")
-    ap.add_argument("command", choices=["plan", "generate", "report"])
+                    "composition.md from an existing manifest. motion: measure motion energy, freeze "
+                    "fraction and achieved period per clip into motion.csv.")
+    ap.add_argument("command", choices=["plan", "generate", "report", "motion"])
     ap.add_argument("--config", required=True, help="YAML config, see configs/synth/")
     ap.add_argument("--out", default=None, help="override output.root from the config")
     ap.add_argument("--n-per-class", type=int, default=None)
@@ -125,7 +138,8 @@ def main():
 
     cfg = load_config(args.config)
     root = Path(args.out or cfg["output"].get("root", "synth_out"))
-    return {"plan": cmd_plan, "generate": cmd_generate, "report": cmd_report}[args.command](cfg, args, root)
+    return {"plan": cmd_plan, "generate": cmd_generate, "report": cmd_report,
+            "motion": cmd_motion}[args.command](cfg, args, root)
 
 
 if __name__ == "__main__":
