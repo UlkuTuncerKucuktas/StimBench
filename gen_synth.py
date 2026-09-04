@@ -11,7 +11,7 @@ from stimbench.synth.generate import resolve, run, setup_logging, finish, previo
 from stimbench.synth.manifest import read_records, write_plan_csv  # noqa: E402
 from stimbench.synth.motion import measure_set, summarise  # noqa: E402
 from stimbench.synth import hands  # noqa: E402
-from stimbench.synth import i2v  # noqa: E402
+from stimbench.synth import i2v, v2v  # noqa: E402
 from stimbench.synth.sampler import make_plan  # noqa: E402
 
 
@@ -164,6 +164,11 @@ def cmd_v2v(cfg, args, root):
     return 0
 
 
+COMMANDS = {"plan": cmd_plan, "generate": cmd_generate, "report": cmd_report,
+            "motion": cmd_motion, "hands": cmd_hands, "frames": cmd_frames,
+            "i2v": cmd_i2v, "v2v": cmd_v2v}
+
+
 def main():
     ap = argparse.ArgumentParser(
         description="StimBench-Syn generator. plan: render prompts, run the cue audit, write "
@@ -173,7 +178,7 @@ def main():
                     "fraction and achieved period per clip into motion.csv. hands: MediaPipe hand "
                     "and pose landmarks per clip into hands.csv (finger curl, wrist flexion "
                     "amplitude, wrist lag behind the elbow, palm orientation, detection rate).")
-    ap.add_argument("command", choices=["plan", "generate", "report", "motion", "hands", "frames", "i2v", "v2v"])
+    ap.add_argument("command", choices=list(COMMANDS))
     ap.add_argument("--config", required=True, help="YAML config, see configs/synth/")
     ap.add_argument("--out", default=None, help="override output.root from the config")
     ap.add_argument("--n-per-class", type=int, default=None)
@@ -191,9 +196,7 @@ def main():
 
     cfg = load_config(args.config)
     root = Path(args.out or cfg["output"].get("root", "synth_out"))
-    return {"plan": cmd_plan, "generate": cmd_generate, "report": cmd_report,
-            "motion": cmd_motion, "hands": cmd_hands, "frames": cmd_frames,
-            "i2v": cmd_i2v}[args.command](cfg, args, root)
+    return COMMANDS[args.command](cfg, args, root)
 
 
 if __name__ == "__main__":
