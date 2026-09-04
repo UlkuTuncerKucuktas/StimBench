@@ -151,7 +151,6 @@ def _short_hair_fix(sev_text: str, secondary: str, hair: str):
 
 
 def render_prompt(c: ClipSpec) -> str:
-    place = "place" if c.setting == "outdoor" else "room"
     qualifier = "" if c.cls == "Normal" else ", " + V.STEREOTYPY_QUALIFIER[c.cls]
     # the behaviour comes before the room: a long scene description ahead of
     # it dilutes the motion tokens the text encoder attends to
@@ -161,8 +160,7 @@ def render_prompt(c: ClipSpec) -> str:
         f"The child is {c.topography}{c.trigger}, {c.severity_text}, {c.pace}{qualifier}. "
         f"At the same time the child is {c.secondary}, {c.pose}, the body "
         f"loose and natural. "
-        f"The scene is {c.environment}; the {place} is untidy and lived in, "
-        f"{c.clutter}{c.extra}. "
+        f"The scene is {c.environment}, {c.clutter}{c.extra}. "
         f"{c.shot}, {c.camera}, {c.light}. "
         f"One continuous unbroken shot."
     )

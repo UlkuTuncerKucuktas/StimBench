@@ -871,14 +871,12 @@ PEOPLE_MARKERS = ("child", "adult", "parent")
 
 # Pulls the model off its cinematic default without naming a recording device.
 AESTHETIC = [
-    "amateur home video, low resolution and grainy, plain and unstaged, candid "
-    "everyday footage, flat unflattering lighting, ordinary untidy "
-    "surroundings, nothing composed or artistic about the shot",
-    "casual family footage, slightly blurry with washed out colours, "
-    "completely unedited, an ordinary everyday scene, plain and unremarkable, "
-    "the kind of clip a parent records without thinking about it",
-    "low quality home video uploaded to the internet years ago, compressed and "
-    "soft, a candid unposed everyday moment, no styling and no framing care",
+    "amateur home video, low resolution and grainy, candid and unstaged, flat "
+    "unflattering lighting, ordinary untidy surroundings",
+    "casual family footage, slightly blurry with washed out colours, unedited, "
+    "an ordinary everyday scene, plain and unremarkable",
+    "low quality home video uploaded years ago, compressed and soft, a candid "
+    "unposed everyday moment, no styling",
 ]
 
 # "still"/"motionless" are absent on purpose: severity texts ask for stillness,
