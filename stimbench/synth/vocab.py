@@ -27,13 +27,15 @@ def _t(id, text, posture, needs=(), goal_directed=False):
     return Topography(id, text, posture, frozenset(needs), goal_directed)
 
 
+LIMP = 'the hands hanging limp from the wrists, flopping passively as if there were no strength in them, trailing behind the forearms on every beat'
+STILL = 'the shoulders and trunk staying still, the neck doing all the work'
+
 TOPOGRAPHIES = {
     "ArmFlapping": [
         _t("af_forearms",
            "standing with both elbows bent and held a little away from the ribs, "
            "flapping both forearms and hands up and down together in unison, the "
-           "wrists loose so the hands trail behind the forearms, the upper arms "
-           "swinging a little with them",
+           "upper arms swinging a little with them, " + LIMP,
            "standing"),
         _t("af_fingers",
            "holding both hands up near the chest and fluttering and flicking the "
@@ -42,24 +44,24 @@ TOPOGRAPHIES = {
            "standing"),
         _t("af_shoulders",
            "holding both arms out to the sides and waving them repeatedly up and "
-           "down from the shoulders, the hands loose, both arms mirroring each "
-           "other exactly",
+           "down from the shoulders, both arms mirroring each other exactly, "
+           + LIMP,
            "standing"),
         _t("af_seated",
            "seated on the ground with the back straight, both arms lifted to "
-           "chest height with the elbows flexed, shaking the hands and forearms "
-           "up and down in a repeated bilateral pattern, the legs settled and "
-           "loose",
+           "chest height with the elbows flexed, shaking the forearms up and "
+           "down in a repeated bilateral pattern, the legs settled and loose, "
+           + LIMP,
            "seated"),
         _t("af_ragdoll",
            "standing with the arms hanging by the sides and the elbows soft, "
-           "flapping both hands loosely from the wrists at waist height, the "
-           "hands floppy like a rag doll and the forearms swinging with them",
+           "flapping both forearms from the elbows at waist height, "
+           + LIMP + ", floppy like a rag doll's",
            "standing"),
         _t("af_excited",
            "standing and bouncing a little on the spot, both arms flapping up "
-           "and down from the elbows with the hands hanging loose and floppy, "
-           "flapping harder as the excitement rises",
+           "and down from the elbows, flapping harder as the excitement rises, "
+           + LIMP,
            "standing"),
     ],
     # Rocking without head contact is a different stereotypy, so every variant
@@ -69,40 +71,40 @@ TOPOGRAPHIES = {
            "sitting on the floor with the back against the soft padded front of "
            "a sofa, knees drawn up, hands loose in the lap, throwing the back of "
            "the head hard against the upholstery and snapping it forward again, "
-           "a sharp thump each time, the same quick forceful knock over and over",
+           "a sharp thump each time, " + STILL,
            "seated", {"sofa"}),
         _t("hb_chair",
            "sitting on a chair with the back against the backrest, throwing the "
            "back of the head hard against the top of the backrest and snapping "
            "it forward again, a sharp knock each time, the hands gripping the "
-           "seat",
+           "seat, " + STILL,
            "seated", {"chair"}),
         _t("hb_bed",
            "sitting up in bed with the back against the headboard and a thick "
            "pillow, throwing the back of the head hard into the pillow and "
            "snapping it forward again, a sharp thump each time, the arms loose "
-           "at the sides",
+           "at the sides, " + STILL,
            "seated", {"bed"}),
         _t("hb_thrash",
            "sitting on the floor with nothing behind, throwing the head forward "
            "and down sharply and snapping it back up, like headbanging to loud "
-           "music, the hair and shoulders whipping with it, the same quick "
-           "violent nod over and over",
+           "music, the hair whipping with it, the same quick violent nod over "
+           "and over, " + STILL,
            "seated"),
         _t("hb_cushion",
            "kneeling on a padded play mat in front of a large soft cushion, "
            "slamming the forehead down onto the cushion and snapping it back "
-           "up, a sharp thump each time, hands flat on the mat",
+           "up, a sharp thump each time, hands flat on the mat, " + STILL,
            "kneeling", {"mat"}),
         _t("hb_wall",
            "kneeling upright facing a bare stretch of wall, knocking the forehead "
            "hard against the wall and snapping it back, a sharp knock each time, "
-           "the hands resting on the thighs",
+           "the hands resting on the thighs, " + STILL,
            "kneeling", {"wall"}),
         _t("hb_floor",
            "kneeling on hands and knees, knocking the forehead hard down against "
            "the floor and snapping it back up, a sharp thump each time, the "
-           "hands staying planted",
+           "hands staying planted, " + STILL,
            "kneeling"),
     ],
     "Spinning": [
@@ -232,33 +234,26 @@ SEVERITY = {
                       "the ground with it, the whole body shaking",
     },
     ("HeadBanging", "seated"): {
-        "subtle": "the head moving only a short distance each time, quick "
-                  "small jerks, the shoulders and trunk carried along only "
-                  "slightly",
-        "moderate": "the head moving a clear and visible distance each time, "
-                    "the neck doing the work while the shoulders stay largely "
-                    "settled",
-        "pronounced": "the head thrown through a wide arc each time, the "
-                      "shoulders jerking with each knock, the excursion "
-                      "unmistakable",
-        "whole_body": "the whole upper body thrown into it, the shoulders and "
-                      "trunk pitching with the head so the back comes away and "
-                      "slams back each time, the head travelling a long way, "
-                      "hair flying with it",
+        "subtle": "the head moving only a short distance each knock, quick small "
+                  "jerks, the shoulders still",
+        "moderate": "the head moving a clear and visible distance each knock, "
+                    "the shoulders still",
+        "pronounced": "the head thrown through a wide arc each knock, the "
+                      "excursion unmistakable, the shoulders barely moving",
+        "whole_body": "the head thrown as far as it will go each knock, the "
+                      "shoulders jolting with each impact while the trunk stays "
+                      "put, hair flying with it",
     },
     ("HeadBanging", "kneeling"): {
-        "subtle": "the head moving only a short distance each time, quick "
-                  "small jerks, the shoulders and trunk carried along only "
-                  "slightly",
-        "moderate": "the head moving a clear and visible distance each time, "
-                    "the neck doing the work while the shoulders stay largely "
-                    "settled",
-        "pronounced": "the head thrown through a wide arc each time, the "
-                      "shoulders jerking with each knock, the excursion "
-                      "unmistakable",
-        "whole_body": "the whole upper body thrown into it, the shoulders and "
-                      "trunk pitching with the head, the head travelling a long "
-                      "way each time, hair flying with it",
+        "subtle": "the head moving only a short distance each knock, quick small "
+                  "jerks, the shoulders still",
+        "moderate": "the head moving a clear and visible distance each knock, "
+                    "the shoulders still",
+        "pronounced": "the head thrown through a wide arc each knock, the "
+                      "excursion unmistakable, the shoulders barely moving",
+        "whole_body": "the head thrown as far as it will go each knock, the "
+                      "shoulders jolting with each impact while the trunk stays "
+                      "put, hair flying with it",
     },
     ("Spinning", "rotating"): {
         "subtle": "the turn tight and small, the feet moving only a little, the "
@@ -355,13 +350,12 @@ SECONDARY = {
     ],
     "HeadBanging": [
         "shifting the hands in the lap and gripping at the fabric",
-        "swaying a little from side to side at the same time",
         "bringing one hand up to touch the face briefly",
         "letting the eyes drift to one side and back",
         "shifting the legs, one knee dropping out to the side",
         "resettling the body against the surface between cycles",
-        "rolling the shoulders slightly with each cycle",
         "blinking slowly, the gaze unfocused",
+        "keeping the hands where they are, only the head moving",
     ],
     "Spinning": [
         "reaching one hand out as if to steady against the air while turning",
