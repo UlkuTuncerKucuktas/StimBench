@@ -11,7 +11,7 @@ from stimbench.synth.generate import resolve, run, setup_logging, finish, previo
 from stimbench.synth.manifest import read_records, write_plan_csv  # noqa: E402
 from stimbench.synth.motion import measure_set, summarise  # noqa: E402
 from stimbench.synth import hands  # noqa: E402
-from stimbench.synth import i2v, v2v  # noqa: E402
+from stimbench.synth import i2v, v2v, vace  # noqa: E402
 from stimbench.synth.sampler import make_plan  # noqa: E402
 
 
@@ -164,9 +164,22 @@ def cmd_v2v(cfg, args, root):
     return 0
 
 
+def cmd_flow(cfg, args, root):
+    source = Path(args.source or cfg["vace"]["source"])
+    for f in vace.write_flow_videos(source, root, cfg["model"]["frames"], int(round(cfg["model"]["fps"] * cfg["sampling"].get("slow_factor", 1.0))), device=args.device):
+        print(f"  {f}")
+    return 0
+
+
+def cmd_vace(cfg, args, root):
+    log = setup_logging(root / "gen.log")
+    vace.run_vace(cfg, root, log)
+    return 0
+
+
 COMMANDS = {"plan": cmd_plan, "generate": cmd_generate, "report": cmd_report,
             "motion": cmd_motion, "hands": cmd_hands, "frames": cmd_frames,
-            "i2v": cmd_i2v, "v2v": cmd_v2v}
+            "i2v": cmd_i2v, "v2v": cmd_v2v, "vace": cmd_vace, "flow": cmd_flow}
 
 
 def main():
@@ -190,6 +203,8 @@ def main():
     ap.add_argument("--force", action="store_true", help="generate even if checks fail")
     ap.add_argument("--frame-index", type=int, default=0, help="frames: which frame to export")
     ap.add_argument("--frames-dir", default=None, help="i2v: directory of first-frame PNGs")
+    ap.add_argument("--source", default=None, help="flow: clip to take the movement from")
+    ap.add_argument("--device", default="cpu", help="flow: torch device for RAFT")
     ap.add_argument("--min-peak", type=float, default=0.4,
                     help="motion: autocorrelation peak needed to report an achieved period")
     args = ap.parse_args()

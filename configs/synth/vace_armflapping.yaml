@@ -1,0 +1,52 @@
+# Motion control test: the optical flow of smoke_v11 ArmFlapping_0002 (the clip the user chose)
+# drives VACE while the prompt supplies a new child, clothes, room and light. Flow carries the
+# movement only, so the child and scene come entirely from the prompt; the arms vary control
+# strength and mirroring for small differences in the movement.
+experiment:
+  name: vace_armflapping
+  seed: 0
+model:
+  key: wan2.1-vace-14b-480p
+  repo: Wan-AI/Wan2.1-VACE-14B-diffusers
+  size:
+  - 480
+  - 832
+  frames: 81
+  fps: 16
+  steps: 40
+  guidance: 5.0
+  guidance_2: null
+  flow_shift: 3.0
+speed:
+  compile: false
+sampling:
+  classes:
+  - ArmFlapping
+  slow_factor: 2.0
+  min_cycles: 2
+vace:
+  source: /storage/pvc-trubaai-1tb/siu/smoke_v11/ArmFlapping/wan2.2-14b-480p_ArmFlapping_0002.mp4
+  # rendered with `gen_synth.py flow` on a host that has torchvision; omit to compute here
+  controls:
+    plain: /storage/pvc-trubaai-1tb/siu/control/af_0002/flow.mp4
+    mirror: /storage/pvc-trubaai-1tb/siu/control/af_0002/flow_mirror.mp4
+  pairing: all
+  arms:
+  - id: full
+    scale: 1.0
+    control: plain
+  - id: soft
+    scale: 0.7
+    control: plain
+  - id: mirror
+    scale: 1.0
+    control: mirror
+  targets:
+    from_plan:
+      cls: ArmFlapping
+      topography: af_sides
+      pool: 40
+      seed: 11
+      n: 3
+output:
+  root: /storage/pvc-trubaai-1tb/siu/vace_af

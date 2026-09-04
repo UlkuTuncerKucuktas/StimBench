@@ -10,9 +10,8 @@ from .sampler import make_plan
 from .video import probe, retime_cfr
 
 
-def targets_from_config(cfg: dict) -> List[Tuple[str, dict]]:
+def targets_from_config(cfg: dict, spec: dict) -> List[Tuple[str, dict]]:
     """(id, plan record) pairs whose prompts describe a new child and scene around the same movement."""
-    spec = cfg["v2v"]["targets"]
     if "from_plan" in spec:
         fp = spec["from_plan"]
         s, m = cfg["sampling"], cfg["model"]
@@ -98,7 +97,7 @@ def run_v2v(cfg: dict, root: Path, log) -> List[dict]:
     source_md5 = hashlib.md5(source.read_bytes()).hexdigest()
     frames = read_frames(source, m["frames"])
     width, height = frames[0].size
-    targets = targets_from_config(cfg)
+    targets = targets_from_config(cfg, spec["targets"])
     strengths = [float(s) for s in spec.get("strengths", [0.6])]
     log.info("source %s (%s) %dx%d %d frames; %d targets x %d strengths",
              source.name, source_md5[:8], width, height, len(frames), len(targets), len(strengths))
