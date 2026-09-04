@@ -89,11 +89,13 @@ prompt. On smoke sets, flapping renders at the requested rate; head banging does
 not track the request (smoke sets asked for 1.5, 2.5 and 4.0 Hz with no
 proportional change), so the prompt does not control that class's tempo. Every
 clip records `requested_hz`; `python gen_synth.py motion --config ... --out ROOT`
-writes `motion.csv` with motion energy, freeze fraction and the achieved period
-of every clip. The period comes from the autocorrelation of the signed vertical
-centre of frame change; `achieved_hz` is filled only where that peak is at least
-0.4 (`resolved`), and the released distribution is quoted from `motion.csv` of
-the release run, not from the smoke sets.
+writes `motion.csv` with motion energy and freeze fraction for every clip and
+the achieved period where one resolves. The period comes from the autocorrelation
+of the signed vertical centre of frame change; `achieved_hz` is filled only where
+that peak reaches `--min-peak` (default 0.4, `resolved` column), the peak height
+is stored per clip so the cut can be revisited, and on smoke sets roughly a third
+of clips resolve at 0.4 (two thirds at 0.3). Report resolved counts with any
+distribution, and quote it from the release run's own `motion.csv`.
 
 Editing the pools in `stimbench/synth/vocab.py`: topography texts describe motion
 only (speed belongs to the pace clause, amplitude to severity); severity texts are

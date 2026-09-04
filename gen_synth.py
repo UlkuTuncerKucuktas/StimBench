@@ -112,7 +112,8 @@ def cmd_motion(cfg, args, root):
     if not records:
         print(f"no manifest under {root}")
         return 1
-    rows = measure_set(root, sorted(records, key=lambda r: r["file"]), root / "motion.csv")
+    rows = measure_set(root, sorted(records, key=lambda r: r["file"]), root / "motion.csv",
+                       min_peak=args.min_peak)
     print(summarise(rows))
     print(f"\n  motion.csv written to {root} ({len(rows)} clips)")
     return 0
@@ -134,6 +135,8 @@ def main():
     ap.add_argument("--check-tokens", action="store_true",
                     help="plan: count prompt tokens with the generator's tokenizer")
     ap.add_argument("--force", action="store_true", help="generate even if checks fail")
+    ap.add_argument("--min-peak", type=float, default=0.4,
+                    help="motion: autocorrelation peak needed to report an achieved period")
     args = ap.parse_args()
 
     cfg = load_config(args.config)
