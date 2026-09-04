@@ -95,7 +95,8 @@ of the signed vertical centre of frame change; `achieved_hz` is filled only wher
 that peak reaches `--min-peak` (default 0.4, `resolved` column), the peak height
 is stored per clip so the cut can be revisited, and on smoke sets roughly a third
 of clips resolve at 0.4 (two thirds at 0.3). Report resolved counts with any
-distribution, and quote it from the release run's own `motion.csv`.
+distribution, and quote it from the release run's own `motion.csv`. Run every
+`gen_synth.py` command from the repository root, not from the output directory.
 
 Editing the pools in `stimbench/synth/vocab.py`: topography texts describe motion
 only (speed belongs to the pace clause, amplitude to severity); severity texts are
