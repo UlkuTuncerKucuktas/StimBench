@@ -45,8 +45,9 @@ def check(records: Iterable[dict], max_setting_spread: float = 0.05) -> List[Tup
         [r["cls"] == "Normal" and any(w in r["topography"] for w in STOP_WORDS)
          for r in records])
     add("seated or kneeling posture given a standing severity text",
-        [r["posture"] in ("seated", "kneeling") and ("step" in r["severity_text"]
-                                                     or "heels" in r["severity_text"])
+        [r["posture"] in ("seated", "kneeling") and ("heels lift" in r["severity_text"]
+                                                     or "the steps" in r["severity_text"]
+                                                     or "big steps" in r["severity_text"])
          for r in records])
     add("prompt contains a negation in the behaviour clause",
         [any(w in r["topography"] + r["severity_text"] + r["secondary"]

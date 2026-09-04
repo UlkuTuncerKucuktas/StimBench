@@ -5,7 +5,7 @@ from typing import Dict, Iterable, List, Set
 
 FIELDS = [
     "file", "clip_id", "cls", "label", "index", "seed",
-    "severity", "topography_id", "posture", "goal_directed", "trigger", "pace",
+    "severity", "topography_id", "posture", "goal_directed", "trigger", "direction", "pace",
     "requested_hz", "slow_factor",
     "gender", "gender_label", "age", "build", "hair", "skin", "clothing", "detail",
     "environment_id", "setting", "setting_family", "clutter",

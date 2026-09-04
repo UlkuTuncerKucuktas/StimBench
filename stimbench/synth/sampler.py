@@ -80,6 +80,7 @@ class ClipSpec:
     aesthetic: str
     severity_text: str
     trigger: str
+    direction: str
     pace: str
     requested_hz: float
     slow_factor: float
@@ -120,7 +121,7 @@ def pace_clause(cls: str, slow: float, duration: float, min_cycles: int) -> str:
     # counts, so it gets the beat words; every class ends with the same continuity
     tail = "the motion continuing steadily from the first frame to the last"
     if cls == "Normal":
-        return f"carrying out every action at an unhurried steady pace, {tail}"
+        return f"{{normal_pace}}, {tail}"
     if cls == "HeadBanging":
         return f"at a fast steady beat, several knocks per second, {tail}"
     hz = V.TARGET_HZ[cls] * V.COUNT_SCALE.get(cls, 1.0) / slow
@@ -157,12 +158,13 @@ def render_prompt(c: ClipSpec) -> str:
     return (
         f"{c.aesthetic}. {c.age} {c.gender}, {c.build}, with {c.hair} and "
         f"{c.skin}, wearing {c.clothing}{c.detail}. "
-        f"The child is {c.topography}{c.trigger}, {c.severity_text}, {c.pace}{qualifier}. "
+        f"The child is {c.topography.replace('{dir}', c.direction)}{c.trigger}, "
+        f"{c.severity_text}, {c.pace}{qualifier}. "
         f"At the same time the child is {c.secondary}, {c.pose}, the body "
         f"loose and natural. "
         f"The scene is {c.environment}, {c.clutter}{c.extra}. "
         f"{c.shot}, {c.camera}, {c.light}. "
-        f"One continuous unbroken shot."
+        f"One continuous unbroken shot, the room and furniture staying in place."
     )
 
 
@@ -252,6 +254,8 @@ def make_plan(classes=V.CLASSES, n_per_class: int = 130, seed: int = 0,
             sev_text, secondary = _short_hair_fix(sev_text, secondary, hair)
             aesthetic_id = aesthetics[i]
             trigger = rng.choice(V.AF_TRIGGER) if cls == "ArmFlapping" else ""
+            direction = rng.choice(V.DIRECTION) if cls == "Spinning" else ""
+            clip_pace = pace.replace("{normal_pace}", rng.choice(V.NORMAL_PACE)) if cls == "Normal" else pace
 
             spec = ClipSpec(
                 cls=cls, index=i, gender=g, severity=severity,
@@ -266,7 +270,7 @@ def make_plan(classes=V.CLASSES, n_per_class: int = 130, seed: int = 0,
                 people_visible=any(m in extra for m in V.PEOPLE_MARKERS),
                 pose=pose, shot=shot, secondary=secondary,
                 aesthetic_id=aesthetic_id, aesthetic=V.AESTHETIC[aesthetic_id],
-                severity_text=sev_text, trigger=trigger, pace=pace,
+                severity_text=sev_text, trigger=trigger, direction=direction, pace=clip_pace,
                 requested_hz=V.TARGET_HZ.get(cls, 0.0), slow_factor=round(slow, 4),
             )
             spec.prompt = render_prompt(spec)
