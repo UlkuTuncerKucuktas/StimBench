@@ -74,8 +74,10 @@ def check(records: Iterable[dict], max_setting_spread: float = 0.05) -> List[Tup
             problems.append((f"{aspect} clips have more than one frame size", len(sizes)))
     add("generated record missing probe data",
         ["out_frames" in r and r["out_frames"] == "" for r in records])
-    add("prompt over the 512-token encoder limit",
-        [r.get("tokens", 0) > 512 for r in records])
+    # the encoder truncates silently at 512; keep a margin so the tail (shot,
+    # camera, light) can never be cut without the audit noticing
+    add("prompt within 12 tokens of the 512-token encoder limit",
+        [r.get("tokens", 0) > 500 for r in records])
 
     by_cls = {}
     for r in records:

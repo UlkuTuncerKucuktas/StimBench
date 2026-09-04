@@ -26,7 +26,7 @@ if [[ -f "$PIDFILE" ]] && [[ "$(ps -o stat= -p "$(cat "$PIDFILE")" 2>/dev/null)"
   exit 1
 fi
 
-if ! "$PY" "$HERE/gen_synth.py" plan --config "$CONFIG" --out "$OUT" --show 0 "${EXTRA[@]}" "$@" >"$OUT/plan.txt" 2>&1; then
+if ! "$PY" "$HERE/gen_synth.py" plan --config "$CONFIG" --out "$OUT" --show 0 --check-tokens "${EXTRA[@]}" "$@" >"$OUT/plan.txt" 2>&1; then
   echo "plan failed its audit or crashed; not starting. Output:"; cat "$OUT/plan.txt"; exit 1
 fi
 
