@@ -34,27 +34,26 @@ def _t(id, text, posture, needs=(), goal_directed=False):
 
 
 LIMP = ("the hands hanging limp from the wrists like a puppet's hands on slack "
-        "strings, palms toward the floor, fingers soft and slightly parted, each hand "
-        "lagging a beat behind its forearm and flopping loosely at the turn of every "
-        "stroke")
+        "strings, fingers soft and slightly parted, each hand lagging a beat behind "
+        "its forearm and whirling loosely round the wrist at the turn of every stroke")
 KNOCK = ("each knock quick and hard, one after another like a rock fan headbanging to "
          "fast music, the shoulders and chest staying planted, only the head and neck "
          "moving")
 
 TOPOGRAPHIES = {
-    # one form, chosen against the real clips: arms hanging low, forearms swinging
-    # from the elbows, limp hands flicking at the wrists; variants change only
-    # height, bounce, seat or walking
+    # one form, chosen against the real clips: arms hanging low and swinging big
+    # from the elbows, limp hands whirling at the wrists, the feet staying put;
+    # variants change only height, seat or walking
     "ArmFlapping": [
         _t("af_sides",
-           "standing with both arms hanging straight down at the sides, elbows soft, "
-           "the forearms swinging a little forward and back from the elbows while the "
-           "limp hands flick loosely at the wrists, " + LIMP,
+           "standing still on planted feet with both arms hanging down at the sides, "
+           "elbows soft, the forearms swinging forward and back from the elbows while "
+           "the limp hands whirl loosely at the wrists, " + LIMP,
            "standing"),
-        _t("af_sides_bounce",
-           "standing with both arms hanging down at the sides, elbows soft, bouncing "
-           "on the toes, the forearms swinging forward and back from the elbows, mouth "
-           "open in a grin, " + LIMP,
+        _t("af_sides_high",
+           "standing still on planted feet with both arms hanging down at the sides, "
+           "elbows soft, the forearms swinging high forward and back from the elbows, "
+           "mouth open in a grin, " + LIMP,
            "standing"),
         _t("af_hips",
            "standing with the arms hanging at the sides and the elbows slightly bent, "
@@ -272,26 +271,28 @@ TOPOGRAPHY_WEIGHTS = {
 
 SEVERITY = {
     ("ArmFlapping", "standing"): {
-        "subtle": "the forearms travelling only a few centimetres, the hands flicking "
-                  "softly close to the body, the shoulders low and relaxed, easy to miss",
+        "subtle": "the forearms travelling a short distance, the hands twirling "
+                  "softly close to the body, the shoulders low and relaxed, feet still",
         "moderate": "the forearms swinging a clear distance from the elbows, the hands "
-                    "flicking freely at the wrists, the shoulders low and relaxed",
-        "pronounced": "the forearms swinging wide from the elbows up toward chest height "
-                      "and back, the hands flicking hard at the wrists, the shoulders "
-                      "rising a little with each beat, the child bouncing on the toes and squealing",
-        "whole_body": "the forearms swinging their fullest from the elbows, the hands "
-                      "still flicking loose at the wrists, the child hopping with each flap, heels leaving the floor, head bobbing, the whole body bouncing with the rhythm",
+                    "whirling freely at the wrists, the shoulders low and relaxed, feet still",
+        "pronounced": "the forearms swinging wide from the elbows up to chest height and "
+                      "back down, the loose hands spinning round the wrists at each turn, "
+                      "the arms in constant big motion, the feet still",
+        "whole_body": "the whole arms swinging their fullest from the shoulders, up past "
+                      "the chest and back behind the hips, the loose hands spinning round "
+                      "the wrists at every turn, the trunk swaying with it, the feet still",
     },
     ("ArmFlapping", "seated"): {
-        "subtle": "the forearms travelling only a few centimetres, the hands flicking "
-                  "softly close to the body, the shoulders low and relaxed, easy to miss",
+        "subtle": "the forearms travelling a short distance, the hands twirling "
+                  "softly close to the body, the shoulders low and relaxed",
         "moderate": "the forearms swinging a clear distance from the elbows, the hands "
-                    "flicking freely at the wrists, the shoulders low and relaxed",
-        "pronounced": "the forearms swinging wide from the elbows up toward chest height "
-                      "and back, the hands flicking hard at the wrists, the shoulders "
-                      "rising a little with each beat, the child rocking with it and squealing",
-        "whole_body": "the forearms swinging their fullest from the elbows, the hands "
-                      "still flicking loose at the wrists, the child rocking hard on the spot with each flap, head bobbing, the whole body bouncing with the rhythm",
+                    "whirling freely at the wrists, the shoulders low and relaxed",
+        "pronounced": "the forearms swinging wide from the elbows up to chest height and "
+                      "back down, the loose hands spinning round the wrists at each turn, "
+                      "the arms in constant big motion, the seat staying put",
+        "whole_body": "the whole arms swinging their fullest from the shoulders, up past "
+                      "the chest and back beside the seat, the loose hands spinning round "
+                      "the wrists at every turn, the trunk rocking with it, the seat staying put",
     },
     ("HeadBanging", "seated"): {
         "subtle": "the head moving only a short distance, quick small knocks, the "
@@ -390,7 +391,8 @@ AF_TRIGGER = [
 # appended to the shared negative prompt for one class; invisible in the data,
 # steers the render away from the look-alike each class collapses into
 NEGATIVE_BY_CLASS = {
-    "ArmFlapping": ", clapping, waving hello, hands clasped, jumping jacks, praying",
+    "ArmFlapping": ", clapping, waving hello, hands clasped, jumping jacks, praying, "
+                   "jumping, hopping, bouncing, feet leaving the floor",
     "HeadBanging": ", bowing, praying, prostration, kneeling, sujud, rocking the whole "
                    "body, nodding slowly",
     "Spinning": ", orbiting camera, rotating camera, camera spin, turntable, ballerina, "
@@ -413,9 +415,9 @@ SECONDARY = {
         "turning the head to one side and back while the arms keep going",
         "rocking gently forward and back at the same time",
         "swaying a little at the trunk, the weight shifting all the time",
-        "grinning and squealing with excitement as the arms keep going",
-        "bouncing up and down on the toes in time with the arms",
-        "bobbing slightly at the knees in time with the arms",
+        "grinning with excitement as the arms keep going",
+        "leaning a little toward what is exciting them as the arms keep going",
+        "the mouth opening wider as the arms keep going",
         "turning slowly on the spot to face a different way while continuing",
         "looking down and then up again as the movement goes on",
         "breathing visibly, the shoulders rising and falling with it",
