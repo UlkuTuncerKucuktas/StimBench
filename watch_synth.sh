@@ -18,7 +18,13 @@ MAX_RESTARTS=${MAX_RESTARTS:-5}
 STATUS="$OUT/status.txt"
 restarts=0
 
-done_count() { [[ -f "$OUT/manifest.jsonl" ]] && grep -c '"file"' "$OUT/manifest.jsonl" || echo 0; }
+# unique files, as the manifest reader counts them: a resumed run appends a second
+# line for every clip it regenerates
+done_count() {
+  [[ -f "$OUT/manifest.jsonl" ]] || { echo 0; return; }
+  "$PY" -c 'import json,sys;print(len({json.loads(l)["file"] for l in open(sys.argv[1]) if l.strip()}))' \
+    "$OUT/manifest.jsonl" 2>/dev/null || echo 0
+}
 alive() {
   local pid
   pid=$(cat "$OUT/gen.pid" 2>/dev/null) || return 1
@@ -27,7 +33,7 @@ alive() {
 
 while true; do
   n=$(done_count)
-  failed=$(grep -c -E 'FAILED|retime failed' "$OUT/gen.log" 2>/dev/null || echo 0)
+  failed=$(grep -c -E 'FAILED|retime failed' "$OUT/gen.log" 2>/dev/null); failed=${failed:-0}
   last=$(grep -E '^\S+ \S+ INFO +\[' "$OUT/gen.log" 2>/dev/null | tail -1 | sed 's/.*INFO *//')
   if alive; then state=running; else state=stopped; fi
   echo "$(date '+%F %T') $state clips=$n/$EXPECTED failed=$failed restarts=$restarts last: $last" >>"$STATUS"
