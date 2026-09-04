@@ -105,6 +105,14 @@ keyed on them; no Normal activity may look identical to a stimming class at some
 severity. `gen_synth.py plan` checks the result and refuses to generate if a
 check fails.
 
+For a multi-day run start the watchdog beside it; it appends a status line to
+`OUT/status.txt` every ten minutes and relaunches the generator if it dies before
+the manifest is complete:
+
+```bash
+CONFIG=configs/synth/wan22_a14b_480p_fast.yaml setsid nohup bash watch_synth.sh >/dev/null 2>&1 &
+```
+
 Speed options live in the `speed:` block of the config (`compile`,
 `attention_backend`, experimental `lightning_lora`). The released set was
 generated with `configs/synth/wan22_a14b_480p_fast.yaml` (torch.compile on, 241 s
