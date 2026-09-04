@@ -123,4 +123,15 @@ def summarise(rows: List[dict]) -> str:
             hz_txt = "no resolved period"
         lines.append(f"{cls:<12} n={len(rs):<4} resolved {len(hz):<4} motion {np.median(energy):.2f}  "
                      f"{hz_txt}  frozen {sum(r['freeze_fraction'] > 0.5 for r in rs)}")
+    # per variant: which activities carry the periodicity within a class
+    for cls in sorted({r["cls"] for r in rows}):
+        rs = [r for r in rows if r["cls"] == cls]
+        if len(rs) < 20:
+            continue
+        lines.append(f"{cls} by variant (resolved/n, median achieved Hz):")
+        for topo in sorted({r["topography_id"] for r in rs}):
+            ts = [r for r in rs if r["topography_id"] == topo]
+            hz = [r["achieved_hz"] for r in ts if r["resolved"]]
+            med = f"{np.median(hz):.2f}" if hz else "-"
+            lines.append(f"  {topo:<18} {len(hz)}/{len(ts)}  {med}")
     return "\n".join(lines)
