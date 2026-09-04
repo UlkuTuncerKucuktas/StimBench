@@ -26,16 +26,13 @@ def targets_from_config(cfg: dict) -> List[Tuple[str, dict]]:
     return [(t["id"], {"cls": t.get("cls", "ArmFlapping"), "prompt": t["prompt"]}) for t in spec]
 
 
-def read_frames(path: Path):
-    import cv2
+def read_frames(path: Path, expected: int):
+    import imageio.v2 as imageio
     from PIL import Image
-    cap, frames = cv2.VideoCapture(str(path)), []
-    while True:
-        ok, bgr = cap.read()
-        if not ok:
-            break
-        frames.append(Image.fromarray(cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)))
-    cap.release()
+    frames = [Image.fromarray(f[..., :3]) for f in imageio.mimread(str(path), memtest=False)]
+    # imageio-ffmpeg resamples variable-frame-rate input; a wrong count would corrupt the latents
+    if len(frames) != expected:
+        raise ValueError(f"{path.name}: read {len(frames)} frames, expected {expected}")
     return frames
 
 
@@ -99,7 +96,7 @@ def run_v2v(cfg: dict, root: Path, log) -> List[dict]:
     root.mkdir(parents=True, exist_ok=True)
     source = Path(spec["source"])
     source_md5 = hashlib.md5(source.read_bytes()).hexdigest()
-    frames = read_frames(source)
+    frames = read_frames(source, m["frames"])
     width, height = frames[0].size
     targets = targets_from_config(cfg)
     strengths = [float(s) for s in spec.get("strengths", [0.6])]
