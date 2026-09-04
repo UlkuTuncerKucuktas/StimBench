@@ -85,12 +85,15 @@ python gen_synth.py report --config configs/synth/wan22_a14b_480p.yaml
 ```
 
 Rates in `TARGET_HZ` are real-world rates and set the repetition count in the
-prompt. Measured on smoke sets: flapping renders at the requested rate; head
-banging renders near 1.1 Hz regardless of the request (13 clips across requests
-of 1.5, 2.5 and 4.0 Hz), so the prompt does not control that class's tempo.
-Every clip records `requested_hz`; `python gen_synth.py motion --config ... --out ROOT`
-measures motion energy, freeze fraction and achieved period per clip into
-`motion.csv`, released with the set.
+prompt. On smoke sets, flapping renders at the requested rate; head banging does
+not track the request (smoke sets asked for 1.5, 2.5 and 4.0 Hz with no
+proportional change), so the prompt does not control that class's tempo. Every
+clip records `requested_hz`; `python gen_synth.py motion --config ... --out ROOT`
+writes `motion.csv` with motion energy, freeze fraction and the achieved period
+of every clip. The period comes from the autocorrelation of the signed vertical
+centre of frame change; `achieved_hz` is filled only where that peak is at least
+0.4 (`resolved`), and the released distribution is quoted from `motion.csv` of
+the release run, not from the smoke sets.
 
 Editing the pools in `stimbench/synth/vocab.py`: topography texts describe motion
 only (speed belongs to the pace clause, amplitude to severity); severity texts are

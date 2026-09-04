@@ -5,6 +5,7 @@ from typing import Iterable, List, Optional
 import numpy as np
 
 LAG_BAND = (6, 40)         # frames; below 6 is noise, above 40 cannot repeat in 81 frames
+MIN_PEAK = 0.4             # autocorrelation below this is not a period, just noise
 
 
 def read_gray(path: Path, scale: int = 4) -> np.ndarray:
@@ -35,10 +36,13 @@ def _period(signal: np.ndarray):
     ac = np.correlate(x, x, mode="full")[len(x) - 1:]
     ac = ac / ac[0]
     lo, hi = LAG_BAND
-    hi = min(hi, len(ac) - 1)
-    if hi <= lo:
+    hi = min(hi, len(ac) - 2)
+    # an interior local maximum only: a monotonic tail would otherwise be
+    # accepted at the band edge as if it were a period
+    peaks = [k for k in range(lo, hi + 1) if ac[k] >= ac[k - 1] and ac[k] >= ac[k + 1]]
+    if not peaks:
         return None, 0.0
-    lag = lo + int(np.argmax(ac[lo:hi + 1]))
+    lag = max(peaks, key=lambda k: ac[k])
     return lag, float(ac[lag])
 
 
@@ -87,8 +91,9 @@ def measure_set(root: Path, records: Iterable[dict], out_csv: Optional[Path] = N
             "file": r["file"], "cls": r["cls"], "severity": r.get("severity", ""),
             "topography_id": r.get("topography_id", ""), "aspect": r.get("aspect", ""),
             "requested_hz": r.get("requested_hz", ""),
-            "achieved_hz_centroid": achieved_hz(m["period_centroid"], gen_fps, slow),
-            "achieved_hz_energy": achieved_hz(m["period_energy"], gen_fps, slow),
+            "resolved": m["period_centroid"] != "" and m["peak_centroid"] >= MIN_PEAK,
+            "achieved_hz": achieved_hz(m["period_centroid"], gen_fps, slow)
+            if m["period_centroid"] != "" and m["peak_centroid"] >= MIN_PEAK else "",
             **m,
         })
         if i % 20 == 0 or i == len(records):
@@ -105,11 +110,11 @@ def summarise(rows: List[dict]) -> str:
     lines = []
     for cls in sorted({r["cls"] for r in rows}):
         rs = [r for r in rows if r["cls"] == cls]
-        hz = [r["achieved_hz_centroid"] for r in rs if r["achieved_hz_centroid"] != ""]
+        hz = [r["achieved_hz"] for r in rs if r["resolved"]]
         energy = [r["motion_energy"] for r in rs]
         req = rs[0]["requested_hz"]
         hz_txt = (f"achieved Hz median {np.median(hz):.2f} (p10 {np.percentile(hz, 10):.2f}, "
-                  f"p90 {np.percentile(hz, 90):.2f}) vs requested {req}") if hz else "no period"
-        lines.append(f"{cls:<12} n={len(rs):<4} motion {np.median(energy):.2f}  {hz_txt}  "
-                     f"frozen {sum(r['freeze_fraction'] > 0.5 for r in rs)}")
+                  f"p90 {np.percentile(hz, 90):.2f}) vs requested {req}") if hz else "no resolved period"
+        lines.append(f"{cls:<12} n={len(rs):<4} resolved {len(hz):<4} motion {np.median(energy):.2f}  "
+                     f"{hz_txt}  frozen {sum(r['freeze_fraction'] > 0.5 for r in rs)}")
     return "\n".join(lines)
