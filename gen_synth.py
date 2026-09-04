@@ -26,7 +26,7 @@ def build_plan(cfg, args):
     return make_plan(
         classes=args.classes or s.get("classes", list(V.CLASSES)),
         n_per_class=args.n_per_class or s.get("n_per_class", 130),
-        seed=cfg.get("experiment", {}).get("seed", 0),
+        seed=args.seed if args.seed is not None else cfg.get("experiment", {}).get("seed", 0),
         slow_factor=s.get("slow_factor", 2.0),
         min_cycles=s.get("min_cycles", 2),
         duration=m["frames"] / m["fps"],
@@ -171,6 +171,7 @@ def main():
     ap.add_argument("--config", required=True, help="YAML config, see configs/synth/")
     ap.add_argument("--out", default=None, help="override output.root from the config")
     ap.add_argument("--n-per-class", type=int, default=None)
+    ap.add_argument("--seed", type=int, default=None, help="override experiment.seed (smoke sets)")
     ap.add_argument("--classes", nargs="+", choices=list(V.CLASSES), default=None)
     ap.add_argument("--show", type=int, default=2, help="plan: prompts to print")
     ap.add_argument("--check-tokens", action="store_true",
