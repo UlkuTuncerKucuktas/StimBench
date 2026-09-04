@@ -303,10 +303,12 @@ def ab_plan(ab: dict, rng, slow, duration, min_cycles, seed, requested) -> Plan:
     # in a smoke set can be reproduced exactly and varied one clause at a time
     cls = ab["cls"]
     if ab.get("base_manifest"):
-        base = clipspec_from_record(_find_record(ab["base_manifest"], ab["base_file"]))
+        rec = _find_record(ab["base_manifest"], ab["base_file"])
+        base, base_seed = clipspec_from_record(rec), rec.get("seed")
     else:
         base = make_plan([cls], int(ab.get("base_n", 1)), seed, requested, min_cycles,
                          duration).clips[int(ab.get("base_index", 0))]
+        base_seed = clip_seed(seed, cls, base.index)
     clips = []
     for i, m in enumerate(ab["movements"]):
         posture = m.get("posture", base.posture)
@@ -325,6 +327,8 @@ def ab_plan(ab: dict, rng, slow, duration, min_cycles, seed, requested) -> Plan:
         "slow_factor_requested": requested, "slow_factor": round(slow, 4),
         "min_cycles": min_cycles, "duration_s": round(duration, 4),
         "negative_prompt": V.NEGATIVE, "ab": ab,
+        # every arm shares the base clip's noise, so only the wording differs between them
+        "seed_override": base_seed,
     })
 
 

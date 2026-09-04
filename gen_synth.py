@@ -158,6 +158,12 @@ def cmd_i2v(cfg, args, root):
     return 0
 
 
+def cmd_v2v(cfg, args, root):
+    log = setup_logging(root / "gen.log")
+    v2v.run_v2v(cfg, root, log)
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser(
         description="StimBench-Syn generator. plan: render prompts, run the cue audit, write "
@@ -167,7 +173,7 @@ def main():
                     "fraction and achieved period per clip into motion.csv. hands: MediaPipe hand "
                     "and pose landmarks per clip into hands.csv (finger curl, wrist flexion "
                     "amplitude, wrist lag behind the elbow, palm orientation, detection rate).")
-    ap.add_argument("command", choices=["plan", "generate", "report", "motion", "hands", "frames", "i2v"])
+    ap.add_argument("command", choices=["plan", "generate", "report", "motion", "hands", "frames", "i2v", "v2v"])
     ap.add_argument("--config", required=True, help="YAML config, see configs/synth/")
     ap.add_argument("--out", default=None, help="override output.root from the config")
     ap.add_argument("--n-per-class", type=int, default=None)

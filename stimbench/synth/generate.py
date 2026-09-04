@@ -171,7 +171,9 @@ def run(cfg: dict, plan: Plan, root: Path, log: logging.Logger) -> dict:
     root = Path(root)
     writer = ManifestWriter(root)
     write_run_config(root, cfg, plan.settings)
-    seeds = {(c.cls, c.index): clip_seed(plan.settings["seed"], c.cls, c.index) for c in plan.clips}
+    fixed = plan.settings.get("seed_override")
+    seeds = {(c.cls, c.index): fixed if fixed is not None else clip_seed(plan.settings["seed"], c.cls, c.index)
+             for c in plan.clips}
     hashes = {(c.cls, c.index): plan_hash(cfg, c, seeds[(c.cls, c.index)]) for c in plan.clips}
 
     def done(c):

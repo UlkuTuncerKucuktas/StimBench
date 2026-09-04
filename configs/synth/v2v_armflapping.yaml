@@ -1,0 +1,40 @@
+# Motion transfer test: the hand movement of smoke_v11 ArmFlapping_0002 (the clip the user chose)
+# carried into other children and scenes. The source clip's latents are re-noised to each
+# `strength` and denoised under a fresh af_sides prompt; lower strength keeps more of the source.
+experiment:
+  name: v2v_armflapping
+  seed: 0
+model:
+  key: wan2.2-14b-480p
+  repo: Wan-AI/Wan2.2-T2V-A14B-Diffusers
+  size:
+  - 480
+  - 832
+  frames: 81
+  fps: 16
+  steps: 40
+  guidance: 4.0
+  guidance_2: 3.0
+  flow_shift: 3.0
+speed:
+  compile: true
+sampling:
+  classes:
+  - ArmFlapping
+  slow_factor: 2.0
+  min_cycles: 2
+v2v:
+  source: /storage/pvc-trubaai-1tb/siu/smoke_v11/ArmFlapping/wan2.2-14b-480p_ArmFlapping_0002.mp4
+  strengths:
+  - 0.5
+  - 0.65
+  - 0.8
+  targets:
+    from_plan:
+      cls: ArmFlapping
+      topography: af_sides
+      pool: 40
+      seed: 11
+      n: 3
+output:
+  root: /storage/pvc-trubaai-1tb/siu/v2v_af
