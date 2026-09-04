@@ -42,42 +42,39 @@ KNOCK = ("each knock quick and hard, one after another like a rock fan headbangi
          "moving")
 
 TOPOGRAPHIES = {
+    # one form, chosen against the real clips: arms hanging low, forearms swinging
+    # from the elbows, limp hands flicking at the wrists; variants change only
+    # height, bounce, seat or walking
     "ArmFlapping": [
-        _t("af_forearms",
-           "standing with the elbows bent and tucked near the ribs, pumping both "
-           "forearms up and down together from the elbows, " + LIMP,
-           "standing"),
-        _t("af_wings",
-           "both arms held out sideways at shoulder height with the elbows slightly "
-           "bent, beating up and down from the shoulders like a large bird's wings, "
-           + LIMP,
-           "standing"),
         _t("af_sides",
            "standing with both arms hanging straight down at the sides, elbows soft, "
            "the forearms swinging a little forward and back from the elbows while the "
            "limp hands flick loosely at the wrists, " + LIMP,
            "standing"),
-        _t("af_seated",
-           "sitting cross-legged on the floor, elbows bent and close to the body, both "
-           "forearms bouncing up and down together in front of the chest, the legs "
-           "still and relaxed, " + LIMP,
+        _t("af_sides_bounce",
+           "standing with both arms hanging down at the sides, elbows soft, bouncing "
+           "on the toes, the forearms swinging forward and back from the elbows while "
+           "the limp hands flick loosely at the wrists, mouth open in a grin, " + LIMP,
+           "standing"),
+        _t("af_hips",
+           "standing with the arms hanging at the sides and the elbows slightly bent, "
+           "the forearms flicking up and down from the elbows just beside the hips, "
+           "the limp hands flicking loosely at the wrists, " + LIMP,
+           "standing"),
+        _t("af_waist_front",
+           "standing with the elbows soft and the forearms swinging a little forward "
+           "and back in front of the waist, the limp hands flicking loosely at the "
+           "wrists, the upper arms staying close to the body, " + LIMP,
+           "standing"),
+        _t("af_seated_sides",
+           "sitting cross-legged on the floor with both arms hanging loose at the "
+           "sides, elbows soft, the forearms swinging a little forward and back from "
+           "the elbows while the limp hands flick loosely at the wrists, " + LIMP,
            "seated"),
-        _t("af_excited",
-           "standing and bouncing on the toes, both forearms pumping up and down fast "
-           "from the elbows beside the body, mouth open in a wide grin, eyes locked on "
-           "what excites them, " + LIMP,
-           "standing"),
-        _t("af_face",
-           "standing close to what they are watching, both hands raised beside the "
-           "cheeks, palms inward, the hands flapping rapidly at the wrists like a "
-           "bird's wingtips while the forearms stay almost still, fingers loose and "
-           "slightly spread",
-           "standing"),
-        _t("af_fingers",
-           "holding both hands up beside the face, palms inward, the fingers "
-           "fluttering fast and loose like leaves in a breeze while the wrists rock "
-           "gently, the elbows bent and still, the eyes on what they are watching "
-           "through the moving fingers",
+        _t("af_walking",
+           "walking slowly across the room with both arms hanging down at the sides, "
+           "elbows soft, the forearms swinging forward and back from the elbows while "
+           "the limp hands flick loosely at the wrists, " + LIMP,
            "standing"),
     ],
     # neck-driven at every severity: the real clips keep the trunk still, and any
@@ -268,20 +265,24 @@ SEVERITY = {
     ("ArmFlapping", "standing"): {
         "subtle": "the forearms travelling only a few centimetres, the hands flicking "
                   "softly close to the body, the shoulders low and relaxed, easy to miss",
-        "moderate": "the forearms covering a clear arc beside the body, the shoulders "
-                    "rising a little with each stroke, the trunk easy",
-        "pronounced": "the forearms swinging through their full arc from hip to shoulder "
-                      "height, the shoulders lifting with each beat, the child bouncing on the toes and squealing",
-        "whole_body": "the arms swinging their fullest range, the child hopping with each flap, heels leaving the floor, head bobbing, the whole body bouncing with the rhythm",
+        "moderate": "the forearms swinging a clear distance from the elbows, the hands "
+                    "flicking freely at the wrists, the shoulders low and relaxed",
+        "pronounced": "the forearms swinging wide from the elbows up toward chest height "
+                      "and back, the hands flicking hard at the wrists, the shoulders "
+                      "rising a little with each beat, the child bouncing on the toes and squealing",
+        "whole_body": "the forearms swinging their fullest from the elbows, the hands "
+                      "still flicking loose at the wrists, the child hopping with each flap, heels leaving the floor, head bobbing, the whole body bouncing with the rhythm",
     },
     ("ArmFlapping", "seated"): {
         "subtle": "the forearms travelling only a few centimetres, the hands flicking "
                   "softly close to the body, the shoulders low and relaxed, easy to miss",
-        "moderate": "the forearms covering a clear arc beside the body, the shoulders "
-                    "rising a little with each stroke, the trunk easy",
-        "pronounced": "the forearms swinging through their full arc from hip to shoulder "
-                      "height, the shoulders lifting with each beat, the child rocking with it and squealing",
-        "whole_body": "the arms swinging their fullest range, the child rocking hard on the spot with each flap, head bobbing, the whole body bouncing with the rhythm",
+        "moderate": "the forearms swinging a clear distance from the elbows, the hands "
+                    "flicking freely at the wrists, the shoulders low and relaxed",
+        "pronounced": "the forearms swinging wide from the elbows up toward chest height "
+                      "and back, the hands flicking hard at the wrists, the shoulders "
+                      "rising a little with each beat, the child rocking with it and squealing",
+        "whole_body": "the forearms swinging their fullest from the elbows, the hands "
+                      "still flicking loose at the wrists, the child rocking hard on the spot with each flap, head bobbing, the whole body bouncing with the rhythm",
     },
     ("HeadBanging", "seated"): {
         "subtle": "the head moving only a short distance, quick small knocks, the "
@@ -353,27 +354,7 @@ SEVERITY = {
 }
 
 # a topography whose amplitude lives in a different body part than its posture text
-SEVERITY_BY_TOPOGRAPHY = {
-    "af_fingers": {
-        "subtle": "the fingers moving only slightly, the hands almost still beside the "
-                  "face, easy to miss",
-        "moderate": "the fingers fluttering clearly, the wrists rocking a little with "
-                    "them, the rest of the body loose",
-        "pronounced": "the fingers and wrists fluttering fast and wide, the forearms "
-                      "joining in, the child bouncing on the toes and squealing",
-        "whole_body": "the hands fluttering their fullest, the child hopping with it, "
-                      "heels leaving the floor, head bobbing, the whole body bouncing",
-    },
-    "af_face": {
-        "subtle": "the hands flicking only a few centimetres beside the cheeks, easy to miss",
-        "moderate": "the hands flapping a clear distance at the wrists, the shoulders "
-                    "rising a little",
-        "pronounced": "the hands flapping their full range at the wrists, the forearms "
-                      "joining in, the child bouncing on the toes and squealing",
-        "whole_body": "the hands flapping their fullest, the child hopping with it, heels "
-                      "leaving the floor, head bobbing, the whole body bouncing",
-    },
-}
+SEVERITY_BY_TOPOGRAPHY = {}
 
 # Clinical definition of a stereotypy in positive wording: video models drop negations.
 STEREOTYPY_QUALIFIER = {
