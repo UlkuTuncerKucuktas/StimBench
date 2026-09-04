@@ -7,7 +7,9 @@ experiment:
 model:
   key: wan2.2-14b-480p
   repo: Wan-AI/Wan2.2-T2V-A14B-Diffusers
-  size: [480, 832]
+  size:
+  - 480
+  - 832
   frames: 81
   fps: 16
   steps: 40
@@ -17,16 +19,38 @@ model:
 speed:
   compile: true
 sampling:
-  classes: [ArmFlapping]
+  classes:
+  - ArmFlapping
   slow_factor: 2.0
   min_cycles: 2
 ab:
   cls: ArmFlapping
-  severity: moderate
-  trigger: " while watching a cartoon on a television across the room"
+  severity: pronounced
+  trigger: ' while watching a cartoon on a television across the room'
   movements:
-    - id: ab0_current
-      posture: standing
-      text: "standing with the elbows bent and tucked near the ribs, pumping both forearms up and down together from the elbows, the hands hanging limp from the wrists like a puppet's hands on slack strings, palms toward the floor, fingers soft and slightly parted"
+  - id: ab1_caption
+    posture: standing
+    text: a child hand flapping with excitement, hands floppy and open, elbows bent and pumping the forearms up and down in front of the chest, the loose hands flopping at the end of every stroke
+  - id: ab2_simile
+    posture: standing
+    text: elbows bent at the sides, forearms flapping up and down like a bird's wings, the open hands dangling from loose wrists and flopping like wet noodles, palms down, fingers soft and slightly spread
+  - id: ab3_mechanical
+    posture: standing
+    text: the elbows do the work, hinging rapidly so the forearms pump up and down in front of the chest; the wrists stay slack, so each open relaxed hand lags behind its forearm and flops at the top and bottom of each stroke
+  - id: ab4_wet_hands
+    posture: standing
+    text: forearms held out in front of the chest, elbows bent, flicking both hands up and down as if shaking water off wet hands after washing, wrists loose, fingers dangling and relaxed, hands flopping freely on every flick
+  - id: ab5_jazz
+    posture: standing
+    text: hands raised beside the shoulders doing loose jazz hands, fingers spread and soft, while the elbows pump the forearms up and down so the open hands bounce and flop on relaxed wrists, palms turned toward the floor
+  - id: ab6_arms_low
+    posture: standing
+    text: arms hanging low at the sides of the hips, elbows slightly bent, the forearms bouncing up and down from the waist while the limp open hands dangle from loose wrists and flop like a rag doll's hands, palms toward the floor
+  - id: ab7_beside_face
+    posture: standing
+    text: elbows bent and hands raised beside the face, flapping the forearms up and down like bird wings, hands open and floppy, fingers relaxed and slightly parted, each loose wrist letting the hand flick and flop with every beat
+  - id: ab8_stim
+    posture: standing
+    text: 'a hand flapping stim: elbows bent, forearms in front of the chest flapping up and down, hands open and limp on loosely flexed wrists, fingers relaxed, the floppy hands flicking loosely on every flap, the child stimming with excitement'
 output:
   root: /storage/pvc-trubaai-1tb/siu/ab_af
