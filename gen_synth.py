@@ -10,6 +10,7 @@ from stimbench.synth import vocab as V  # noqa: E402
 from stimbench.synth.generate import resolve, run, setup_logging, finish, previous_run_matches  # noqa: E402
 from stimbench.synth.manifest import read_records, write_plan_csv  # noqa: E402
 from stimbench.synth.motion import measure_set, summarise  # noqa: E402
+from stimbench.synth import hands  # noqa: E402
 from stimbench.synth.sampler import make_plan  # noqa: E402
 
 
@@ -120,14 +121,28 @@ def cmd_motion(cfg, args, root):
     return 0
 
 
+def cmd_hands(cfg, args, root):
+    records = read_records(root / "manifest.jsonl")
+    if not records:
+        print(f"no manifest under {root}")
+        return 1
+    files = sorted(r["file"] for r in records if args.classes is None or r["cls"] in args.classes)
+    fps = float(records[0].get("out_fps") or cfg["model"]["fps"] * cfg["sampling"].get("slow_factor", 1.0))
+    rows = hands.measure_set(root, files, root / "hands.csv", fps=fps)
+    print(f"\n  hands.csv written to {root} ({len(rows)} clips)")
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser(
         description="StimBench-Syn generator. plan: render prompts, run the cue audit, write "
                     "plan.csv and composition.md (no GPU). generate: resumable generation; "
                     "rerun the same command to continue. report: rebuild metadata.csv and "
                     "composition.md from an existing manifest. motion: measure motion energy, freeze "
-                    "fraction and achieved period per clip into motion.csv.")
-    ap.add_argument("command", choices=["plan", "generate", "report", "motion"])
+                    "fraction and achieved period per clip into motion.csv. hands: MediaPipe hand "
+                    "and pose landmarks per clip into hands.csv (finger curl, wrist flexion "
+                    "amplitude, wrist lag behind the elbow, palm orientation, detection rate).")
+    ap.add_argument("command", choices=["plan", "generate", "report", "motion", "hands"])
     ap.add_argument("--config", required=True, help="YAML config, see configs/synth/")
     ap.add_argument("--out", default=None, help="override output.root from the config")
     ap.add_argument("--n-per-class", type=int, default=None)
@@ -143,7 +158,7 @@ def main():
     cfg = load_config(args.config)
     root = Path(args.out or cfg["output"].get("root", "synth_out"))
     return {"plan": cmd_plan, "generate": cmd_generate, "report": cmd_report,
-            "motion": cmd_motion}[args.command](cfg, args, root)
+            "motion": cmd_motion, "hands": cmd_hands}[args.command](cfg, args, root)
 
 
 if __name__ == "__main__":

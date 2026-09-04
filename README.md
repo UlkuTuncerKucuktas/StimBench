@@ -102,6 +102,17 @@ of clips resolve at 0.4 (two thirds at 0.3). Report resolved counts with any
 distribution, and quote it from the release run's own `motion.csv`. Run every
 `gen_synth.py` command from the repository root, not from the output directory.
 
+`python gen_synth.py hands --config ... --out ROOT [--classes ArmFlapping]` writes
+`hands.csv` from MediaPipe hand and pose landmarks: `finger_curl_mean` (about 180
+straight, about 90 a fist; real flapping clips sit around 80-150), `wrist_flex_amp`
+(real flapping 60-145 degrees; a stiff hand gives a small value),
+`wrist_lag_frames` (positive when the hand trails the elbow), `palm_down_fraction`
+and `hand_detect_rate`. Needs `mediapipe==0.10.14` and `opencv-python-headless`,
+best in a separate venv, and the two `.task` model files in
+`$STIMBENCH_MP_MODELS` (hand_landmarker.task, pose_landmarker_lite.task from
+storage.googleapis.com/mediapipe-models). Detection on real face-blurred YouTube
+clips is sparse (5-45% of frames), so compare distributions, not single clips.
+
 Editing the pools in `stimbench/synth/vocab.py`: topography texts describe motion
 only (speed belongs to the pace clause, amplitude to severity); severity texts are
 keyed by posture; Normal activities never stop or pause; incidental motion never
