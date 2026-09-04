@@ -27,7 +27,8 @@ def _t(id, text, posture, needs=(), goal_directed=False):
     return Topography(id, text, posture, frozenset(needs), goal_directed)
 
 
-LIMP = 'the hands hanging limp from the wrists, flopping passively as if there were no strength in them, trailing behind the forearms on every beat'
+LIMP = ("the hands hanging limp from the wrists, flopping passively with all the "
+        "strength gone out of them, trailing behind the forearms on every beat")
 STILL = 'the shoulders and trunk staying still, the neck doing all the work'
 
 TOPOGRAPHIES = {
