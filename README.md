@@ -84,8 +84,12 @@ bash run_synth.sh                       # detached, logs to <output.root>/gen.lo
 python gen_synth.py report --config configs/synth/wan22_a14b_480p.yaml
 ```
 
-Rates in `TARGET_HZ` are real-world rates and set the repetition count in the
-prompt. On smoke sets, flapping renders at the requested rate; head banging does
+Rates in `TARGET_HZ` are real-world rates. The count written into a flapping or
+spinning prompt is `TARGET_HZ * COUNT_SCALE / slow_factor * duration`, where
+`COUNT_SCALE` is a measured calibration (0.7 for flapping, which renders about
+1.5x the count it is given); the prompt count is a knob, `requested_hz` in the
+manifest is the specification. Re-measure the scale after any change to the
+flapping wording. On smoke sets, flapping renders at the requested rate; head banging does
 not track the request (smoke sets asked for 1.5, 2.5 and 4.0 Hz with no
 proportional change), so the prompt does not control that class's tempo. Every
 clip records `requested_hz`; `python gen_synth.py motion --config ... --out ROOT`
