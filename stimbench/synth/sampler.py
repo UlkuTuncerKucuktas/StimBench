@@ -291,8 +291,11 @@ def ab_plan(ab: dict, rng, slow, duration, min_cycles, seed, requested) -> Plan:
     # base scene: clip `base_index` of an n=`base_n` plan, so a clip the user liked
     # in a smoke set can be reproduced exactly and varied one clause at a time
     cls = ab["cls"]
-    base = make_plan([cls], int(ab.get("base_n", 1)), seed, requested, min_cycles,
-                     duration).clips[int(ab.get("base_index", 0))]
+    if ab.get("base_manifest"):
+        base = clipspec_from_record(_find_record(ab["base_manifest"], ab["base_file"]))
+    else:
+        base = make_plan([cls], int(ab.get("base_n", 1)), seed, requested, min_cycles,
+                         duration).clips[int(ab.get("base_index", 0))]
     clips = []
     for i, m in enumerate(ab["movements"]):
         posture = m.get("posture", base.posture)
@@ -312,3 +315,22 @@ def ab_plan(ab: dict, rng, slow, duration, min_cycles, seed, requested) -> Plan:
         "min_cycles": min_cycles, "duration_s": round(duration, 4),
         "negative_prompt": V.NEGATIVE, "ab": ab,
     })
+
+
+def _find_record(manifest_path, file):
+    import json
+    with open(manifest_path, encoding="utf-8") as fh:
+        for line in fh:
+            if line.strip():
+                rec = json.loads(line)
+                if rec.get("file") == file:
+                    return rec
+    raise KeyError(f"{file} not in {manifest_path}")
+
+
+def clipspec_from_record(rec: dict) -> ClipSpec:
+    # a generated clip's own slots, so a scene a viewer liked can be reused exactly
+    import dataclasses
+    names = [f.name for f in dataclasses.fields(ClipSpec)]
+    defaults = {"trigger": "", "direction": "", "requested_hz": "", "prompt": ""}
+    return ClipSpec(**{n: rec.get(n, defaults.get(n)) for n in names})

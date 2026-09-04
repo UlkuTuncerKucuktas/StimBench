@@ -24,8 +24,6 @@ sampling:
   min_cycles: 2
 ab:
   cls: ArmFlapping
-  base_n: 8
-  base_index: 2
   trigger: ''
   movements:
   - id: c1_reference_subtle_5
@@ -68,5 +66,7 @@ ab:
     severity: moderate
     severity_text: the forearms swinging a clear distance from the elbows, the hands flicking freely at the wrists, the shoulders low and relaxed
     pace: at a steady easy beat, about seven flaps across the clip, the motion continuing steadily from the first frame to the last
+  base_manifest: /storage/pvc-trubaai-1tb/siu/smoke_v11/manifest.jsonl
+  base_file: ArmFlapping/wan2.2-14b-480p_ArmFlapping_0002.mp4
 output:
   root: /storage/pvc-trubaai-1tb/siu/ab_af2
