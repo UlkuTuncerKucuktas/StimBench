@@ -11,6 +11,7 @@ from stimbench.synth.generate import resolve, run, setup_logging, finish, previo
 from stimbench.synth.manifest import read_records, write_plan_csv  # noqa: E402
 from stimbench.synth.motion import measure_set, summarise  # noqa: E402
 from stimbench.synth import hands  # noqa: E402
+from stimbench.synth import i2v  # noqa: E402
 from stimbench.synth.sampler import make_plan  # noqa: E402
 
 
@@ -133,6 +134,29 @@ def cmd_hands(cfg, args, root):
     return 0
 
 
+def cmd_frames(cfg, args, root):
+    # first-frame candidates for image-to-video: one PNG per clip at --frame-index
+    records = read_records(root / "manifest.jsonl")
+    files = sorted(r["file"] for r in records if args.classes is None or r["cls"] in args.classes)
+    out = root / "frames"; out.mkdir(exist_ok=True)
+    for f in files:
+        png = out / (Path(f).stem + f"_f{args.frame_index:02d}.png")
+        i2v.extract_frame(root / f, args.frame_index, png)
+        print(png)
+    return 0
+
+
+def cmd_i2v(cfg, args, root):
+    log = setup_logging(root / "gen.log")
+    images = sorted(Path(p) for p in cfg["i2v"]["images"]) if cfg["i2v"].get("images") \
+        else sorted(Path(cfg["i2v"]["frames_dir"]).glob("*.png"))
+    if not images:
+        log.error("no first-frame images found")
+        return 1
+    i2v.run_i2v(cfg, images, root, log)
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser(
         description="StimBench-Syn generator. plan: render prompts, run the cue audit, write "
@@ -142,7 +166,7 @@ def main():
                     "fraction and achieved period per clip into motion.csv. hands: MediaPipe hand "
                     "and pose landmarks per clip into hands.csv (finger curl, wrist flexion "
                     "amplitude, wrist lag behind the elbow, palm orientation, detection rate).")
-    ap.add_argument("command", choices=["plan", "generate", "report", "motion", "hands"])
+    ap.add_argument("command", choices=["plan", "generate", "report", "motion", "hands", "frames", "i2v"])
     ap.add_argument("--config", required=True, help="YAML config, see configs/synth/")
     ap.add_argument("--out", default=None, help="override output.root from the config")
     ap.add_argument("--n-per-class", type=int, default=None)
@@ -151,6 +175,7 @@ def main():
     ap.add_argument("--check-tokens", action="store_true",
                     help="plan: count prompt tokens with the generator's tokenizer")
     ap.add_argument("--force", action="store_true", help="generate even if checks fail")
+    ap.add_argument("--frame-index", type=int, default=0, help="frames: which frame to export")
     ap.add_argument("--min-peak", type=float, default=0.4,
                     help="motion: autocorrelation peak needed to report an achieved period")
     args = ap.parse_args()
@@ -158,7 +183,8 @@ def main():
     cfg = load_config(args.config)
     root = Path(args.out or cfg["output"].get("root", "synth_out"))
     return {"plan": cmd_plan, "generate": cmd_generate, "report": cmd_report,
-            "motion": cmd_motion, "hands": cmd_hands}[args.command](cfg, args, root)
+            "motion": cmd_motion, "hands": cmd_hands, "frames": cmd_frames,
+            "i2v": cmd_i2v}[args.command](cfg, args, root)
 
 
 if __name__ == "__main__":

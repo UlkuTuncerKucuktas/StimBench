@@ -1,0 +1,24 @@
+# Image-to-video route: animate first frames in which the hands already hang right.
+#   python gen_synth.py frames --config configs/synth/ab_armflapping.yaml --out /storage/pvc-trubaai-1tb/siu/ab_af --frame-index 0
+#   python gen_synth.py i2v --config configs/synth/i2v_armflapping.yaml --out /storage/pvc-trubaai-1tb/siu/i2v_af
+experiment:
+  name: i2v_armflapping
+model:
+  key: wan2.2-i2v-a14b-480p
+  repo: Wan-AI/Wan2.2-I2V-A14B-Diffusers
+  size: [480, 832]
+  frames: 81
+  fps: 16
+  steps: 40
+  guidance: 3.5
+  guidance_2: 3.5
+  flow_shift: 3.0
+speed:
+  compile: false
+sampling:
+  slow_factor: 2.0
+i2v:
+  frames_dir: /storage/pvc-trubaai-1tb/siu/ab_af/frames
+  seed: 0
+  prompt: "The child flaps both hands up and down from the wrists, wrists relaxed, fingers loosely curled, the hands flopping with the forearms as the elbows pump, bouncing slightly with excitement while watching the television. Static camera."
+  negative: "clapping, waving, clenched fists, rigid wrists, stiff fingers, static image, frozen frame, blurry, low quality, nude, nudity, underwear"
