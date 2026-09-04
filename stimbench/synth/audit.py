@@ -39,9 +39,8 @@ def check(records: Iterable[dict], max_setting_spread: float = 0.05) -> List[Tup
         if n:
             problems.append((name, n))
 
-    add("prompt without a pace instruction",
-        ["at a slow even rate" not in r["prompt"]
-         and "natural rate" not in r["prompt"] for r in records])
+    add("prompt without a tempo clause",
+        ["from the first frame to the last" not in r["prompt"] for r in records])
     add("Normal behaviour that stops or pauses, against the continuity clause",
         [r["cls"] == "Normal" and any(w in r["topography"] for w in STOP_WORDS)
          for r in records])

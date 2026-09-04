@@ -30,77 +30,91 @@ def _t(id, text, posture, needs=(), goal_directed=False):
     return Topography(id, text, posture, frozenset(needs), goal_directed)
 
 
-LIMP = ("the hands open and limp, fingers relaxed and slightly spread, the wrists "
-        "so loose that the hands twirl and flop passively, trailing the forearms on "
-        "every beat")
-STILL = 'the shoulders and trunk staying still, the neck doing all the work'
+LIMP = ("the hands hanging limp from the wrists like a puppet's hands on slack "
+        "strings, palms toward the floor, fingers soft and slightly parted, each hand "
+        "lagging a beat behind its forearm and flopping loosely at the turn of every "
+        "stroke")
+KNOCK = ("each knock quick and hard, one after another like a rock fan headbanging to "
+         "fast music, the shoulders and chest staying planted, only the head and neck "
+         "moving")
 
 TOPOGRAPHIES = {
     "ArmFlapping": [
         _t("af_forearms",
-           "standing with both elbows bent and held a little away from the ribs, "
-           "flapping both forearms and hands up and down together in unison, the "
-           "upper arms swinging a little with them, " + LIMP,
+           "standing with the elbows bent and tucked near the ribs, pumping both "
+           "forearms up and down together from the elbows, " + LIMP,
            "standing"),
-        _t("af_fingers",
-           "holding both hands up near the chest and fluttering and flicking the "
-           "fingers, the wrists bending and straightening repeatedly, the same "
-           "finger pattern cycling over and over",
-           "standing"),
-        _t("af_shoulders",
-           "holding both arms out to the sides and waving them repeatedly up and "
-           "down from the shoulders, both arms mirroring each other exactly, "
+        _t("af_wings",
+           "both arms held out sideways at shoulder height with the elbows slightly "
+           "bent, beating up and down from the shoulders like a large bird's wings, "
            + LIMP,
+           "standing"),
+        _t("af_sides",
+           "standing with both arms hanging straight down at the sides, elbows soft, "
+           "the forearms swinging a little forward and back from the elbows while the "
+           "limp hands flick loosely at the wrists, " + LIMP,
            "standing"),
         _t("af_seated",
-           "seated on the ground with the back straight, both arms lifted to "
-           "chest height with the elbows flexed, shaking the forearms up and "
-           "down in a repeated bilateral pattern, the legs settled and loose, "
-           + LIMP,
+           "sitting cross-legged on the floor, elbows bent and close to the body, both "
+           "forearms bouncing up and down together in front of the chest, the legs "
+           "still and relaxed, " + LIMP,
            "seated"),
-        _t("af_ragdoll",
-           "standing with the arms hanging by the sides and the elbows soft, "
-           "flapping both forearms from the elbows at waist height, "
-           + LIMP + ", floppy like a rag doll's",
-           "standing"),
         _t("af_excited",
-           "standing and bouncing a little on the spot, both arms flapping up "
-           "and down from the elbows, flapping harder as the excitement rises, "
-           + LIMP,
+           "standing and bouncing on the toes, both forearms pumping up and down fast "
+           "from the elbows beside the body, mouth open in a wide grin, eyes locked on "
+           "what excites them, " + LIMP,
+           "standing"),
+        _t("af_face",
+           "standing close to what they are watching, both hands raised beside the "
+           "cheeks, palms inward, the hands flapping rapidly at the wrists like a "
+           "bird's wingtips while the forearms stay almost still, fingers loose and "
+           "slightly spread",
+           "standing"),
+        _t("af_fingers",
+           "holding both hands up beside the face, palms inward, the fingers "
+           "fluttering fast and loose like leaves in a breeze while the wrists rock "
+           "gently, the elbows bent and still, the eyes on what they are watching "
+           "through the moving fingers",
            "standing"),
     ],
-    # Rocking without head contact is a different stereotypy, so every variant
-    # names a contact surface; the wall variant keeps the class out of no room.
+    # neck-driven at every severity: the real clips keep the trunk still, and any
+    # kneeling forward variant renders as a prostration
     "HeadBanging": [
         _t("hb_sofa",
-           "sitting on the floor with the back against the soft padded front of "
-           "a sofa, knees drawn up, hands loose in the lap, throwing the back of "
-           "the head hard against the upholstery and snapping it forward again, "
-           "quick sharp thumps in rapid succession, " + STILL,
+           "sitting on the floor, back leaning against the padded front of a sofa, "
+           "knees drawn up, hands resting in the lap, rocking the head fast back and "
+           "forth from the neck so the back of the head slams into the cushion and "
+           "rebounds forward each time, " + KNOCK,
            "seated", {"sofa"}),
         _t("hb_chair",
-           "sitting on a chair with the back against the backrest, throwing the "
-           "back of the head hard against the top of the backrest and snapping "
-           "it forward again, a sharp knock each time, the hands gripping the "
-           "seat, quick sharp knocks in rapid succession, " + STILL,
+           "sitting upright on a chair with a padded backrest, back against it, hands "
+           "gripping the seat edge, the head rocking hard back and forth from the "
+           "neck so the back of the head slams into the backrest and rebounds, the "
+           "hair bouncing, " + KNOCK,
            "seated", {"chair"}),
         _t("hb_bed",
-           "sitting up in bed with the back against the headboard and a thick "
-           "pillow, throwing the back of the head hard into the pillow and "
-           "snapping it forward again, a sharp thump each time, the arms loose "
-           "at the sides, quick sharp thumps in rapid succession, " + STILL,
+           "sitting up in bed, back against a thick pillow on the headboard, arms "
+           "loose at the sides, the head whipping back into the pillow and rebounding "
+           "forward, fast and hard, the pillow denting on every hit, " + KNOCK,
            "seated", {"bed"}),
         _t("hb_thrash",
-           "sitting on the floor with nothing behind, throwing the head forward "
-           "and down sharply and snapping it back up, like headbanging to loud "
-           "music, the hair whipping with it, the same quick violent nod over "
-           "and over in rapid succession, " + STILL,
+           "sitting cross-legged on the floor, hands resting on the knees, nodding "
+           "the head fast and hard from the neck, chin driving down toward the chest "
+           "and jerking back up, hair flying, like headbanging to loud fast music, "
+           + KNOCK,
            "seated"),
         _t("hb_wall",
-           "kneeling upright facing a bare stretch of wall, knocking the forehead "
-           "hard against the wall and snapping it back, a sharp knock each time, "
-           "the hands resting on the thighs, quick sharp knocks in rapid succession, " + STILL,
-           "kneeling", {"wall"}),
+           "sitting on the floor with the back and shoulders flat against a bare "
+           "wall, legs stretched out in front, hands resting on the thighs, rocking "
+           "the head fast from the neck so the back of the head knocks hard against "
+           "the wall and rebounds each time, " + KNOCK,
+           "seated", {"wall"}),
+        _t("hb_wall_standing",
+           "standing close to a bare wall, both palms flat on the wall at shoulder "
+           "height, feet planted, nodding the head fast and hard from the neck so the "
+           "forehead knocks against the wall and rebounds each time, the hips still, "
+           + KNOCK,
+           "standing", {"wall"}),
     ],
     "Spinning": [
         _t("sp_shuffle",
@@ -203,52 +217,44 @@ SEVERITY_WEIGHTS = {"subtle": 0.25, "moderate": 0.25, "pronounced": 0.25,
 
 SEVERITY = {
     ("ArmFlapping", "standing"): {
-        "subtle": "the excursion small, the hands travelling only a few "
-                  "centimetres and staying close in to the body, the shoulders "
-                  "low, the rest of the body loose and easy, simple to overlook",
-        "moderate": "the excursion moderate, the forearms covering a clear arc "
-                    "beside the body, the shoulders and trunk carried along only "
-                    "slightly",
-        "pronounced": "the excursion wide, the forearms covering their full arc, "
-                      "the shoulders raised and tight, the face tense",
-        "whole_body": "the whole body involved, the arms covering their fullest "
-                      "range while the trunk tenses and the heels lift clear of "
-                      "the ground, the whole body shaking with it",
+        "subtle": "the forearms travelling only a few centimetres, the hands flicking "
+                  "softly close to the body, the shoulders low and relaxed, easy to miss",
+        "moderate": "the forearms covering a clear arc beside the body, the shoulders "
+                    "rising a little with each stroke, the trunk easy",
+        "pronounced": "the forearms swinging through their full arc from hip to shoulder "
+                      "height, the shoulders lifting with each beat, the child bouncing on the toes and squealing",
+        "whole_body": "the arms swinging their fullest range, the child hopping with each flap, heels leaving the floor, head bobbing, the whole body bouncing with the rhythm",
     },
     ("ArmFlapping", "seated"): {
-        "subtle": "the excursion small, the hands travelling only a few "
-                  "centimetres and staying close in to the body, the shoulders "
-                  "low, the rest of the body loose and easy, simple to overlook",
-        "moderate": "the excursion moderate, the forearms covering a clear arc "
-                    "in front of the body, the shoulders and trunk carried along "
-                    "only slightly",
-        "pronounced": "the excursion wide, the forearms covering their full arc, "
-                      "the shoulders raised and tight, the face tense",
-        "whole_body": "the whole body involved, the arms covering their fullest "
-                      "range while the trunk rocks and the legs bounce against "
-                      "the ground with it, the whole body shaking",
+        "subtle": "the forearms travelling only a few centimetres, the hands flicking "
+                  "softly close to the body, the shoulders low and relaxed, easy to miss",
+        "moderate": "the forearms covering a clear arc beside the body, the shoulders "
+                    "rising a little with each stroke, the trunk easy",
+        "pronounced": "the forearms swinging through their full arc from hip to shoulder "
+                      "height, the shoulders lifting with each beat, the child rocking with it and squealing",
+        "whole_body": "the arms swinging their fullest range, the child rocking hard on the spot with each flap, head bobbing, the whole body bouncing with the rhythm",
     },
     ("HeadBanging", "seated"): {
-        "subtle": "the head moving only a short distance each knock, quick small "
-                  "jerks, the shoulders still",
-        "moderate": "the head moving a clear and visible distance each knock, "
-                    "the shoulders still",
-        "pronounced": "the head thrown through a wide arc each knock, the "
-                      "excursion unmistakable, the shoulders barely moving",
-        "whole_body": "the head thrown as far as it will go each knock, the "
-                      "shoulders jolting with each impact while the trunk stays "
-                      "put, hair flying with it",
+        "subtle": "the head moving only a short distance, quick small knocks, the "
+                  "shoulders still",
+        "moderate": "the head swinging a clear distance each knock, hair bouncing, the "
+                    "shoulders still",
+        "pronounced": "the head swinging its full range each knock, hair flying, the "
+                      "shoulders jolting on impact while the chest stays planted",
+        "whole_body": "the head hurled its full range each knock, hair flying, the "
+                      "shoulders jolting on each impact, the child grunting with the "
+                      "effort, the chest and hips staying put",
     },
-    ("HeadBanging", "kneeling"): {
-        "subtle": "the head moving only a short distance each knock, quick small "
-                  "jerks, the shoulders still",
-        "moderate": "the head moving a clear and visible distance each knock, "
-                    "the shoulders still",
-        "pronounced": "the head thrown through a wide arc each knock, the "
-                      "excursion unmistakable, the shoulders barely moving",
-        "whole_body": "the head thrown as far as it will go each knock, the "
-                      "shoulders jolting with each impact while the trunk stays "
-                      "put, hair flying with it",
+    ("HeadBanging", "standing"): {
+        "subtle": "the head moving only a short distance, quick small knocks, the "
+                  "shoulders still",
+        "moderate": "the head swinging a clear distance each knock, hair bouncing, the "
+                    "shoulders still",
+        "pronounced": "the head swinging its full range each knock, hair flying, the "
+                      "shoulders jolting on impact while the chest stays planted",
+        "whole_body": "the head hurled its full range each knock, hair flying, the "
+                      "shoulders jolting on each impact, the child grunting with the "
+                      "effort, the chest and hips staying put",
     },
     ("Spinning", "rotating"): {
         "subtle": "the turn tight and small, the feet moving only a little, the "
@@ -290,25 +296,33 @@ SEVERITY[("Normal", "kneeling")] = SEVERITY[("Normal", "seated")]
 # a topography whose amplitude lives in a different body part than its posture text
 SEVERITY_BY_TOPOGRAPHY = {
     "af_fingers": {
-        "subtle": "the fingers moving only slightly, the hands staying almost "
-                  "still at the chest, simple to overlook",
-        "moderate": "the fingers flicking clearly, the wrists bending a little "
-                    "with them, the rest of the body loose",
-        "pronounced": "the fingers and wrists flicking hard, the forearms joining "
-                      "in, the shoulders raised and tight, the face tense",
-        "whole_body": "the whole body involved, the hands flicking hard while "
-                      "the trunk tenses and the heels lift clear of the ground, "
-                      "the whole body shaking with it",
+        "subtle": "the fingers moving only slightly, the hands almost still beside the "
+                  "face, easy to miss",
+        "moderate": "the fingers fluttering clearly, the wrists rocking a little with "
+                    "them, the rest of the body loose",
+        "pronounced": "the fingers and wrists fluttering fast and wide, the forearms "
+                      "joining in, the child bouncing on the toes and squealing",
+        "whole_body": "the hands fluttering their fullest, the child hopping with it, "
+                      "heels leaving the floor, head bobbing, the whole body bouncing",
+    },
+    "af_face": {
+        "subtle": "the hands flicking only a few centimetres beside the cheeks, easy to miss",
+        "moderate": "the hands flapping a clear distance at the wrists, the shoulders "
+                    "rising a little",
+        "pronounced": "the hands flapping their full range at the wrists, the forearms "
+                      "joining in, the child bouncing on the toes and squealing",
+        "whole_body": "the hands flapping their fullest, the child hopping with it, heels "
+                      "leaving the floor, head bobbing, the whole body bouncing",
     },
 }
 
 # Clinical definition of a stereotypy in positive wording: video models drop negations.
 STEREOTYPY_QUALIFIER = {
-    "ArmFlapping": "caught up in excitement, the eyes fixed on what is exciting "
-                   "them, the arms flapping on their own, the same pattern "
-                   "repeating again and again",
-    "HeadBanging": "the gaze drifting and unfocused, the movement carried on for "
-                   "its own sake, the same pattern repeating again and again",
+    "ArmFlapping": "caught up in excitement, mouth open in a grin, eyes locked on "
+                   "what is exciting them, the same flapping pattern repeating again "
+                   "and again",
+    "HeadBanging": "face slack, eyes half closed and unfocused, mouth slightly open, "
+                   "the same beat repeating again and again",
     "Spinning": "the gaze drifting and unfocused, the movement carried on for its "
                 "own sake, the same pattern repeating again and again",
 }
@@ -322,9 +336,17 @@ AF_TRIGGER = [
     " while watching a toy train run round its track on the floor",
     " as a favourite song starts playing from somewhere out of shot",
     " while looking out of the window at something going on outside",
-    " while watching bubbles drift past",
-    " as someone comes in through the door",
+    " as bubbles drift past in front of them",
+    " as a parent walks into the room holding a favourite toy",
 ]
+
+# appended to the shared negative prompt for one class; invisible in the data,
+# steers the render away from the look-alike each class collapses into
+NEGATIVE_BY_CLASS = {
+    "ArmFlapping": ", clapping, waving hello, hands clasped, jumping jacks, praying",
+    "HeadBanging": ", bowing, praying, prostration, kneeling, sujud, rocking the whole "
+                   "body, nodding slowly",
+}
 
 
 # Rendered after "the child is"; nothing here may stop, pause or change tempo.
@@ -390,8 +412,10 @@ SECONDARY_POSTURE_BLOCK = {
 _HANDS_PLANTED = {"shifting the hands in the lap and gripping at the fabric",
                   "bringing one hand up to touch the face briefly"}
 SECONDARY_TOPOGRAPHY_BLOCK = {
-    "hb_wall": {"shifting the hands in the lap and gripping at the fabric",
-                "resettling the body against the surface between cycles"},
+    "hb_wall_standing": {"shifting the hands in the lap and gripping at the fabric",
+                         "shifting the legs, one knee dropping out to the side",
+                         "resettling the body against the surface between cycles"},
+    "hb_chair": {"shifting the legs, one knee dropping out to the side"},
 }
 # a head that is knocking cannot also be held tilted or turned away
 POSE_CLASS_BLOCK = {
@@ -870,7 +894,7 @@ NEGATIVE = (
     "cartoon, anime, illustration, 3d render, cgi, video game, watermark, "
     "text, subtitles, logo, split screen, static image, frozen frame, "
     "clenched fists, fists, stiff hands, rigid wrists, "
-    "stiff, rigid, mannequin, shop dummy, doll, statue, robotic, wooden, "
+    "stiff, rigid, mannequin, shop dummy, statue, robotic, wooden, "
     "only one part of the body moving, distorted limbs, extra limbs, "
     "extra arms, deformed hands, fused fingers, melting body, warping face, "
     "blurry mess"

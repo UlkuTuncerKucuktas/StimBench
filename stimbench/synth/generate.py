@@ -210,7 +210,8 @@ def run(cfg: dict, plan: Plan, root: Path, log: logging.Logger) -> dict:
             kwargs = {}
             if m.get("guidance_2") is not None and getattr(pipe, "transformer_2", None) is not None:
                 kwargs["guidance_scale_2"] = m["guidance_2"]
-            frames = pipe(prompt=spec.prompt, negative_prompt=V.NEGATIVE,
+            negative = V.NEGATIVE + V.NEGATIVE_BY_CLASS.get(spec.cls, "")
+            frames = pipe(prompt=spec.prompt, negative_prompt=negative,
                           height=h, width=w, num_frames=m["frames"],
                           num_inference_steps=m["steps"], guidance_scale=m["guidance"],
                           generator=gen, **kwargs).frames[0]

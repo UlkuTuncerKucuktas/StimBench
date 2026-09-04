@@ -116,20 +116,17 @@ class Plan:
 
 
 def pace_clause(cls: str, slow: float, duration: float, min_cycles: int) -> str:
-    # Only a count is stated, never a rate as well, so the two cannot disagree.
-    # The same pace words go to every class, so pace cannot become a class cue.
-    # "rate" rather than "slowly": the knocks and flaps themselves stay quick, only
-    # the repetition rate is halved and restored by the retime
-    pace = "at a slow even rate" if slow > 1.05 else "at a natural rate"
+    # only a count is stated for flapping, which tracks it; head banging ignores
+    # counts, so it gets the beat words; every class ends with the same continuity
+    tail = "the motion continuing steadily from the first frame to the last"
     if cls == "Normal":
-        return (f"carrying out every action {pace}, moving continuously "
-                f"throughout and never freezing in place")
+        return f"carrying out every action at an unhurried steady pace, {tail}"
+    if cls == "HeadBanging":
+        return f"at a fast steady beat, several knocks per second, {tail}"
     hz = V.TARGET_HZ[cls] / slow
     reps = min(12, max(min_cycles, int(hz * duration)))
-    unit = "full turn" if cls == "Spinning" else "repetition"
-    return (f"repeating {pace}, completing about {V.WORD[reps]} "
-            f"{unit}s across the clip, the motion continuing without stopping "
-            f"partway through")
+    unit = "full turn" if cls == "Spinning" else "flap"
+    return f"at a steady easy beat, about {V.WORD[reps]} {unit}s across the clip, {tail}"
 
 
 def _years(age_text: str) -> int:
