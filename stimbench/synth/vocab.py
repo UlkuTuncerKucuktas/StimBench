@@ -53,28 +53,28 @@ TOPOGRAPHIES = {
            "standing"),
         _t("af_sides_bounce",
            "standing with both arms hanging down at the sides, elbows soft, bouncing "
-           "on the toes, the forearms swinging forward and back from the elbows while "
-           "the limp hands flick loosely at the wrists, mouth open in a grin, " + LIMP,
+           "on the toes, the forearms swinging forward and back from the elbows, mouth "
+           "open in a grin, " + LIMP,
            "standing"),
         _t("af_hips",
            "standing with the arms hanging at the sides and the elbows slightly bent, "
            "the forearms flicking up and down from the elbows just beside the hips, "
-           "the limp hands flicking loosely at the wrists, " + LIMP,
+           + LIMP,
            "standing"),
         _t("af_waist_front",
            "standing with the elbows soft and the forearms swinging a little forward "
-           "and back in front of the waist, the limp hands flicking loosely at the "
-           "wrists, the upper arms staying close to the body, " + LIMP,
+           "and back in front of the waist, the upper arms staying close to the "
+           "body, " + LIMP,
            "standing"),
         _t("af_seated_sides",
            "sitting cross-legged on the floor with both arms hanging loose at the "
            "sides, elbows soft, the forearms swinging a little forward and back from "
-           "the elbows while the limp hands flick loosely at the wrists, " + LIMP,
+           "the elbows, " + LIMP,
            "seated"),
         _t("af_walking",
            "walking slowly across the room with both arms hanging down at the sides, "
-           "elbows soft, the forearms swinging forward and back from the elbows while "
-           "the limp hands flick loosely at the wrists, " + LIMP,
+           "elbows soft, the forearms swinging forward and back from the elbows, "
+           + LIMP,
            "standing"),
     ],
     # neck-driven at every severity: the real clips keep the trunk still, and any
@@ -358,9 +358,7 @@ SEVERITY_BY_TOPOGRAPHY = {}
 
 # Clinical definition of a stereotypy in positive wording: video models drop negations.
 STEREOTYPY_QUALIFIER = {
-    "ArmFlapping": "caught up in excitement, mouth open in a grin, eyes locked on "
-                   "what is exciting them, the same flapping pattern repeating again "
-                   "and again",
+    "ArmFlapping": "caught up in excitement, eyes locked on what is exciting them",
     "HeadBanging": "face slack, eyes half closed and unfocused, mouth slightly open, "
                    "the same beat repeating again and again",
     "Spinning": "the eyes turned to one side and unfocused, the face slack and calm, "
@@ -372,12 +370,12 @@ STEREOTYPY_QUALIFIER = {
 AF_TRIGGER = [
     "",
     "",
-    " while watching a cartoon on a television across the room",
-    " while watching a toy train run round its track on the floor",
-    " as a favourite song starts playing from somewhere out of shot",
-    " while looking out of the window at something going on outside",
-    " as bubbles drift past in front of them",
-    " as a parent walks into the room holding a favourite toy",
+    " while watching a cartoon on the television",
+    " while watching a toy train on its track",
+    " as a favourite song starts playing",
+    " while looking out of the window",
+    " as bubbles drift past",
+    " as a parent walks in with a favourite toy",
 ]
 
 # appended to the shared negative prompt for one class; invisible in the data,
