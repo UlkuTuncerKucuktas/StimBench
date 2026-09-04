@@ -3,7 +3,11 @@
 # OUT/status.txt and, if the generator has died with clips still missing, relaunch it
 # (run_synth.sh resumes). Stops when the manifest holds EXPECTED clips or after MAX_RESTARTS.
 #   setsid nohup bash watch_synth.sh >/dev/null 2>&1 &
-# Env: CONFIG, OUT (as for run_synth.sh), EXPECTED (default 520), INTERVAL (600), MAX_RESTARTS (5)
+# Env: CONFIG, OUT (as for run_synth.sh), EXPECTED (default 520), INTERVAL (600), MAX_RESTARTS (5),
+#      FIRST_DELAY (60): seconds before the first check, so a run that is still starting is not doubled.
+# Testing: any state with fewer clips than EXPECTED and no live generator IS a launch; set
+# MAX_RESTARTS=0 when exercising the counting, and remember killing this script does not stop a
+# generator it has already started (kill $(cat OUT/gen.pid) does).
 
 set -uo pipefail
 
@@ -15,8 +19,10 @@ OUT=${OUT:-$($PY -c "import yaml,sys;print(yaml.safe_load(open(sys.argv[1]))['ou
 EXPECTED=${EXPECTED:-520}
 INTERVAL=${INTERVAL:-600}
 MAX_RESTARTS=${MAX_RESTARTS:-5}
+FIRST_DELAY=${FIRST_DELAY:-60}
 STATUS="$OUT/status.txt"
 restarts=0
+sleep "$FIRST_DELAY"
 
 # unique files, as the manifest reader counts them: a resumed run appends a second
 # line for every clip it regenerates
