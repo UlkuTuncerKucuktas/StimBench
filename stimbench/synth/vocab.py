@@ -260,6 +260,15 @@ TOPOGRAPHIES = {
 SEVERITY_LEVELS = ("subtle", "moderate", "pronounced", "whole_body")
 SEVERITY_WEIGHTS = {"subtle": 0.25, "moderate": 0.25, "pronounced": 0.25,
                     "whole_body": 0.25}
+# flapping under-renders at low amplitude (a subtle clip reads as Normal), so the
+# class is weighted to the overt tiers by decision of the owner after viewing
+SEVERITY_WEIGHTS_BY_CLASS = {
+    "ArmFlapping": {"subtle": 0.05, "moderate": 0.05, "pronounced": 0.45, "whole_body": 0.45},
+}
+# share of a class given to each variant; unlisted variants split the remainder
+TOPOGRAPHY_WEIGHTS = {
+    "ArmFlapping": {"af_sides": 0.9},
+}
 
 SEVERITY = {
     ("ArmFlapping", "standing"): {

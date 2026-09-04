@@ -172,6 +172,16 @@ def _compatible(cls: str, env: V.Environment) -> List[V.Topography]:
     return [t for t in V.TOPOGRAPHIES[cls] if t.needs <= env.tags]
 
 
+def topography_quota(cls: str, n: int) -> dict:
+    tops = V.TOPOGRAPHIES[cls]
+    fixed = V.TOPOGRAPHY_WEIGHTS.get(cls, {})
+    rest = [t.id for t in tops if t.id not in fixed]
+    remainder = max(0.0, 1.0 - sum(fixed.values()))
+    quota = {tid: n * w for tid, w in fixed.items()}
+    quota.update({tid: n * remainder / max(len(rest), 1) for tid in rest})
+    return quota
+
+
 def make_plan(classes=V.CLASSES, n_per_class: int = 130, seed: int = 0,
               slow_factor: float = 2.0, min_cycles: int = 2,
               duration: float = 81 / 16, ab: Optional[dict] = None) -> Plan:
@@ -192,8 +202,9 @@ def make_plan(classes=V.CLASSES, n_per_class: int = 130, seed: int = 0,
             sev_iter = {g: iter(deck[i % 2::2]) for i, g in enumerate(V.GENDER)}
         else:
             sev_iter = {}
+            weights = V.SEVERITY_WEIGHTS_BY_CLASS.get(cls, V.SEVERITY_WEIGHTS)
             for g in V.GENDER:
-                counts = largest_remainder(V.SEVERITY_WEIGHTS, genders.count(g))
+                counts = largest_remainder(weights, genders.count(g))
                 deck = [lvl for lvl in V.SEVERITY_LEVELS for _ in range(counts[lvl])]
                 rng.shuffle(deck)
                 sev_iter[g] = iter(deck)
@@ -204,7 +215,7 @@ def make_plan(classes=V.CLASSES, n_per_class: int = 130, seed: int = 0,
         aesthetics = dealt(range(len(V.AESTHETIC)), n, rng)
         builds = dealt(V.BUILD, n, rng)
         skins = dealt(V.SKIN, n, rng)
-        topo_quota = {t.id: n / len(V.TOPOGRAPHIES[cls]) for t in V.TOPOGRAPHIES[cls]}
+        topo_quota = topography_quota(cls, n)
         pace = pace_clause(cls, slow, duration, min_cycles)
 
         for i in range(n):
