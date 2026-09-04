@@ -52,5 +52,11 @@ ab:
   - id: ab8_stim
     posture: standing
     text: 'a hand flapping stim: elbows bent, forearms in front of the chest flapping up and down, hands open and limp on loosely flexed wrists, fingers relaxed, the floppy hands flicking loosely on every flap, the child stimming with excitement'
+  - id: ab9_caption_plain
+    posture: standing
+    text: standing and flapping both hands rapidly up and down from the wrists, wrists relaxed, fingers loosely curled, the forearms moving up and down from bent elbows and the relaxed hands flopping with them
+  - id: ab10_zh
+    posture: standing
+    text: 站着，双肘弯曲，双手快速上下甩动，手腕完全放松，手掌向下，手指自然弯曲，松软的双手随着前臂上下拍打而甩动，兴奋地看着电视
 output:
   root: /storage/pvc-trubaai-1tb/siu/ab_af
