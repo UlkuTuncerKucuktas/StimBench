@@ -116,6 +116,16 @@ best in a separate venv, and the two `.task` model files in
 storage.googleapis.com/mediapipe-models). Detection on real face-blurred YouTube
 clips is sparse (5-45% of frames), so compare distributions, not single clips.
 
+`python gen_synth.py v2v --config configs/synth/v2v_armflapping.yaml --out ROOT`
+carries the movement of one generated clip into other children and scenes: the
+source clip's VAE latents are re-noised to each `strength` and denoised with the
+two experts under fresh prompts (`targets.from_plan` picks them from a plan by
+topography and severity). Lower strength keeps more of the source motion, higher
+strength follows the prompt more. Sources must themselves be synthetic clips;
+the released set never conditions on real footage. Each clip's manifest record
+holds the source path and md5, strength, the number of steps actually run, and
+the target's full plan record.
+
 Deliberate asymmetry, stated because it is a measurable one: ArmFlapping is
 weighted to its base variant (`TOPOGRAPHY_WEIGHTS`, 90% `af_sides`) and to the
 overt severities (`SEVERITY_WEIGHTS_BY_CLASS`, 8/6/58/58 against 34/32/32/32 for
