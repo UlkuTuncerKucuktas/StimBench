@@ -91,6 +91,8 @@ def check(records: Iterable[dict], max_setting_spread: float = 0.05) -> List[Tup
         if abs(cnt.get("boy", 0) - cnt.get("girl", 0)) > 1:
             problems.append((f"gender imbalance in {c}", abs(cnt["boy"] - cnt["girl"])))
     for c, rs in by_cls.items():
+        if c in V.TOPOGRAPHY_WEIGHTS:      # a deliberate skew, set in the vocabulary
+            continue
         share = Counter(r["topography_id"] for r in rs).most_common(1)[0]
         if share[1] > 0.5 * len(rs):
             problems.append((f"one topography holds over half of {c}", share[1]))
