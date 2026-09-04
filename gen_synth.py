@@ -148,8 +148,9 @@ def cmd_frames(cfg, args, root):
 
 def cmd_i2v(cfg, args, root):
     log = setup_logging(root / "gen.log")
+    frames_dir = args.frames_dir or cfg["i2v"].get("frames_dir")
     images = sorted(Path(p) for p in cfg["i2v"]["images"]) if cfg["i2v"].get("images") \
-        else sorted(Path(cfg["i2v"]["frames_dir"]).glob("*.png"))
+        else sorted(Path(frames_dir).glob("*.png"))
     if not images:
         log.error("no first-frame images found")
         return 1
@@ -176,6 +177,7 @@ def main():
                     help="plan: count prompt tokens with the generator's tokenizer")
     ap.add_argument("--force", action="store_true", help="generate even if checks fail")
     ap.add_argument("--frame-index", type=int, default=0, help="frames: which frame to export")
+    ap.add_argument("--frames-dir", default=None, help="i2v: directory of first-frame PNGs")
     ap.add_argument("--min-peak", type=float, default=0.4,
                     help="motion: autocorrelation peak needed to report an achieved period")
     args = ap.parse_args()
