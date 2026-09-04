@@ -126,6 +126,17 @@ the released set never conditions on real footage. Each clip's manifest record
 holds the source path and md5, strength, the number of steps actually run, and
 the target's full plan record.
 
+`python gen_synth.py flow --config configs/synth/vace_armflapping.yaml --out DIR
+[--source CLIP] [--device cuda]` renders `flow.mp4` and `flow_mirror.mp4`, the RAFT
+optical flow of a chosen clip drawn with the standard colour wheel (needs
+torchvision; CPU takes a few minutes per clip). `python gen_synth.py vace --config
+... --out ROOT` then drives Wan2.1-VACE with those control videos: the flow
+carries the movement alone, the prompt (again from the plan) supplies the child,
+clothes, room and light, and each arm sets the control strength and whether the
+mirrored flow is used. Because the flow is spatial, the output keeps the source
+clip's framing; diversity of child and scene comes from the prompt, small
+differences in the movement from control strength below 1 and mirroring.
+
 Deliberate asymmetry, stated because it is a measurable one: ArmFlapping is
 weighted to its base variant (`TOPOGRAPHY_WEIGHTS`, 90% `af_sides`) and to the
 overt severities (`SEVERITY_WEIGHTS_BY_CLASS`, 8/6/58/58 against 34/32/32/32 for
