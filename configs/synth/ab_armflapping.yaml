@@ -1,0 +1,32 @@
+# A/B smoke: one child, room, camera and severity; only the movement sentence changes.
+# Fill `ab.movements` with the phrasings under test, then
+#   OUT=/storage/pvc-trubaai-1tb/siu/ab_af CONFIG=configs/synth/ab_armflapping.yaml bash run_synth.sh
+experiment:
+  name: ab_armflapping
+  seed: 0
+model:
+  key: wan2.2-14b-480p
+  repo: Wan-AI/Wan2.2-T2V-A14B-Diffusers
+  size: [480, 832]
+  frames: 81
+  fps: 16
+  steps: 40
+  guidance: 4.0
+  guidance_2: 3.0
+  flow_shift: 3.0
+speed:
+  compile: true
+sampling:
+  classes: [ArmFlapping]
+  slow_factor: 2.0
+  min_cycles: 2
+ab:
+  cls: ArmFlapping
+  severity: moderate
+  trigger: " while watching a cartoon on a television across the room"
+  movements:
+    - id: ab0_current
+      posture: standing
+      text: "standing with the elbows bent and tucked near the ribs, pumping both forearms up and down together from the elbows, the hands hanging limp from the wrists like a puppet's hands on slack strings, palms toward the floor, fingers soft and slightly parted"
+output:
+  root: /storage/pvc-trubaai-1tb/siu/ab_af

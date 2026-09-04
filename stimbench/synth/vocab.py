@@ -11,6 +11,9 @@ LABELS = {c: c.lower() for c in CLASSES}
 # the requested rate; head banging renders near 1.1 Hz whatever is requested
 # (13 clips, requests 1.5 to 4.0 Hz). Achieved period is measured after generation.
 TARGET_HZ = {"ArmFlapping": 3.0, "HeadBanging": 2.5, "Spinning": 1.0}
+# measured on smoke sets: flapping renders about 1.5x the count it is asked for, so
+# the count in the prompt is scaled down; requested_hz stays the real target
+COUNT_SCALE = {"ArmFlapping": 0.7}
 
 WORD = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six",
         7: "seven", 8: "eight", 9: "nine", 10: "ten", 11: "eleven",

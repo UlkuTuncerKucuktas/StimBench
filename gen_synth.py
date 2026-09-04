@@ -28,6 +28,7 @@ def build_plan(cfg, args):
         slow_factor=s.get("slow_factor", 2.0),
         min_cycles=s.get("min_cycles", 2),
         duration=m["frames"] / m["fps"],
+        ab=cfg.get("ab"),
     )
 
 

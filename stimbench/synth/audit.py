@@ -83,6 +83,8 @@ def check(records: Iterable[dict], max_setting_spread: float = 0.05) -> List[Tup
         by_cls.setdefault(r["cls"], []).append(r)
     if min(len(rs) for rs in by_cls.values()) < MIN_CLIPS_FOR_BALANCE:
         return problems
+    if len(by_cls) == 1:
+        return problems
     genders = {c: Counter(r["gender"] for r in rs) for c, rs in by_cls.items()}
     for c, cnt in genders.items():
         if abs(cnt.get("boy", 0) - cnt.get("girl", 0)) > 1:
@@ -102,8 +104,10 @@ def check(records: Iterable[dict], max_setting_spread: float = 0.05) -> List[Tup
 def _needs_unmet(r: dict) -> bool:
     topo = next((t for t in V.TOPOGRAPHIES[r["cls"]] if t.id == r["topography_id"]), None)
     env = next((e for e in V.ENVIRONMENTS if e.id == r["environment_id"]), None)
-    if topo is None or env is None:
+    if env is None:
         return True
+    if topo is None:        # an A/B movement outside the vocabulary carries no needs
+        return False
     return not topo.needs <= env.tags
 
 

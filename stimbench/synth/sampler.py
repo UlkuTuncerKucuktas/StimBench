@@ -1,7 +1,7 @@
 import hashlib
 import math
 import random
-from dataclasses import dataclass, asdict, field
+from dataclasses import dataclass, asdict, field, replace
 from typing import Dict, List, Optional
 
 from . import vocab as V
@@ -123,7 +123,7 @@ def pace_clause(cls: str, slow: float, duration: float, min_cycles: int) -> str:
         return f"carrying out every action at an unhurried steady pace, {tail}"
     if cls == "HeadBanging":
         return f"at a fast steady beat, several knocks per second, {tail}"
-    hz = V.TARGET_HZ[cls] / slow
+    hz = V.TARGET_HZ[cls] * V.COUNT_SCALE.get(cls, 1.0) / slow
     reps = min(12, max(min_cycles, int(hz * duration)))
     unit = "full turn" if cls == "Spinning" else "flap"
     return f"at a steady easy beat, about {V.WORD[reps]} {unit}s across the clip, {tail}"
@@ -172,10 +172,12 @@ def _compatible(cls: str, env: V.Environment) -> List[V.Topography]:
 
 def make_plan(classes=V.CLASSES, n_per_class: int = 130, seed: int = 0,
               slow_factor: float = 2.0, min_cycles: int = 2,
-              duration: float = 81 / 16) -> Plan:
+              duration: float = 81 / 16, ab: Optional[dict] = None) -> Plan:
     rng = random.Random(seed)
     slow = uniform_slow_factor(classes, slow_factor, duration, min_cycles)
     clips: List[ClipSpec] = []
+    if ab:
+        return ab_plan(ab, rng, slow, duration, min_cycles, seed, slow_factor)
 
     for cls in classes:
         n = n_per_class
@@ -276,4 +278,28 @@ def make_plan(classes=V.CLASSES, n_per_class: int = 130, seed: int = 0,
         "slow_factor_requested": slow_factor, "slow_factor": round(slow, 4),
         "min_cycles": min_cycles, "duration_s": round(duration, 4),
         "negative_prompt": V.NEGATIVE,
+    })
+
+
+def ab_plan(ab: dict, rng, slow, duration, min_cycles, seed, requested) -> Plan:
+    # one child, room, camera and severity drawn once; only the movement sentence
+    # differs between clips, so a viewer compares wording and nothing else
+    cls = ab["cls"]
+    base = make_plan([cls], 1, seed, requested, min_cycles, duration).clips[0]
+    severity = ab.get("severity", base.severity)
+    clips = []
+    for i, m in enumerate(ab["movements"]):
+        c = replace(base, index=i, topography_id=m["id"], topography=m["text"],
+                    posture=m.get("posture", base.posture), severity=severity,
+                    severity_text=V.SEVERITY_BY_TOPOGRAPHY.get(m["id"], V.SEVERITY[(cls, m.get("posture", base.posture))])[severity],
+                    trigger=ab.get("trigger", base.trigger),
+                    pose=rng.choice([p for p in V.POSE[m.get("posture", base.posture)]
+                                     if p not in V.POSE_CLASS_BLOCK.get(cls, ())]))
+        c.prompt = render_prompt(c)
+        clips.append(c)
+    return Plan(clips, settings={
+        "classes": [cls], "n_per_class": len(clips), "seed": seed,
+        "slow_factor_requested": requested, "slow_factor": round(slow, 4),
+        "min_cycles": min_cycles, "duration_s": round(duration, 4),
+        "negative_prompt": V.NEGATIVE, "ab": ab,
     })
