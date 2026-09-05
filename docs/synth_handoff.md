@@ -96,8 +96,18 @@ break the working generator.
 - Chosen clip vs same-wording clips (MediaPipe): wrist flexion 111 vs 48-92
   deg, elbow swing 150 vs 57-94 deg, fingers open (curl 164). Real flapping
   clips: finger curl 79-150, wrist flexion 31-145.
-- Whole-frame motion energy does not separate flapping from bouncing; the
-  periodicity metric is weak for this class (peaks 0.1-0.4 below the 0.4 cut).
+- Whole-frame motion energy does not separate flapping from bouncing, and the
+  periodicity metric in `motion.csv` cannot see hands: it scored the expert's
+  chosen clip among the lowest of its set (peak 0.20). Do not tune flapping
+  against the resolved rate; use the MediaPipe wrist and elbow amplitudes,
+  which run off the pod.
+- Seed variance dominates wording: identical wording at two seeds gave 1/8 and
+  3/8 resolved periods. Across every flapping attempt (v11 1/8, v12 1/8, v13
+  3/8, v14 0/8, v15 1/8, ab_af 1/10, ab_af2 0/8: 59 clips, 7 resolved) no
+  wording change moved the number in either direction. Single-clip comparisons
+  cannot rank wordings; a fresh sweep must hold the seed fixed across arms
+  (`seed_override` in the A/B plan does this now, `ab_af` and the first
+  `ab_af2` run did not).
 
 ## Open question for the next attempt
 
