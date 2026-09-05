@@ -36,9 +36,9 @@ def _t(id, text, posture, needs=(), goal_directed=False):
 LIMP = ("the wrists loose, at each reversal the relaxed hands trailing the forearms "
         "and flopping back and forth with a small sideways roll, the fingers softly "
         "curved and slightly separated")
-KNOCK = ("each knock quick and hard, one after another like a rock fan headbanging to "
-         "fast music, the shoulders and chest staying planted, only the head and neck "
-         "moving")
+KNOCK = ("each knock quick, one after another like a rock fan headbanging to fast "
+         "music, the head travelling the same short path every time, the chest staying "
+         "planted, the movement coming from the neck")
 
 TOPOGRAPHIES = {
     # one form, chosen in a paired screening against the real clips: upper arms
@@ -87,33 +87,32 @@ TOPOGRAPHIES = {
            "rebounds forward each time, " + KNOCK,
            "seated", {"sofa"}),
         _t("hb_chair",
-           "sitting upright on a chair with a padded backrest, back against it, hands "
-           "gripping the seat edge, the head rocking hard back and forth from the "
-           "neck so the back of the head slams into the backrest and rebounds, the "
-           "hair bouncing, " + KNOCK,
+           "sitting upright on a chair with a tall padded backrest that reaches above "
+           "the head, back against it, hands gripping the seat edge, the head rocking "
+           "back and forth from the neck so the back of the head hits the backrest and "
+           "rebounds, " + KNOCK,
            "seated", {"chair"}),
         _t("hb_bed",
            "sitting up in bed, back against a thick pillow on the headboard, arms "
            "loose at the sides, the head whipping back into the pillow and rebounding "
-           "forward, fast and hard, the pillow denting on every hit, " + KNOCK,
+           "forward, the pillow denting on every hit, " + KNOCK,
            "seated", {"bed"}),
         _t("hb_thrash",
            "sitting cross-legged on the floor, hands resting on the knees, nodding "
-           "the head fast and hard from the neck, chin driving down toward the chest "
-           "and jerking back up, hair flying, like headbanging to loud fast music, "
-           + KNOCK,
+           "the head fast from the neck, chin driving down toward the chest and "
+           "jerking back up, like headbanging to loud fast music, " + KNOCK,
            "seated"),
         _t("hb_wall",
            "sitting on the floor with the back and shoulders flat against a bare "
            "wall, legs stretched out in front, hands resting on the thighs, rocking "
-           "the head fast from the neck so the back of the head knocks hard against "
-           "the wall and rebounds each time, " + KNOCK,
+           "the head fast from the neck so the back of the head knocks against the "
+           "wall and rebounds each time, " + KNOCK,
            "seated", {"wall"}),
         _t("hb_wall_standing",
            "standing close to a bare wall, both palms flat on the wall at shoulder "
-           "height, feet planted, nodding the head fast and hard from the neck so the "
-           "forehead knocks against the wall and rebounds each time, the hips still, "
-           + KNOCK,
+           "height, feet planted, nodding the head fast from the neck so the forehead "
+           "knocks against the wall and rebounds each time, the hips still, both palms "
+           "staying on the wall, " + KNOCK,
            "standing", {"wall"}),
     ],
     # "{dir}" is filled per clip with "to the left" or "to the right"; the view-change
@@ -133,16 +132,16 @@ TOPOGRAPHIES = {
            "rotating"),
         _t("sp_one_arm",
            "turning the whole body round on the spot {dir} with one hand raised above "
-           "the head and the other arm out at shoulder height, both arms held still "
-           "against the trunk, the feet stepping in a tight circle, hips and shoulders "
-           "turning as one",
+           "the head and the other arm out at shoulder height, both arms keeping the "
+           "same position relative to the shoulders all the way round, the feet "
+           "stepping in a tight circle, hips and shoulders turning as one",
            "rotating"),
         _t("sp_look_up",
            "turning the whole body round on the spot {dir} with the head tipped back "
            "and the eyes on the ceiling light, the arms out to the sides at hip height, "
            "the feet taking small steps in a tight circle, the back and then the face "
            "coming round to the camera",
-           "rotating"),
+           "rotating", {"indoor"}),
     ],
     # Broad activity, caption register, the same rooms, postures and furniture
     # contact as the stimming classes; nothing rhythmic, looping or swaying, which
@@ -155,9 +154,9 @@ TOPOGRAPHIES = {
            "set it on top, sitting back and reaching for the next",
            "seated"),
         _t("nm_crayon",
-           "kneeling upright at a low table drawing on a sheet of paper with a crayon, "
-           "the eyes on the paper, one hand flat on the page, swapping the crayon for "
-           "another colour from a box and drawing again",
+           "kneeling at a low table drawing with a crayon on a sheet of paper, one hand "
+           "steadying the page while the other makes several short strokes, the eyes "
+           "following the crayon tip, glancing over the marks and drawing on nearby",
            "kneeling", {"table"}),
         _t("nm_puzzle",
            "kneeling at a low table fitting large puzzle pieces into a wooden board, "
@@ -167,8 +166,7 @@ TOPOGRAPHIES = {
         _t("nm_sofa_tablet",
            "sitting on the floor with the back against the front of a sofa, a tablet "
            "held in both hands on the knees, swiping across the screen with one "
-           "finger, tilting the tablet to look at it, tapping once, then lifting the "
-           "head to glance across the room",
+           "finger and watching it, tapping once and swiping again",
            "seated", {"sofa"}),
         _t("nm_tv",
            "sitting on the floor watching a cartoon on a television across the room, "
@@ -177,13 +175,13 @@ TOPOGRAPHIES = {
            "seated"),
         _t("nm_bed_toy",
            "sitting up in bed against a thick pillow holding a soft toy in both hands, "
-           "turning it to look at its face, tucking it under the blanket, then pulling "
-           "it out and setting it on the pillow beside them",
+           "turning it to look at its face, tucking it under the blanket and patting "
+           "the blanket flat over it",
            "seated", {"bed"}),
         _t("nm_bed_brush",
            "sitting on the edge of the bed brushing the hair with a hairbrush, drawing "
-           "the brush down from the crown, glancing into a small hand mirror held in "
-           "the other hand, then brushing the other side",
+           "the brush down from the crown with one hand, the other hand holding a "
+           "small hand mirror, glancing into the mirror and brushing again",
            "seated", {"bed"}),
         _t("nm_eat",
            "sitting on a chair at a table eating from a bowl with a spoon, lifting the "
@@ -197,13 +195,11 @@ TOPOGRAPHIES = {
            "seated"),
         _t("nm_carry_box",
            "walking across the room carrying a soft toy in both arms to a toy box by "
-           "the wall, bending to put it in, then walking back to pick up a second toy "
-           "from the floor",
+           "the wall, bending to put it in and pushing it down inside",
            "standing"),
         _t("nm_ball_basket",
            "walking a few steps, bending at the knees to pick up a ball from the floor, "
-           "straightening up and dropping it into a basket, then walking to a second "
-           "ball and picking that one up",
+           "straightening up and dropping it into a basket, watching it land",
            "standing"),
         _t("nm_car",
            "kneeling on the floor pushing a toy car along the edge of the rug with one "
@@ -212,9 +208,8 @@ TOPOGRAPHIES = {
            "kneeling"),
         _t("nm_wall_stickers",
            "standing close to the wall sticking paper stickers onto a large poster "
-           "taped to the wall, peeling a sticker from a sheet held in one hand, "
-           "pressing it flat with the palm, stepping back to look at the poster, then "
-           "choosing a spot for the next one",
+           "taped to the wall, peeling a sticker from a sheet held in one hand and "
+           "pressing it flat with the palm of the other, then peeling the next one",
            "standing", {"wall"}),
         _t("nm_dance",
            "dancing to music from a speaker on the shelf, stepping to one side and "
@@ -222,15 +217,28 @@ TOPOGRAPHIES = {
            "the hands staying below shoulder height",
            "standing"),
         _t("nm_bubbles",
-           "standing on the lawn blowing soap bubbles from a wand, dipping the wand "
-           "into a bottle held in the other hand, lifting it to the mouth and blowing, "
+           "standing outside blowing soap bubbles from a wand, dipping the wand into "
+           "a bottle held in the other hand, lifting it to the mouth and blowing, "
            "then reaching up to pop a bubble",
-           "standing", {"outdoor"}),
+           "standing", {"outdoor", "ground"}),
         _t("nm_scooter",
-           "standing on a kick scooter on a garden path, pushing off with one foot, "
-           "gliding a short way, putting the foot down to stop, then turning the "
-           "scooter round by hand and pushing off again",
-           "standing", {"outdoor"}),
+           "standing on a kick scooter, pushing off with one foot, gliding a short "
+           "way, putting the foot down and pushing off again",
+           "standing", {"outdoor", "ground"}),
+        _t("nm_walk_window",
+           "walking a few unhurried steps across the room to the window with the "
+           "hands at the sides, leaning on the sill to look out, the head turning to "
+           "follow something outside",
+           "standing"),
+        _t("nm_watch_train",
+           "standing watching a toy train go round its track on the floor, the hands "
+           "at the sides, the head and eyes following the train round, shifting weight "
+           "a little from foot to foot",
+           "standing"),
+        _t("nm_fix_clothes",
+           "standing and pulling the hem of the top straight with both hands, tugging "
+           "one sleeve down, then brushing the front of the top flat with both palms",
+           "standing"),
         _t("nm_wave",
            "standing and lifting one hand to wave goodbye toward a person in the "
            "doorway, the hand swinging twice above the shoulder, then lowering it, "
@@ -288,26 +296,26 @@ SEVERITY = {
                       "chest, the seat staying put",
     },
     ("HeadBanging", "seated"): {
-        "subtle": "the head moving only a short distance, quick small knocks, the "
+        "subtle": "the head moving only a short distance, light quick knocks, the "
                   "shoulders still",
-        "moderate": "the head swinging a clear distance each knock, hair bouncing, the "
-                    "shoulders still",
-        "pronounced": "the head swinging its full range each knock, hair flying, the "
-                      "shoulders jolting on impact while the chest stays planted",
-        "whole_body": "the head hurled its full range each knock, hair flying, the "
-                      "shoulders jolting on each impact, the child grunting with the "
-                      "effort, the chest and hips staying put",
+        "moderate": "the head swinging a clear distance each knock, firm knocks, hair "
+                    "bouncing, the shoulders still",
+        "pronounced": "the head swinging its full range each knock, hard knocks, hair "
+                      "flying, the shoulders jolting on each impact",
+        "whole_body": "the head hurled its full range each knock, hard knocks, hair "
+                      "flying, the shoulders jolting on each impact, the child grunting "
+                      "with the effort",
     },
     ("HeadBanging", "standing"): {
-        "subtle": "the head moving only a short distance, quick small knocks, the "
+        "subtle": "the head moving only a short distance, light quick knocks, the "
                   "shoulders still",
-        "moderate": "the head swinging a clear distance each knock, hair bouncing, the "
-                    "shoulders still",
-        "pronounced": "the head swinging its full range each knock, hair flying, the "
-                      "shoulders jolting on impact while the chest stays planted",
-        "whole_body": "the head hurled its full range each knock, hair flying, the "
-                      "shoulders jolting on each impact, the child grunting with the "
-                      "effort, the chest and hips staying put",
+        "moderate": "the head swinging a clear distance each knock, firm knocks, hair "
+                    "bouncing, the shoulders still",
+        "pronounced": "the head swinging its full range each knock, hard knocks, hair "
+                      "flying, the shoulders jolting on each impact",
+        "whole_body": "the head hurled its full range each knock, hard knocks, hair "
+                      "flying, the shoulders jolting on each impact, the child grunting "
+                      "with the effort",
     },
     ("Spinning", "rotating"): {
         "subtle": "the turn tight and small, each step a few centimetres, the trunk "
@@ -317,47 +325,68 @@ SEVERITY = {
         "pronounced": "the turn wide, the trunk tilted a little to one side, the head "
                       "tilted, the steps wide, the free hand swinging out with the turn",
         "whole_body": "the whole body committed to the turn, the trunk leaning, the head "
-                      "tipped back, the arms carried outward by the turn, the steps long "
-                      "and stumbling, balance only just held",
+                      "tipped back, the arms carried outward by the turn, the steps long",
     },
     # Same axis as activity level, so motion energy alone cannot separate Normal.
+    # reach and pace follow the task; the trunk only goes where the reach takes it
     ("Normal", "standing"): {
-        "subtle": "the movements small and economical, the arms staying near the body, "
-                  "the steps short, the trunk upright",
+        "subtle": "the movements small and economical, the reaches short, the steps "
+                  "short, the trunk upright",
         "moderate": "the movements ordinary in size, the arms swinging a little with "
-                    "each step, the trunk turning as the task needs",
-        "pronounced": "the movements large, the arms reaching well out from the body, "
-                      "the steps long, the trunk bending and turning with each action",
-        "whole_body": "the whole body in every action, the arms at full stretch, deep "
-                      "knee bends, big steps and turns, the trunk leaning far forward "
-                      "and back",
+                    "each step, the trunk following the reach",
+        "pronounced": "the movements large and quick, the arms reaching well out, the "
+                      "steps long, the trunk following the reach",
+        "whole_body": "the movements big and lively, the arms reaching to full stretch, "
+                      "long steps and knee bends where the task needs them, the trunk "
+                      "following the reach",
     },
     ("Normal", "seated"): {
         "subtle": "the hands moving close to the lap, the trunk still, the head bending "
                   "only a little toward the task",
         "moderate": "the hands moving freely in front of the body, the trunk leaning a "
                     "little toward the task",
-        "pronounced": "reaching well out to the sides and forward, the trunk twisting "
-                      "and leaning, the weight shifting on the seat",
-        "whole_body": "the whole upper body in every action, reaching to full stretch on "
-                      "both sides, the trunk twisting and leaning far forward, the "
-                      "sitting position changing often",
+        "pronounced": "the hands moving quickly and reaching well out for the things "
+                      "the task needs, the trunk following the reach",
+        "whole_body": "the hands busy and reaching to full stretch for the things the "
+                      "task needs, the trunk following the reach, the weight shifting on "
+                      "the seat",
     },
     ("Normal", "kneeling"): {
         "subtle": "sitting back on the heels, the hands moving close to the body, the "
                   "trunk still",
         "moderate": "kneeling upright, the hands moving freely in front, the trunk "
                     "leaning a little toward the task",
-        "pronounced": "rising up on the knees to reach, the arms out to the sides and "
-                      "forward, the trunk twisting and leaning",
-        "whole_body": "the whole body in every action, rising high on the knees and "
-                      "dropping back to the heels, reaching to full stretch, the trunk "
-                      "leaning far forward and back, the knees shifting position often",
+        "pronounced": "the hands moving quickly, rising up on the knees for the longer "
+                      "reaches, the trunk following the reach",
+        "whole_body": "the hands busy and reaching to full stretch, rising high on the "
+                      "knees and settling back for each reach, the trunk following the "
+                      "reach",
     },
 }
 
 # a topography whose amplitude lives in a different body part than its posture text
-SEVERITY_BY_TOPOGRAPHY = {}
+SEVERITY_BY_TOPOGRAPHY = {
+    "sp_arms_down": {
+        "subtle": "the turn tight and small, each step a few centimetres, the trunk "
+                  "upright, the head level, the arms staying down by the sides",
+        "moderate": "the turn even and contained, the trunk upright, the head level with "
+                    "the shoulders, the steps a little wider, the arms staying down by the sides",
+        "pronounced": "the turn wide, the trunk tilted a little to one side, the steps "
+                      "wide, the arms staying down by the sides",
+        "whole_body": "the whole body committed to the turn, the trunk leaning, the steps "
+                      "long, the arms staying down by the sides",
+    },
+    "sp_look_up": {
+        "subtle": "the turn tight and small, each step a few centimetres, the trunk "
+                  "upright, the head kept tipped back",
+        "moderate": "the turn even and contained, the trunk upright, the steps a little "
+                    "wider, the head kept tipped back",
+        "pronounced": "the turn wide, the trunk tilted a little to one side, the steps "
+                      "wide, the head kept tipped back, the arms out at hip height",
+        "whole_body": "the whole body committed to the turn, the trunk leaning, the steps "
+                      "long, the head kept tipped back, the arms out at hip height",
+    },
+}
 
 # Clinical definition of a stereotypy in positive wording: video models drop negations.
 STEREOTYPY_QUALIFIER = {
@@ -420,17 +449,16 @@ SECONDARY = {
         "keeping the hands where they are, only the head moving",
     ],
     "Spinning": [
+        "closing the eyes for a moment and opening them again mid turn",
+        "laughing once with the mouth open and the eyes screwed up",
+        "tilting the head to one shoulder and straightening it while the body turns",
+        "breathing visibly with the mouth a little open, the chest rising and falling",
+        "opening and closing one hand loosely while turning",
         "lifting one hand to push the hair back from the face mid turn",
-        "the eyes closing for a moment and opening again mid turn",
-        "one foot catching the other and a quick extra step to recover balance",
-        "one hand opening and closing loosely at the side while turning",
-        "a short laugh with the mouth open and the eyes screwed up",
-        "the head tilting to one shoulder and straightening while the body turns",
-        "a small sideways stagger after a turn, then the turn taken up again",
-        "the fingertips of one hand brushing a piece of furniture once as the body passes it",
-        "the mouth a little open, the chest rising and falling visibly",
     ],
     "Normal": [
+        "smiling at the task",
+        "frowning a little in concentration",
         "glancing up and around between actions",
         "shifting position and resettling while carrying on",
         "fidgeting with clothing with the free hand",
@@ -459,10 +487,20 @@ SECONDARY_POSTURE_BLOCK = {
 _HANDS_PLANTED = {"shifting the hands in the lap and gripping at the fabric",
                   "bringing one hand up to touch the face briefly"}
 SECONDARY_TOPOGRAPHY_BLOCK = {
-    "hb_wall_standing": {"shifting the hands in the lap and gripping at the fabric",
+    "hb_wall_standing": {"bringing one hand up to touch the face briefly",
+                         "shifting the hands in the lap and gripping at the fabric",
                          "shifting the legs, one knee dropping out to the side",
                          "resettling the body against the surface between cycles"},
-    "hb_chair": {"shifting the legs, one knee dropping out to the side"},
+    "hb_chair": {"shifting the legs, one knee dropping out to the side",
+                 "shifting the hands in the lap and gripping at the fabric",
+                 "bringing one hand up to touch the face briefly"},
+    # arms with a stated position keep it; the hair push and the loose hand break it
+    "sp_arms_out": {"lifting one hand to push the hair back from the face mid turn",
+                    "opening and closing one hand loosely while turning"},
+    "sp_one_arm": {"lifting one hand to push the hair back from the face mid turn",
+                   "opening and closing one hand loosely while turning"},
+    "sp_look_up": {"lifting one hand to push the hair back from the face mid turn",
+                   "tilting the head to one shoulder and straightening it while the body turns"},
 }
 # a head that is knocking cannot also be held tilted or turned away
 # a class may replace the shared pose pool; flapping needs the feet flat and the
@@ -484,7 +522,8 @@ POSE_BY_CLASS = {
 
 SHOT_BY_CLASS = {"ArmFlapping": [0, 1, 3]}       # framings that keep the hands and feet in view
 CLOTHING_WORDS_BY_CLASS = {"ArmFlapping": ("t-shirt", "shorts", "vest")}    # uncovered wrists
-NEGATIVE_DROP_BY_CLASS = {"ArmFlapping": ("only one part of the body moving, ",)}
+NEGATIVE_DROP_BY_CLASS = {"ArmFlapping": ("only one part of the body moving, ",),
+                          "HeadBanging": ("only one part of the body moving, ",)}
 
 POSE_CLASS_BLOCK = {
     "HeadBanging": {"the head tilted over to one side", "the head turned away to one side",
@@ -663,12 +702,12 @@ ENVIRONMENTS = [
        "in a small suburban back garden, patchy grass and a low wooden fence, a "
        "plastic slide off to one side, a washing line with clothes pegged on it, "
        "the brick back wall of the house on one side",
-       "wall", "outdoor"),
+       "wall", "outdoor", "ground"),
     _e("garden_mat",
        "in a back garden on a padded outdoor play mat spread over the grass, a "
        "large floor cushion at one end of it, a plastic paddling pool "
        "deflated nearby, a brick garden wall behind",
-       "mat", "wall", "outdoor"),
+       "mat", "wall", "outdoor", "ground"),
     _e("balcony",
        "on the tiled balcony of a flat, a folding drying rack with clothes on "
        "it, plant pots along the railing, the rendered wall of the flat on one "
@@ -678,7 +717,7 @@ ENVIRONMENTS = [
        "in a public playground, rubber safety surfacing underfoot, a climbing "
        "frame and swings behind, a bench to one side, a low painted wall along "
        "one edge, railings and bare trees beyond",
-       "wall", "outdoor"),
+       "wall", "outdoor", "ground"),
     _e("soft_play",
        "in a soft play centre, padded coloured foam shapes and a ball pit edge "
        "behind, a padded play mat underfoot, safety netting along one side",

@@ -144,6 +144,12 @@ secondary action, pose, phrases dropped from the negative prompt). The clip inde
 is `block * conditions + condition`, so judge in shuffled order and unblind with
 the manifest. The negative prompt is part of the plan hash and is recorded per
 clip in the manifest.
+A condition may name a `snapshot` (a JSON dump of an earlier vocabulary,
+`stimbench/synth/snapshot.py`, kept under `configs/synth/snapshots/`) and then
+renders the block with that commit's movement sentence, severity text, secondary
+action, pose and negative prompt, so a vocabulary revision can be screened
+against the accepted wording on identical scenes and seeds
+(`configs/synth/paired_{headbanging,spinning,normal}.yaml`).
 
 ArmFlapping's wording is the winner of the paired screening
 (`configs/synth/paired_armflapping.yaml`, 12 blocks, judged by the domain

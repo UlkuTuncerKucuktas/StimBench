@@ -4,6 +4,7 @@ import random
 from dataclasses import dataclass, asdict, field, replace
 from typing import Dict, List, Optional
 
+from . import snapshot as S
 from . import vocab as V
 
 
@@ -360,27 +361,35 @@ def paired_plan(spec: dict, slow, duration, min_cycles, seed, requested) -> Plan
     if len(bases) < int(spec["blocks"]):
         raise ValueError(f"only {len(bases)} usable blocks in a pool of {len(pool)}; raise pool")
     conditions = spec["conditions"]
+    snaps = {c["id"]: S.load(c["snapshot"]) for c in conditions if c.get("snapshot")}
+    if snaps:
+        # a snapshot condition can only re-render variants that existed in it
+        known = set.intersection(*(set(s["topography"]) for s in snaps.values()))
+        bases = [c for c in pool if c in bases and c.topography_id in known][:int(spec["blocks"])]
     clips, seeds, negatives = [], {}, {}
     for b, base in enumerate(bases):
         base_seed = clip_seed(seed, cls, base.index)
+        brng = random.Random(base_seed)
         for k, cond in enumerate(conditions):
             index = b * len(conditions) + k
+            snap = snaps.get(cond["id"])
+            over = _snapshot_overrides(snap, base, cls, brng) if snap else {}
             sev_text = cond.get("severity_text")
             if isinstance(sev_text, dict):
                 sev_text = sev_text.get(base.severity, base.severity_text)
             c = replace(base, index=index,
                         topography_id=f"{cond['id']}_{cond.get('topography_id', base.topography_id)}",
-                        topography=cond.get("topography", base.topography),
-                        severity_text=sev_text or base.severity_text,
-                        secondary=cond.get("secondary", base.secondary),
-                        pose=cond.get("pose", base.pose),
+                        topography=cond.get("topography", over.get("topography", base.topography)),
+                        severity_text=sev_text or over.get("severity_text") or base.severity_text,
+                        secondary=cond.get("secondary", over.get("secondary", base.secondary)),
+                        pose=cond.get("pose", over.get("pose", base.pose)),
                         trigger=cond.get("trigger", base.trigger),
                         shot=V.SHOT[scene["shot"]] if "shot" in scene else base.shot,
                         aesthetic=scene.get("aesthetic", base.aesthetic))
             c.prompt = render_prompt(c)
             clips.append(c)
             seeds[index] = base_seed
-            negative = V.NEGATIVE + V.NEGATIVE_BY_CLASS.get(cls, "")
+            negative = S.negative(snap, cls) if snap else V.NEGATIVE + V.NEGATIVE_BY_CLASS.get(cls, "")
             for phrase in cond.get("negative_drop", []):
                 negative = negative.replace(phrase, "")
             negatives[index] = negative + cond.get("negative_add", "")
@@ -391,6 +400,22 @@ def paired_plan(spec: dict, slow, duration, min_cycles, seed, requested) -> Plan
         "negative_prompt": V.NEGATIVE, "paired": spec,
         "clip_seeds": seeds, "clip_negatives": negatives,
     })
+
+
+def _snapshot_overrides(snap: dict, base: ClipSpec, cls: str, rng) -> dict:
+    # the earlier wording for the same slots; a secondary or pose the old pool also
+    # held is kept, otherwise one is drawn from the old pool with the block's seed
+    out = {"topography": snap["topography"][base.topography_id]}
+    sev = S.severity_text(snap, cls, base.topography_id, base.posture, base.severity)
+    if sev:
+        out["severity_text"] = sev
+    old_secondary = snap["secondary"].get(cls, [])
+    if old_secondary and base.secondary not in old_secondary:
+        out["secondary"] = rng.choice(old_secondary)
+    old_pose = snap["pose_by_class"].get(cls, {}).get(base.posture) or snap["pose"].get(base.posture, [])
+    if old_pose and base.pose not in old_pose:
+        out["pose"] = rng.choice(old_pose)
+    return out
 
 
 def _find_record(manifest_path, file):

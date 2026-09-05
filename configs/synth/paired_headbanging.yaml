@@ -1,0 +1,35 @@
+# Regression screen for HeadBanging after the 2026-09-05 review: 8 blocks x 2 conditions, each block
+# one child, room, camera, clothing and seed. A renders with the wording of commit 5324043
+# (the accepted set), B with the current vocabulary. Judge blind; condition = index mod 2.
+experiment:
+  name: paired_headbanging
+  seed: 9
+model:
+  key: wan2.2-14b-480p
+  repo: Wan-AI/Wan2.2-T2V-A14B-Diffusers
+  size:
+  - 480
+  - 832
+  frames: 81
+  fps: 16
+  steps: 40
+  guidance: 4.0
+  guidance_2: 3.0
+  flow_shift: 3.0
+speed:
+  compile: true
+sampling:
+  classes:
+  - HeadBanging
+  slow_factor: 2.0
+  min_cycles: 2
+paired:
+  cls: HeadBanging
+  blocks: 8
+  pool: 40
+  conditions:
+  - id: A
+    snapshot: configs/synth/snapshots/vocab_5324043.json
+  - id: B
+output:
+  root: /storage/pvc-trubaai-1tb/siu/paired_headbanging

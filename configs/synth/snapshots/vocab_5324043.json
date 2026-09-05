@@ -1,0 +1,200 @@
+{
+ "topography": {
+  "af_sides": "already flapping both hands low beside the hips{trigger}, the upper arms hanging close to the ribs, the elbows bending and straightening and swinging the forearms forward and back in clear strokes between the sides of the thighs and the front of the waist, the wrists loose, at each reversal the relaxed hands trailing the forearms and flopping back and forth with a small sideways roll, the fingers softly curved and slightly separated",
+  "af_sides_high": "standing still on planted feet with both arms hanging down at the sides, elbows soft, the forearms swinging high forward and back from the elbows, mouth open in a grin, the wrists loose, at each reversal the relaxed hands trailing the forearms and flopping back and forth with a small sideways roll, the fingers softly curved and slightly separated",
+  "af_hips": "standing with the arms hanging at the sides and the elbows slightly bent, the forearms flicking up and down from the elbows just beside the hips, the wrists loose, at each reversal the relaxed hands trailing the forearms and flopping back and forth with a small sideways roll, the fingers softly curved and slightly separated",
+  "af_waist_front": "standing with the elbows soft and the forearms swinging a little forward and back in front of the waist, the upper arms staying close to the body, the wrists loose, at each reversal the relaxed hands trailing the forearms and flopping back and forth with a small sideways roll, the fingers softly curved and slightly separated",
+  "af_seated_sides": "sitting cross-legged on the floor with both arms hanging loose at the sides, elbows soft, the forearms swinging a little forward and back from the elbows, the wrists loose, at each reversal the relaxed hands trailing the forearms and flopping back and forth with a small sideways roll, the fingers softly curved and slightly separated",
+  "af_walking": "walking slowly across the room with both arms hanging down at the sides, elbows soft, the forearms swinging forward and back from the elbows, the wrists loose, at each reversal the relaxed hands trailing the forearms and flopping back and forth with a small sideways roll, the fingers softly curved and slightly separated",
+  "hb_sofa": "sitting on the floor, back leaning against the padded front of a sofa, knees drawn up, hands resting in the lap, rocking the head fast back and forth from the neck so the back of the head slams into the cushion and rebounds forward each time, each knock quick and hard, one after another like a rock fan headbanging to fast music, the shoulders and chest staying planted, only the head and neck moving",
+  "hb_chair": "sitting upright on a chair with a padded backrest, back against it, hands gripping the seat edge, the head rocking hard back and forth from the neck so the back of the head slams into the backrest and rebounds, the hair bouncing, each knock quick and hard, one after another like a rock fan headbanging to fast music, the shoulders and chest staying planted, only the head and neck moving",
+  "hb_bed": "sitting up in bed, back against a thick pillow on the headboard, arms loose at the sides, the head whipping back into the pillow and rebounding forward, fast and hard, the pillow denting on every hit, each knock quick and hard, one after another like a rock fan headbanging to fast music, the shoulders and chest staying planted, only the head and neck moving",
+  "hb_thrash": "sitting cross-legged on the floor, hands resting on the knees, nodding the head fast and hard from the neck, chin driving down toward the chest and jerking back up, hair flying, like headbanging to loud fast music, each knock quick and hard, one after another like a rock fan headbanging to fast music, the shoulders and chest staying planted, only the head and neck moving",
+  "hb_wall": "sitting on the floor with the back and shoulders flat against a bare wall, legs stretched out in front, hands resting on the thighs, rocking the head fast from the neck so the back of the head knocks hard against the wall and rebounds each time, each knock quick and hard, one after another like a rock fan headbanging to fast music, the shoulders and chest staying planted, only the head and neck moving",
+  "hb_wall_standing": "standing close to a bare wall, both palms flat on the wall at shoulder height, feet planted, nodding the head fast and hard from the neck so the forehead knocks against the wall and rebounds each time, the hips still, each knock quick and hard, one after another like a rock fan headbanging to fast music, the shoulders and chest staying planted, only the head and neck moving",
+  "sp_arms_out": "standing in the open middle of the floor and turning the whole body round on the spot {dir}, both arms held out to the sides at shoulder height, the feet taking small side steps in a tight circle, the back turning to the camera and the face coming round again",
+  "sp_arms_down": "standing on the open floor and turning the whole body round on the spot {dir}, the arms hanging by the sides with the hands loose, the feet shuffling in small steps within one floor tile, the shoulders and head turning together so the back and then the face come round to the camera",
+  "sp_one_arm": "turning the whole body round on the spot {dir} with one hand raised above the head and the other arm out at shoulder height, both arms held still against the trunk, the feet stepping in a tight circle, hips and shoulders turning as one",
+  "sp_look_up": "turning the whole body round on the spot {dir} with the head tipped back and the eyes on the ceiling light, the arms out to the sides at hip height, the feet taking small steps in a tight circle, the back and then the face coming round to the camera",
+  "nm_blocks": "sitting cross legged on the floor stacking wooden blocks into a tower, picking one block at a time from a pile at the side, leaning forward to set it on top, sitting back and reaching for the next",
+  "nm_crayon": "kneeling upright at a low table drawing on a sheet of paper with a crayon, the eyes on the paper, one hand flat on the page, swapping the crayon for another colour from a box and drawing again",
+  "nm_puzzle": "kneeling at a low table fitting large puzzle pieces into a wooden board, picking a piece up, trying it in one slot, turning it and pressing it into place, then reaching for the next piece",
+  "nm_sofa_tablet": "sitting on the floor with the back against the front of a sofa, a tablet held in both hands on the knees, swiping across the screen with one finger, tilting the tablet to look at it, tapping once, then lifting the head to glance across the room",
+  "nm_tv": "sitting on the floor watching a cartoon on a television across the room, laughing and pointing at the screen once, then shuffling forward on the bottom to sit closer",
+  "nm_bed_toy": "sitting up in bed against a thick pillow holding a soft toy in both hands, turning it to look at its face, tucking it under the blanket, then pulling it out and setting it on the pillow beside them",
+  "nm_bed_brush": "sitting on the edge of the bed brushing the hair with a hairbrush, drawing the brush down from the crown, glancing into a small hand mirror held in the other hand, then brushing the other side",
+  "nm_eat": "sitting on a chair at a table eating from a bowl with a spoon, lifting the spoon to the mouth and lowering it to the bowl, picking up a cup to drink, looking down at the bowl between mouthfuls",
+  "nm_book": "sitting on the floor with a large picture book open on the lap, turning a page, pointing at a picture with one finger and looking down at it, then turning the next page",
+  "nm_carry_box": "walking across the room carrying a soft toy in both arms to a toy box by the wall, bending to put it in, then walking back to pick up a second toy from the floor",
+  "nm_ball_basket": "walking a few steps, bending at the knees to pick up a ball from the floor, straightening up and dropping it into a basket, then walking to a second ball and picking that one up",
+  "nm_car": "kneeling on the floor pushing a toy car along the edge of the rug with one hand, crawling forward on the knees to follow it, turning the car round at the rug corner and pushing it back the other way",
+  "nm_wall_stickers": "standing close to the wall sticking paper stickers onto a large poster taped to the wall, peeling a sticker from a sheet held in one hand, pressing it flat with the palm, stepping back to look at the poster, then choosing a spot for the next one",
+  "nm_dance": "dancing to music from a speaker on the shelf, stepping to one side and back, bending the knees, lifting one arm and then the other, adding a hop, the hands staying below shoulder height",
+  "nm_bubbles": "standing on the lawn blowing soap bubbles from a wand, dipping the wand into a bottle held in the other hand, lifting it to the mouth and blowing, then reaching up to pop a bubble",
+  "nm_scooter": "standing on a kick scooter on a garden path, pushing off with one foot, gliding a short way, putting the foot down to stop, then turning the scooter round by hand and pushing off again",
+  "nm_wave": "standing and lifting one hand to wave goodbye toward a person in the doorway, the hand swinging twice above the shoulder, then lowering it, picking up a bag from the floor and walking toward the door",
+  "nm_look_turn": "standing facing the camera, turning the whole body round once to look at a toy on the shelf behind, walking two steps to the shelf and lifting the toy down, then turning back and holding it up to look at it",
+  "nm_balloon": "standing and bumping a balloon upward with the forehead, watching it fall, catching it in both hands, then tossing it up and bumping it once more",
+  "nm_clap": "sitting on a chair at a table clapping the hands together three times toward a puppet show on a tablet propped on the table, then reaching out to pick up a block and holding it up toward the screen"
+ },
+ "severity": {
+  "ArmFlapping|standing": {
+   "subtle": "the strokes short and close to the thighs, the pelvis at a steady height",
+   "moderate": "the strokes a clear distance from the thighs, the pelvis at a steady height",
+   "pronounced": "the strokes reaching the front of the waist every time, the pelvis at a steady height",
+   "whole_body": "the strokes as large as the elbows allow, reaching the front of the chest, the pelvis at a steady height"
+  },
+  "ArmFlapping|seated": {
+   "subtle": "the strokes short and close to the thighs, the seat staying put",
+   "moderate": "the strokes a clear distance from the thighs, the seat staying put",
+   "pronounced": "the strokes reaching the front of the waist every time, the seat staying put",
+   "whole_body": "the strokes as large as the elbows allow, reaching the front of the chest, the seat staying put"
+  },
+  "HeadBanging|seated": {
+   "subtle": "the head moving only a short distance, quick small knocks, the shoulders still",
+   "moderate": "the head swinging a clear distance each knock, hair bouncing, the shoulders still",
+   "pronounced": "the head swinging its full range each knock, hair flying, the shoulders jolting on impact while the chest stays planted",
+   "whole_body": "the head hurled its full range each knock, hair flying, the shoulders jolting on each impact, the child grunting with the effort, the chest and hips staying put"
+  },
+  "HeadBanging|standing": {
+   "subtle": "the head moving only a short distance, quick small knocks, the shoulders still",
+   "moderate": "the head swinging a clear distance each knock, hair bouncing, the shoulders still",
+   "pronounced": "the head swinging its full range each knock, hair flying, the shoulders jolting on impact while the chest stays planted",
+   "whole_body": "the head hurled its full range each knock, hair flying, the shoulders jolting on each impact, the child grunting with the effort, the chest and hips staying put"
+  },
+  "Spinning|rotating": {
+   "subtle": "the turn tight and small, each step a few centimetres, the trunk upright, the head level, balance easy",
+   "moderate": "the turn even and contained, the trunk upright, the head level with the shoulders, the steps a little wider, balance easily kept",
+   "pronounced": "the turn wide, the trunk tilted a little to one side, the head tilted, the steps wide, the free hand swinging out with the turn",
+   "whole_body": "the whole body committed to the turn, the trunk leaning, the head tipped back, the arms carried outward by the turn, the steps long and stumbling, balance only just held"
+  },
+  "Normal|standing": {
+   "subtle": "the movements small and economical, the arms staying near the body, the steps short, the trunk upright",
+   "moderate": "the movements ordinary in size, the arms swinging a little with each step, the trunk turning as the task needs",
+   "pronounced": "the movements large, the arms reaching well out from the body, the steps long, the trunk bending and turning with each action",
+   "whole_body": "the whole body in every action, the arms at full stretch, deep knee bends, big steps and turns, the trunk leaning far forward and back"
+  },
+  "Normal|seated": {
+   "subtle": "the hands moving close to the lap, the trunk still, the head bending only a little toward the task",
+   "moderate": "the hands moving freely in front of the body, the trunk leaning a little toward the task",
+   "pronounced": "reaching well out to the sides and forward, the trunk twisting and leaning, the weight shifting on the seat",
+   "whole_body": "the whole upper body in every action, reaching to full stretch on both sides, the trunk twisting and leaning far forward, the sitting position changing often"
+  },
+  "Normal|kneeling": {
+   "subtle": "sitting back on the heels, the hands moving close to the body, the trunk still",
+   "moderate": "kneeling upright, the hands moving freely in front, the trunk leaning a little toward the task",
+   "pronounced": "rising up on the knees to reach, the arms out to the sides and forward, the trunk twisting and leaning",
+   "whole_body": "the whole body in every action, rising high on the knees and dropping back to the heels, reaching to full stretch, the trunk leaning far forward and back, the knees shifting position often"
+  }
+ },
+ "severity_by_topography": {},
+ "secondary": {
+  "ArmFlapping": [
+   "smiling toward what is exciting them",
+   "grinning with excitement as the arms keep going",
+   "leaning a little toward what is exciting them as the arms keep going",
+   "opening the mouth wider as the arms keep going",
+   "glancing at what is exciting them and back again as the arms keep going"
+  ],
+  "HeadBanging": [
+   "shifting the hands in the lap and gripping at the fabric",
+   "bringing one hand up to touch the face briefly",
+   "letting the eyes drift to one side and back",
+   "shifting the legs, one knee dropping out to the side",
+   "resettling the body against the surface between cycles",
+   "blinking slowly, the gaze unfocused",
+   "keeping the hands where they are, only the head moving"
+  ],
+  "Spinning": [
+   "lifting one hand to push the hair back from the face mid turn",
+   "the eyes closing for a moment and opening again mid turn",
+   "one foot catching the other and a quick extra step to recover balance",
+   "one hand opening and closing loosely at the side while turning",
+   "a short laugh with the mouth open and the eyes screwed up",
+   "the head tilting to one shoulder and straightening while the body turns",
+   "a small sideways stagger after a turn, then the turn taken up again",
+   "the fingertips of one hand brushing a piece of furniture once as the body passes it",
+   "the mouth a little open, the chest rising and falling visibly"
+  ],
+  "Normal": [
+   "glancing up and around between actions",
+   "shifting position and resettling while carrying on",
+   "fidgeting with clothing with the free hand",
+   "looking toward something off to one side and back",
+   "making small natural adjustments of balance and posture throughout",
+   "shifting weight from one foot to the other",
+   "brushing hair back from the face",
+   "breathing visibly, the body loose and easy"
+  ]
+ },
+ "pose": {
+  "standing": [
+   "the head tilted over to one side",
+   "the chin tucked down toward the chest",
+   "the shoulders hunched up toward the ears",
+   "the gaze directed upward and past everything",
+   "the eyes half closed",
+   "the mouth slightly open and the jaw slack",
+   "up on the toes with the heels lifted clear",
+   "one shoulder carried lower than the other",
+   "the knees slightly bent and the body carried low",
+   "the head turned away to one side"
+  ],
+  "seated": [
+   "the head tilted over to one side",
+   "the chin tucked down toward the chest",
+   "the shoulders hunched up toward the ears",
+   "the eyes half closed",
+   "the mouth slightly open and the jaw slack",
+   "the back rounded and the spine curved",
+   "one knee dropped out to the side",
+   "the gaze directed down and unfocused",
+   "the head turned away to one side"
+  ],
+  "kneeling": [
+   "the head tilted over to one side",
+   "the chin tucked down toward the chest",
+   "the shoulders hunched up toward the ears",
+   "the eyes half closed",
+   "the mouth slightly open and the jaw slack",
+   "the back rounded and the spine curved",
+   "the gaze directed down and unfocused",
+   "the head turned away to one side"
+  ],
+  "rotating": [
+   "the head carried upright",
+   "the chin lifted",
+   "the eyes half closed",
+   "the mouth slightly open",
+   "the head tipped back a little",
+   "the shoulders loose and dropped",
+   "the gaze unfocused and sweeping"
+  ]
+ },
+ "pose_by_class": {
+  "ArmFlapping": {
+   "standing": [
+    "both soles flat on the floor in the same places, the shoulders relaxed",
+    "both soles flat on the floor in the same places, the head tilted a little to one side",
+    "both soles flat on the floor in the same places, the mouth slightly open"
+   ],
+   "seated": [
+    "the seat staying put, the shoulders relaxed",
+    "the seat staying put, the head tilted a little to one side",
+    "the seat staying put, the mouth slightly open"
+   ]
+  }
+ },
+ "negative": "nude, nudity, naked, undressed, underwear, bare chest, nsfw, sexual, cinematic, film still, professional lighting, shallow depth of field, bokeh, colour graded, teal and orange, dramatic, slow motion, timelapse, studio, staged, model, posed, phone, smartphone, mobile phone, camera, camcorder, webcam, tripod, hand holding a phone, person filming, someone recording, recording device, selfie, cartoon, anime, illustration, 3d render, cgi, video game, watermark, text, subtitles, logo, split screen, static image, frozen frame, clenched fists, fists, stiff hands, rigid wrists, stiff, rigid, mannequin, shop dummy, statue, robotic, wooden, only one part of the body moving, distorted limbs, extra limbs, extra arms, deformed hands, fused fingers, melting body, warping face, blurry mess",
+ "negative_by_class": {
+  "ArmFlapping": ", clapping, waving hello, hands clasped, jumping jacks, praying, jumping, hopping, bouncing, feet leaving the floor",
+  "HeadBanging": ", bowing, praying, prostration, kneeling, sujud, rocking the whole body, nodding slowly",
+  "Spinning": ", orbiting camera, rotating camera, camera spin, turntable, ballerina, pirouette, tutu, dance performance, spinning top",
+  "Normal": ", rocking, swaying, hand flapping, head shaking, spinning on the spot, tremor"
+ },
+ "negative_drop_by_class": {
+  "ArmFlapping": [
+   "only one part of the body moving, "
+  ]
+ }
+}
