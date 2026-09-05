@@ -173,6 +173,8 @@ def cmd_flow(cfg, args, root):
 
 def cmd_vace(cfg, args, root):
     log = setup_logging(root / "gen.log")
+    if args.arms:
+        cfg["vace"]["arms"] = [a for a in cfg["vace"]["arms"] if a["id"] in args.arms]
     vace.run_vace(cfg, root, log)
     return 0
 
@@ -205,6 +207,7 @@ def main():
     ap.add_argument("--frames-dir", default=None, help="i2v: directory of first-frame PNGs")
     ap.add_argument("--source", default=None, help="flow: clip to take the movement from")
     ap.add_argument("--device", default="cpu", help="flow: torch device for RAFT")
+    ap.add_argument("--arms", nargs="+", default=None, help="vace: run only these arm ids")
     ap.add_argument("--min-peak", type=float, default=0.4,
                     help="motion: autocorrelation peak needed to report an achieved period")
     args = ap.parse_args()

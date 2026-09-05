@@ -56,7 +56,8 @@ def load_controls(spec: dict, n_frames: int, log) -> dict:
     is computed here, mirrored as well when an arm asks for it."""
     from PIL import ImageOps
     if spec.get("controls"):
-        out = {name: read_frames(Path(path), n_frames) for name, path in spec["controls"].items()}
+        used = {a.get("control", "plain") for a in spec.get("arms", [])} or {"plain"}
+        out = {name: read_frames(Path(path), n_frames) for name, path in spec["controls"].items() if name in used}
         log.info("control videos read: %s", ", ".join(out))
         return out
     frames = read_frames(Path(spec["source"]), n_frames)
