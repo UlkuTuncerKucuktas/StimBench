@@ -137,14 +137,30 @@ def clip_relpath(cfg: dict, cls: str, index: int) -> str:
     return f"{cls}/{cfg['model']['key']}_{cls}_{index:04d}.mp4"
 
 
-def plan_hash(cfg: dict, spec, seed: int) -> str:
+def negative_for(plan: Plan, spec) -> str:
+    override = plan.settings.get("clip_negatives", {}).get(spec.index)
+    if override is not None:
+        return override
+    return V.NEGATIVE + V.NEGATIVE_BY_CLASS.get(spec.cls, "")
+
+
+def plan_hash(cfg: dict, spec, seed: int, negative: str = "") -> str:
     # everything that decides the pixels of a clip; a resumed run must match it
     m = cfg["model"]
-    key = "|".join(str(x) for x in (spec.prompt, seed, m["repo"], m["steps"], m["guidance"],
+    key = "|".join(str(x) for x in (spec.prompt, negative, seed, m["repo"], m["steps"], m["guidance"],
                                     m.get("guidance_2"), m.get("flow_shift"), m["frames"],
                                     m["fps"], m["size"], spec.aspect, spec.slow_factor,
                                     speed_mode(cfg)))
     return hashlib.sha256(key.encode()).hexdigest()[:16]
+
+
+def clip_seed_for(plan: Plan, spec) -> int:
+    # a plan may pin one seed for every clip (A/B arms) or one per clip (paired blocks)
+    per_clip = plan.settings.get("clip_seeds", {}).get(spec.index)
+    if per_clip is not None:
+        return per_clip
+    fixed = plan.settings.get("seed_override")
+    return fixed if fixed is not None else clip_seed(plan.settings["seed"], spec.cls, spec.index)
 
 
 def previous_run_matches(root: Path, cfg: dict, plan: Plan) -> bool:
@@ -171,10 +187,9 @@ def run(cfg: dict, plan: Plan, root: Path, log: logging.Logger) -> dict:
     root = Path(root)
     writer = ManifestWriter(root)
     write_run_config(root, cfg, plan.settings)
-    fixed = plan.settings.get("seed_override")
-    seeds = {(c.cls, c.index): fixed if fixed is not None else clip_seed(plan.settings["seed"], c.cls, c.index)
-             for c in plan.clips}
-    hashes = {(c.cls, c.index): plan_hash(cfg, c, seeds[(c.cls, c.index)]) for c in plan.clips}
+    seeds = {(c.cls, c.index): clip_seed_for(plan, c) for c in plan.clips}
+    hashes = {(c.cls, c.index): plan_hash(cfg, c, seeds[(c.cls, c.index)], negative_for(plan, c))
+              for c in plan.clips}
 
     def done(c):
         rec = writer.records.get(clip_relpath(cfg, c.cls, c.index))
@@ -212,7 +227,7 @@ def run(cfg: dict, plan: Plan, root: Path, log: logging.Logger) -> dict:
             kwargs = {}
             if m.get("guidance_2") is not None and getattr(pipe, "transformer_2", None) is not None:
                 kwargs["guidance_scale_2"] = m["guidance_2"]
-            negative = V.NEGATIVE + V.NEGATIVE_BY_CLASS.get(spec.cls, "")
+            negative = negative_for(plan, spec)
             frames = pipe(prompt=spec.prompt, negative_prompt=negative,
                           height=h, width=w, num_frames=m["frames"],
                           num_inference_steps=m["steps"], guidance_scale=m["guidance"],
@@ -252,6 +267,7 @@ def run(cfg: dict, plan: Plan, root: Path, log: logging.Logger) -> dict:
             "steps": m["steps"], "guidance": m["guidance"],
             "guidance_2": m.get("guidance_2", ""), "flow_shift": m.get("flow_shift", ""),
             "speed_mode": mode, "plan_hash": hashes[(spec.cls, spec.index)],
+            "negative": negative,
             "retimed": retimed, "gen_seconds": round(dt, 1),
             "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "out_frames": info.get("out_frames", ""), "out_fps": info.get("out_fps", ""),

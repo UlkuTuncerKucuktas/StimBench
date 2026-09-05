@@ -1,0 +1,68 @@
+# Paired screening of prompt clean-up for ArmFlapping (external review, 2026-09-05):
+# 12 blocks x 3 conditions, each block one child, room, camera, clothing and seed.
+#   A  the current complete prompt
+#   B  the same movement sentence, conflicting clauses removed (secondary, pose, severity, negative)
+#   C  the cleaned prompt with the reviewer's movement description
+# Scenes are constrained to a full-body shot, short sleeves and a clear picture so the wrists and feet
+# are visible under every condition. Judge in shuffled order; condition = index mod 3.
+experiment:
+  name: paired_armflapping
+  seed: 5
+model:
+  key: wan2.2-14b-480p
+  repo: Wan-AI/Wan2.2-T2V-A14B-Diffusers
+  size:
+  - 480
+  - 832
+  frames: 81
+  fps: 16
+  steps: 40
+  guidance: 4.0
+  guidance_2: 3.0
+  flow_shift: 3.0
+speed:
+  compile: true
+sampling:
+  classes:
+  - ArmFlapping
+  slow_factor: 2.0
+  min_cycles: 2
+paired:
+  cls: ArmFlapping
+  topography: af_sides
+  blocks: 12
+  pool: 80
+  scene:
+    shot: 0
+    aesthetic: candid home video, clear and steady, ordinary daylight, an everyday scene
+    clothing_words:
+    - t-shirt
+    - shorts
+    - vest
+  conditions:
+  - id: A
+  - id: B
+    severity_text:
+      subtle: the forearms travelling a short distance from the elbows, the upper arms close to the ribs, the pelvis at a steady height
+      moderate: the forearms swinging a clear distance from the elbows, the upper arms close to the ribs, the pelvis at a steady height
+      pronounced: the forearms swinging in clear strokes between the sides of the thighs and the front of the waist, the elbows bending and straightening, the upper arms close to the ribs, the pelvis at a steady height
+      whole_body: the forearms swinging in strokes as large as the elbows allow, from beside the thighs up to the front of the chest, the upper arms close to the ribs, the pelvis at a steady height
+    secondary: smiling toward what is exciting them
+    pose: both soles flat on the floor in the same places, the shoulders relaxed
+    negative_drop:
+    - "only one part of the body moving, "
+  - id: C
+    topography_id: reviewer
+    topography: already flapping both hands low beside the hips while watching a favourite toy just beyond the frame, the upper arms hanging close to the ribs, the elbows bending and straightening and swinging the forearms forward and back in clear strokes between the sides of the thighs and the front of the waist, the wrists loose, at each reversal the relaxed hands trailing the forearms and flopping back and forth with a small sideways roll, the fingers softly curved and slightly separated
+    trigger: ""
+    severity_text:
+      subtle: the strokes short and close to the thighs, the pelvis at a steady height
+      moderate: the strokes a clear distance from the thighs, the pelvis at a steady height
+      pronounced: the strokes reaching the front of the waist every time, the pelvis at a steady height
+      whole_body: the strokes as large as the elbows allow, reaching the front of the chest, the pelvis at a steady height
+    secondary: smiling toward the toy
+    pose: both soles flat on the floor in the same places, the shoulders relaxed
+    negative_drop:
+    - "only one part of the body moving, "
+output:
+  root: /storage/pvc-trubaai-1tb/siu/paired_af

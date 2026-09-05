@@ -184,12 +184,15 @@ def topography_quota(cls: str, n: int) -> dict:
 
 def make_plan(classes=V.CLASSES, n_per_class: int = 130, seed: int = 0,
               slow_factor: float = 2.0, min_cycles: int = 2,
-              duration: float = 81 / 16, ab: Optional[dict] = None) -> Plan:
+              duration: float = 81 / 16, ab: Optional[dict] = None,
+              paired: Optional[dict] = None) -> Plan:
     rng = random.Random(seed)
     slow = uniform_slow_factor(classes, slow_factor, duration, min_cycles)
     clips: List[ClipSpec] = []
     if ab:
         return ab_plan(ab, rng, slow, duration, min_cycles, seed, slow_factor)
+    if paired:
+        return paired_plan(paired, slow, duration, min_cycles, seed, slow_factor)
 
     for cls in classes:
         n = n_per_class
@@ -329,6 +332,54 @@ def ab_plan(ab: dict, rng, slow, duration, min_cycles, seed, requested) -> Plan:
         "negative_prompt": V.NEGATIVE, "ab": ab,
         # every arm shares the base clip's noise, so only the wording differs between them
         "seed_override": base_seed,
+    })
+
+
+def paired_plan(spec: dict, slow, duration, min_cycles, seed, requested) -> Plan:
+    """Blocks of one child, room, camera and seed, rendered once per condition, so the
+    conditions differ only in the clauses each one overrides (movement sentence,
+    severity text, secondary action, pose, negative prompt). The scene is constrained
+    so hands and feet are visible in every condition."""
+    cls = spec["cls"]
+    pool = make_plan([cls], int(spec.get("pool", 60)), seed, requested, min_cycles, duration).clips
+    scene = spec.get("scene", {})
+    bases = [c for c in pool
+             if (not spec.get("topography") or c.topography_id == spec["topography"])
+             and (not scene.get("clothing_words")
+                  or any(w in c.clothing for w in scene["clothing_words"]))][:int(spec["blocks"])]
+    if len(bases) < int(spec["blocks"]):
+        raise ValueError(f"only {len(bases)} usable blocks in a pool of {len(pool)}; raise pool")
+    conditions = spec["conditions"]
+    clips, seeds, negatives = [], {}, {}
+    for b, base in enumerate(bases):
+        base_seed = clip_seed(seed, cls, base.index)
+        for k, cond in enumerate(conditions):
+            index = b * len(conditions) + k
+            sev_text = cond.get("severity_text")
+            if isinstance(sev_text, dict):
+                sev_text = sev_text.get(base.severity, base.severity_text)
+            c = replace(base, index=index,
+                        topography_id=f"{cond['id']}_{cond.get('topography_id', base.topography_id)}",
+                        topography=cond.get("topography", base.topography),
+                        severity_text=sev_text or base.severity_text,
+                        secondary=cond.get("secondary", base.secondary),
+                        pose=cond.get("pose", base.pose),
+                        trigger=cond.get("trigger", base.trigger),
+                        shot=V.SHOT[scene["shot"]] if "shot" in scene else base.shot,
+                        aesthetic=scene.get("aesthetic", base.aesthetic))
+            c.prompt = render_prompt(c)
+            clips.append(c)
+            seeds[index] = base_seed
+            negative = V.NEGATIVE + V.NEGATIVE_BY_CLASS.get(cls, "")
+            for phrase in cond.get("negative_drop", []):
+                negative = negative.replace(phrase, "")
+            negatives[index] = negative + cond.get("negative_add", "")
+    return Plan(clips, settings={
+        "classes": [cls], "n_per_class": len(clips), "seed": seed,
+        "slow_factor_requested": requested, "slow_factor": round(slow, 4),
+        "min_cycles": min_cycles, "duration_s": round(duration, 4),
+        "negative_prompt": V.NEGATIVE, "paired": spec,
+        "clip_seeds": seeds, "clip_negatives": negatives,
     })
 
 

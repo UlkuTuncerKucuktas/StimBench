@@ -15,7 +15,7 @@ FIELDS = [
     "steps", "guidance", "guidance_2", "flow_shift", "speed_mode", "plan_hash",
     "out_frames", "out_fps", "out_duration_s", "retimed", "gen_seconds",
     "generated_at",
-    "topography", "severity_text", "secondary", "environment", "camera",
+    "topography", "severity_text", "secondary", "environment", "camera", "negative",
     "aesthetic", "prompt",
 ]
 

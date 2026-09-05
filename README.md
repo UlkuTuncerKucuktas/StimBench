@@ -137,6 +137,14 @@ mirrored flow is used. Because the flow is spatial, the output keeps the source
 clip's framing; diversity of child and scene comes from the prompt, small
 differences in the movement from control strength below 1 and mirroring.
 
+Paired screening (`paired:` in a config, see `configs/synth/paired_armflapping.yaml`):
+blocks of one child, room, camera, clothing and seed rendered once per condition,
+where a condition overrides only named clauses (movement sentence, severity text,
+secondary action, pose, phrases dropped from the negative prompt). The clip index
+is `block * conditions + condition`, so judge in shuffled order and unblind with
+the manifest. The negative prompt is part of the plan hash and is recorded per
+clip in the manifest.
+
 Deliberate asymmetry, stated because it is a measurable one: ArmFlapping is
 weighted to its base variant (`TOPOGRAPHY_WEIGHTS`, 90% `af_sides`) and to the
 overt severities (`SEVERITY_WEIGHTS_BY_CLASS`, 8/6/58/58 against 34/32/32/32 for
