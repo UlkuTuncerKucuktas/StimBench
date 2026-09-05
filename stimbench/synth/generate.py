@@ -11,7 +11,7 @@ from . import audit
 from . import vocab as V
 from .manifest import (ManifestWriter, write_manifest_csv, write_metadata_csv,
                        write_run_config, read_records)
-from .sampler import Plan, clip_seed
+from .sampler import Plan, clip_seed, class_negative
 from .video import have_ffmpeg, probe, retime_cfr
 
 DEFAULT_MODEL = {
@@ -141,10 +141,7 @@ def negative_for(plan: Plan, spec) -> str:
     override = plan.settings.get("clip_negatives", {}).get(spec.index)
     if override is not None:
         return override
-    negative = V.NEGATIVE
-    for phrase in V.NEGATIVE_DROP_BY_CLASS.get(spec.cls, ()):
-        negative = negative.replace(phrase, "")
-    return negative + V.NEGATIVE_BY_CLASS.get(spec.cls, "")
+    return class_negative(spec.cls)
 
 
 def plan_hash(cfg: dict, spec, seed: int, negative: str = "") -> str:

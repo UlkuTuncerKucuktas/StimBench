@@ -346,6 +346,13 @@ def ab_plan(ab: dict, rng, slow, duration, min_cycles, seed, requested) -> Plan:
     })
 
 
+def class_negative(cls: str) -> str:
+    text = V.NEGATIVE
+    for phrase in V.NEGATIVE_DROP_BY_CLASS.get(cls, ()):
+        text = text.replace(phrase, "")
+    return text + V.NEGATIVE_BY_CLASS.get(cls, "")
+
+
 def paired_plan(spec: dict, slow, duration, min_cycles, seed, requested) -> Plan:
     """Blocks of one child, room, camera and seed, rendered once per condition, so the
     conditions differ only in the clauses each one overrides (movement sentence,
@@ -389,7 +396,7 @@ def paired_plan(spec: dict, slow, duration, min_cycles, seed, requested) -> Plan
             c.prompt = render_prompt(c)
             clips.append(c)
             seeds[index] = base_seed
-            negative = S.negative(snap, cls) if snap else V.NEGATIVE + V.NEGATIVE_BY_CLASS.get(cls, "")
+            negative = S.negative(snap, cls) if snap else class_negative(cls)
             for phrase in cond.get("negative_drop", []):
                 negative = negative.replace(phrase, "")
             negatives[index] = negative + cond.get("negative_add", "")

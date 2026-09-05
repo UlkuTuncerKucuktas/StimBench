@@ -26,7 +26,7 @@ sampling:
 paired:
   cls: Normal
   blocks: 8
-  pool: 40
+  pool: 60
   conditions:
   - id: A
     snapshot: configs/synth/snapshots/vocab_5324043.json
