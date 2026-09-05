@@ -7,7 +7,7 @@ import yaml
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from stimbench.synth import audit  # noqa: E402
 from stimbench.synth import vocab as V  # noqa: E402
-from stimbench.synth.generate import resolve, run, setup_logging, finish, previous_run_matches  # noqa: E402
+from stimbench.synth.generate import resolve, run, setup_logging, finish, previous_run_matches, negative_for  # noqa: E402
 from stimbench.synth.manifest import read_records, write_plan_csv  # noqa: E402
 from stimbench.synth.motion import measure_set, summarise  # noqa: E402
 from stimbench.synth import hands  # noqa: E402
@@ -37,7 +37,7 @@ def build_plan(cfg, args):
 
 def cmd_plan(cfg, args, root):
     plan = build_plan(cfg, args)
-    records = [c.record() for c in plan.clips]
+    records = [{**c.record(), "negative": negative_for(plan, c)} for c in plan.clips]
     root.mkdir(parents=True, exist_ok=True)
     write_plan_csv(root / "plan.csv", records)
     comp = audit.composition(records)
