@@ -8,7 +8,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from . import audit
-from . import vocab as V
 from .manifest import (ManifestWriter, write_manifest_csv, write_metadata_csv,
                        write_run_config, read_records)
 from .sampler import Plan, clip_seed, class_negative

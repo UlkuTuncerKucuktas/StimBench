@@ -88,7 +88,6 @@ def denoise_from(pipe, source_latents, prompt: str, negative: str, strength: flo
 
 
 def run_v2v(cfg: dict, root: Path, log) -> List[dict]:
-    import torch
     from diffusers.utils import export_to_video
     m, spec = cfg["model"], cfg["v2v"]
     root = Path(root)

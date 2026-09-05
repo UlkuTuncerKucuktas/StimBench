@@ -1,7 +1,7 @@
 import csv
 import json
 from pathlib import Path
-from typing import Dict, Iterable, List, Set
+from typing import Iterable, List
 
 FIELDS = [
     "file", "clip_id", "cls", "label", "index", "seed",

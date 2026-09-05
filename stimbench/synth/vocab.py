@@ -1,5 +1,5 @@
-from dataclasses import dataclass, field
-from typing import FrozenSet, Optional, Tuple
+from dataclasses import dataclass
+from typing import FrozenSet
 
 CLASSES = ("ArmFlapping", "HeadBanging", "Spinning", "Normal")
 STIMMING = CLASSES[:3]
