@@ -145,6 +145,16 @@ is `block * conditions + condition`, so judge in shuffled order and unblind with
 the manifest. The negative prompt is part of the plan hash and is recorded per
 clip in the manifest.
 
+ArmFlapping's wording is the winner of the paired screening
+(`configs/synth/paired_armflapping.yaml`, 12 blocks, judged by the domain
+expert): the child is already flapping with the upper arms close to the ribs,
+the forearms swinging from the elbows, the relaxed hands trailing and flopping
+at each reversal, both soles flat. For that class only, the secondary actions
+are attention and expression (`SECONDARY`), the poses keep the feet flat
+(`POSE_BY_CLASS`), framings keep the hands and feet in view (`SHOT_BY_CLASS`),
+clothing leaves the wrists uncovered (`CLOTHING_WORDS_BY_CLASS`) and "only one
+part of the body moving" is dropped from the negative (`NEGATIVE_DROP_BY_CLASS`).
+
 Deliberate asymmetry, stated because it is a measurable one: ArmFlapping is
 weighted to its base variant (`TOPOGRAPHY_WEIGHTS`, 90% `af_sides`) and to the
 overt severities (`SEVERITY_WEIGHTS_BY_CLASS`, 8/6/58/58 against 34/32/32/32 for

@@ -151,6 +151,11 @@ def _short_hair_fix(sev_text: str, secondary: str, hair: str):
     return sev_text, secondary
 
 
+def _with_trigger(topography: str, trigger: str) -> str:
+    # the trigger sits where the movement sentence marks it, else after the sentence
+    return topography.replace("{trigger}", trigger) if "{trigger}" in topography else topography + trigger
+
+
 def render_prompt(c: ClipSpec) -> str:
     qualifier = "" if c.cls == "Normal" else ", " + V.STEREOTYPY_QUALIFIER[c.cls]
     # the behaviour comes before the room: a long scene description ahead of
@@ -158,7 +163,7 @@ def render_prompt(c: ClipSpec) -> str:
     return (
         f"{c.aesthetic}. {c.age} {c.gender}, {c.build}, with {c.hair} and "
         f"{c.skin}, wearing {c.clothing}{c.detail}. "
-        f"The child is {c.topography.replace('{dir}', c.direction)}{c.trigger}, "
+        f"The child is {_with_trigger(c.topography, c.trigger).replace('{dir}', c.direction)}, "
         f"{c.severity_text}, {c.pace}{qualifier}. "
         f"At the same time the child is {c.secondary}, {c.pose}, the body "
         f"loose and natural. "
@@ -214,7 +219,7 @@ def make_plan(classes=V.CLASSES, n_per_class: int = 130, seed: int = 0,
 
         envs = dealt(V.ENVIRONMENTS, n, rng)
         cams = dealt(V.CAMERA, n, rng)
-        shots = dealt(V.SHOT, n, rng)
+        shots = dealt([V.SHOT[i] for i in V.SHOT_BY_CLASS.get(cls, range(len(V.SHOT)))], n, rng)
         aesthetics = dealt(range(len(V.AESTHETIC)), n, rng)
         builds = dealt(V.BUILD, n, rng)
         skins = dealt(V.SKIN, n, rng)
@@ -250,15 +255,20 @@ def make_plan(classes=V.CLASSES, n_per_class: int = 130, seed: int = 0,
                     return "home" in env.tags
                 return True
 
-            clothing = rng.choice([c for c, t in V.CLOTHING[g] if clothing_ok(t)])
+            wardrobe = [c for c, t in V.CLOTHING[g] if clothing_ok(t)]
+            words = V.CLOTHING_WORDS_BY_CLASS.get(cls)
+            if words:
+                wardrobe = [c for c in wardrobe if any(w in c for w in words)] or wardrobe
+            clothing = rng.choice(wardrobe)
             legwear = not any(w in clothing for w in ("dress", "skirt", "pinafore"))
             detail = rng.choice([d for d, t in V.DETAIL
                                  if t in ("any", io) or (t == "trousers" and legwear)])
             clutter = rng.choice(V.CLUTTER[clutter_key])
             light = rng.choice(V.LIGHT[io])
             extra = rng.choice(V.EXTRA[io])
-            pose = rng.choice([p for p in V.POSE[topo.posture]
-                               if p not in V.POSE_CLASS_BLOCK.get(cls, ())])
+            pose = rng.choice(V.POSE_BY_CLASS.get(cls, {}).get(topo.posture)
+                              or [p for p in V.POSE[topo.posture]
+                                  if p not in V.POSE_CLASS_BLOCK.get(cls, ())])
             shot = shots[i]
             cam = cams[i]
 

@@ -33,22 +33,23 @@ def _t(id, text, posture, needs=(), goal_directed=False):
     return Topography(id, text, posture, frozenset(needs), goal_directed)
 
 
-LIMP = ("the hands hanging limp from the wrists like a puppet's hands on slack "
-        "strings, fingers soft and slightly parted, each hand lagging a beat behind "
-        "its forearm and whirling loosely round the wrist at the turn of every stroke")
+LIMP = ("the wrists loose, at each reversal the relaxed hands trailing the forearms "
+        "and flopping back and forth with a small sideways roll, the fingers softly "
+        "curved and slightly separated")
 KNOCK = ("each knock quick and hard, one after another like a rock fan headbanging to "
          "fast music, the shoulders and chest staying planted, only the head and neck "
          "moving")
 
 TOPOGRAPHIES = {
-    # one form, chosen against the real clips: arms hanging low and swinging big
-    # from the elbows, limp hands whirling at the wrists, the feet staying put;
-    # variants change only height, seat or walking
+    # one form, chosen in a paired screening against the real clips: upper arms
+    # close to the ribs, forearms swinging from the elbows, relaxed hands trailing
+    # and flopping at each reversal, feet flat; variants change height, seat or walking
     "ArmFlapping": [
         _t("af_sides",
-           "standing still on planted feet with both arms hanging down at the sides, "
-           "elbows soft, the forearms swinging forward and back from the elbows while "
-           "the limp hands whirl loosely at the wrists, " + LIMP,
+           "already flapping both hands low beside the hips{trigger}, the upper arms "
+           "hanging close to the ribs, the elbows bending and straightening and swinging "
+           "the forearms forward and back in clear strokes between the sides of the "
+           "thighs and the front of the waist, " + LIMP,
            "standing"),
         _t("af_sides_high",
            "standing still on planted feet with both arms hanging down at the sides, "
@@ -271,28 +272,20 @@ TOPOGRAPHY_WEIGHTS = {
 
 SEVERITY = {
     ("ArmFlapping", "standing"): {
-        "subtle": "the forearms travelling a short distance, the hands twirling "
-                  "softly close to the body, the shoulders low and relaxed, feet still",
-        "moderate": "the forearms swinging a clear distance from the elbows, the hands "
-                    "whirling freely at the wrists, the shoulders low and relaxed, feet still",
-        "pronounced": "the forearms swinging wide from the elbows up to chest height and "
-                      "back down, the loose hands spinning round the wrists at each turn, "
-                      "the arms in constant big motion, the feet still",
-        "whole_body": "the whole arms swinging their fullest from the shoulders, up past "
-                      "the chest and back behind the hips, the loose hands spinning round "
-                      "the wrists at every turn, the trunk swaying with it, the feet still",
+        "subtle": "the strokes short and close to the thighs, the pelvis at a steady height",
+        "moderate": "the strokes a clear distance from the thighs, the pelvis at a steady height",
+        "pronounced": "the strokes reaching the front of the waist every time, the pelvis "
+                      "at a steady height",
+        "whole_body": "the strokes as large as the elbows allow, reaching the front of the "
+                      "chest, the pelvis at a steady height",
     },
     ("ArmFlapping", "seated"): {
-        "subtle": "the forearms travelling a short distance, the hands twirling "
-                  "softly close to the body, the shoulders low and relaxed",
-        "moderate": "the forearms swinging a clear distance from the elbows, the hands "
-                    "whirling freely at the wrists, the shoulders low and relaxed",
-        "pronounced": "the forearms swinging wide from the elbows up to chest height and "
-                      "back down, the loose hands spinning round the wrists at each turn, "
-                      "the arms in constant big motion, the seat staying put",
-        "whole_body": "the whole arms swinging their fullest from the shoulders, up past "
-                      "the chest and back beside the seat, the loose hands spinning round "
-                      "the wrists at every turn, the trunk rocking with it, the seat staying put",
+        "subtle": "the strokes short and close to the thighs, the seat staying put",
+        "moderate": "the strokes a clear distance from the thighs, the seat staying put",
+        "pronounced": "the strokes reaching the front of the waist every time, the seat "
+                      "staying put",
+        "whole_body": "the strokes as large as the elbows allow, reaching the front of the "
+                      "chest, the seat staying put",
     },
     ("HeadBanging", "seated"): {
         "subtle": "the head moving only a short distance, quick small knocks, the "
@@ -378,8 +371,8 @@ STEREOTYPY_QUALIFIER = {
 # what the child is reacting to; drawn for ArmFlapping only, since excitement
 # is what sets flapping off in the real clips. Normal has its own screen activity.
 AF_TRIGGER = [
-    "",
-    "",
+    " while watching a favourite toy just beyond the frame",
+    " while watching a favourite toy just beyond the frame",
     " while watching a cartoon on the television",
     " while watching a toy train on its track",
     " as a favourite song starts playing",
@@ -408,19 +401,14 @@ NORMAL_PACE = ("carrying out every action at an unhurried pace",
 
 # Rendered after "the child is"; nothing here may stop, pause or change tempo.
 SECONDARY = {
+    # attention and expression only: stepping, turning and rocking competed with
+    # the arm movement in the paired screening
     "ArmFlapping": [
-        "shifting weight from one foot to the other as the movement continues",
-        "glancing around and then away again without breaking the rhythm",
-        "drifting a step or two across the ground and carrying on",
-        "turning the head to one side and back while the arms keep going",
-        "rocking gently forward and back at the same time",
-        "swaying a little at the trunk, the weight shifting all the time",
+        "smiling toward what is exciting them",
         "grinning with excitement as the arms keep going",
         "leaning a little toward what is exciting them as the arms keep going",
-        "the mouth opening wider as the arms keep going",
-        "turning slowly on the spot to face a different way while continuing",
-        "looking down and then up again as the movement goes on",
-        "breathing visibly, the shoulders rising and falling with it",
+        "opening the mouth wider as the arms keep going",
+        "glancing at what is exciting them and back again as the arms keep going",
     ],
     "HeadBanging": [
         "shifting the hands in the lap and gripping at the fabric",
@@ -477,6 +465,27 @@ SECONDARY_TOPOGRAPHY_BLOCK = {
     "hb_chair": {"shifting the legs, one knee dropping out to the side"},
 }
 # a head that is knocking cannot also be held tilted or turned away
+# a class may replace the shared pose pool; flapping needs the feet flat and the
+# shoulders easy, so nothing here lifts the heels or drops the body
+POSE_BY_CLASS = {
+    "ArmFlapping": {
+        "standing": [
+            "both soles flat on the floor in the same places, the shoulders relaxed",
+            "both soles flat on the floor in the same places, the head tilted a little to one side",
+            "both soles flat on the floor in the same places, the mouth slightly open",
+        ],
+        "seated": [
+            "the seat staying put, the shoulders relaxed",
+            "the seat staying put, the head tilted a little to one side",
+            "the seat staying put, the mouth slightly open",
+        ],
+    },
+}
+
+SHOT_BY_CLASS = {"ArmFlapping": [0, 1, 3]}       # framings that keep the hands and feet in view
+CLOTHING_WORDS_BY_CLASS = {"ArmFlapping": ("t-shirt", "shorts", "vest")}    # uncovered wrists
+NEGATIVE_DROP_BY_CLASS = {"ArmFlapping": ("only one part of the body moving, ",)}
+
 POSE_CLASS_BLOCK = {
     "HeadBanging": {"the head tilted over to one side", "the head turned away to one side",
                     "the chin tucked down toward the chest"},
@@ -936,6 +945,7 @@ AESTHETIC = [
     "an ordinary everyday scene, plain and unremarkable",
     "low quality home video uploaded years ago, compressed and soft, a candid "
     "unposed everyday moment, no styling",
+    "candid home video, clear and steady, ordinary daylight, an everyday scene",
 ]
 
 # "still"/"motionless" are absent on purpose: severity texts ask for stillness,

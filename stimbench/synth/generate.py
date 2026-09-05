@@ -141,7 +141,10 @@ def negative_for(plan: Plan, spec) -> str:
     override = plan.settings.get("clip_negatives", {}).get(spec.index)
     if override is not None:
         return override
-    return V.NEGATIVE + V.NEGATIVE_BY_CLASS.get(spec.cls, "")
+    negative = V.NEGATIVE
+    for phrase in V.NEGATIVE_DROP_BY_CLASS.get(spec.cls, ()):
+        negative = negative.replace(phrase, "")
+    return negative + V.NEGATIVE_BY_CLASS.get(spec.cls, "")
 
 
 def plan_hash(cfg: dict, spec, seed: int, negative: str = "") -> str:
