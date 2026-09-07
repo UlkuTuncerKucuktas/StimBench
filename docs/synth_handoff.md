@@ -117,3 +117,17 @@ without conditioning on real footage. Candidates not yet exhausted: VACE flow
 or pose control from a few approved synthetic clips; a motion LoRA trained on
 approved synthetic clips only; rejection sampling with the hand metric (about
 one in ten to twenty draws is acceptable); a different generator.
+
+## Status, 2026-09-07
+
+Resolved. The paired screening (`configs/synth/paired_armflapping.yaml`, 12
+blocks x 3 conditions) settled the wording: the expert accepted condition C,
+an external reviewer's movement description with the competing clauses removed
+(attention-only secondary actions, feet flat, hand-visible framing, short
+sleeves, "only one part of the body moving" dropped from the class negative).
+The release set (520 clips, commit 4e8da44, `synth_v2`, `checksums.md5`) was
+generated with it: ArmFlapping resolves a period in 48 of 130 clips (median
+4.0 Hz against the 3.0 request, so `COUNT_SCALE` over-corrects at scale and
+should be refitted from those 48), HeadBanging 42 of 130 at 2.2 Hz, Spinning
+is outside the measurable band, Normal 35 of 130 concentrated in activities
+with a natural cadence. The v2v and VACE routes were built but not needed.
