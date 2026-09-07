@@ -268,6 +268,7 @@ def run(cfg: dict, plan: Plan, root: Path, log: logging.Logger) -> dict:
             "speed_mode": mode, "plan_hash": hashes[(spec.cls, spec.index)],
             "negative": negative,
             "retimed": retimed, "gen_seconds": round(dt, 1),
+            "md5": hashlib.md5(dst.read_bytes()).hexdigest(),
             "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "out_frames": info.get("out_frames", ""), "out_fps": info.get("out_fps", ""),
             "out_duration_s": info.get("out_duration_s", ""),

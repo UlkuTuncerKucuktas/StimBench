@@ -13,7 +13,7 @@ FIELDS = [
     "camera_id", "camera_motion", "aspect", "aesthetic_id",
     "model", "repo", "width", "height", "gen_frames", "gen_fps", "gen_duration_s",
     "steps", "guidance", "guidance_2", "flow_shift", "speed_mode", "plan_hash",
-    "out_frames", "out_fps", "out_duration_s", "retimed", "gen_seconds",
+    "out_frames", "out_fps", "out_duration_s", "retimed", "gen_seconds", "md5",
     "generated_at",
     "topography", "severity_text", "secondary", "environment", "camera", "negative",
     "aesthetic", "prompt",
