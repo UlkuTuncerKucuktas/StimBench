@@ -1,0 +1,7 @@
+# Overlay (P1): real training clips plus all of StimBench-Syn, test on the real test split.
+experiment:
+  suffix: _realsyn
+dataset:
+  synthetic:
+    path: /storage/pvc-trubaai-1tb/siu/synth_v2
+    fraction: 1.0

@@ -3,6 +3,22 @@ import csv
 import numpy as np
 
 
+def save_predictions(dataset, preds, labels, classes, output_dir, tag):
+    """One row per evaluated clip with its metadata, so results can be split by any column later."""
+    path = os.path.join(output_dir, f'predictions_{tag}.csv')
+    keys = []
+    for row in dataset.rows:
+        keys.extend(k for k in row if k not in keys)
+    keys += ['label_name', 'pred_name', 'correct']
+    with open(path, 'w', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames=keys)
+        writer.writeheader()
+        for row, pred, label in zip(dataset.rows, preds, labels):
+            writer.writerow({**row, 'label_name': classes[label], 'pred_name': classes[pred],
+                             'correct': int(pred == label)})
+    print(f"  Saved: {path}")
+
+
 def save_history_csv(history, output_dir):
     path = os.path.join(output_dir, 'training_log.csv')
     keys = history[0].keys()

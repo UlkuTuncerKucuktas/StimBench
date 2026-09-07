@@ -17,8 +17,27 @@ def load_gender_map(data_dir):
     return gender
 
 
+def gender_acc_from_predictions(result_dir):
+    """Per-gender accuracy from predictions_1x1.csv, which carries each test clip's metadata."""
+    path = os.path.join(result_dir, 'predictions_1x1.csv')
+    if not os.path.exists(path):
+        return None
+    with open(path) as f:
+        rows = [r for r in csv.DictReader(f) if r.get('gender', '').strip() in ('M', 'F')]
+    counts = {g: [sum(int(r['correct']) for r in rows if r['gender'].strip() == g),
+                  sum(1 for r in rows if r['gender'].strip() == g)] for g in ('M', 'F')}
+    if not counts['M'][1] or not counts['F'][1]:
+        return None
+    m_acc, f_acc = counts['M'][0] / counts['M'][1], counts['F'][0] / counts['F'][1]
+    return {'m_cor': counts['M'][0], 'm_tot': counts['M'][1], 'm_acc': m_acc,
+            'f_cor': counts['F'][0], 'f_tot': counts['F'][1], 'f_acc': f_acc, 'gap': f_acc - m_acc}
+
+
 def compute_gender_acc(result_dir, gender_map):
-    """Compute gender accuracy from misclassified files."""
+    """Gender accuracy, from the predictions file when present, else from misclassified files."""
+    from_predictions = gender_acc_from_predictions(result_dir)
+    if from_predictions:
+        return from_predictions
     mis_dir = os.path.join(result_dir, 'misclassified_1x1')
     if not os.path.isdir(mis_dir):
         return None

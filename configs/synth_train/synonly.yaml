@@ -1,0 +1,9 @@
+# Overlay (P2): train on StimBench-Syn alone, test on the real test split.
+#   python run.py --config configs/vjepa2_ssv2_lora.yaml --overlay configs/synth_train/synonly.yaml
+experiment:
+  suffix: _synonly
+dataset:
+  real_train_fraction: 0.0
+  synthetic:
+    path: /storage/pvc-trubaai-1tb/siu/synth_v2
+    fraction: 1.0

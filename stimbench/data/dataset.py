@@ -44,33 +44,45 @@ class StimBenchDataset(Dataset):
         self.classes = config['dataset']['classes']
         self.aug = config['preprocessing'].get('augmentation', {})
         self.samples = []
+        self.rows = []          # the metadata row behind each sample, for per-clip reporting
         self._cache = {}
 
         meta_path = os.path.join(root, 'metadata.csv')
         if os.path.exists(meta_path):
-            with open(meta_path, 'r') as f:
-                for row in csv.DictReader(f):
-                    if row['split'] != split:
-                        continue
-                    if row['label'] not in self.classes:
-                        continue
-                    label = self.classes.index(row['label'])
-                    path = os.path.join(root, row['file_name'])
-                    gid = row.get('group_id', '')
-                    if os.path.exists(path):
-                        self.samples.append((path, label, gid))
+            for row in self._read_metadata(root, split):
+                self._add(root, row)
         else:
             split_dir = os.path.join(root, split)
             for cat in sorted(os.listdir(split_dir)):
-                if not os.path.isdir(os.path.join(split_dir, cat)):
+                if not os.path.isdir(os.path.join(split_dir, cat)) or cat not in self.classes:
                     continue
-                if cat not in self.classes:
-                    continue
-                label = self.classes.index(cat)
-                cat_dir = os.path.join(split_dir, cat)
-                for f in sorted(os.listdir(cat_dir)):
+                for f in sorted(os.listdir(os.path.join(split_dir, cat))):
                     if f.endswith('.mp4'):
-                        self.samples.append((os.path.join(cat_dir, f), label, f))
+                        self._add(root, {'file_name': os.path.join(split, cat, f), 'label': cat,
+                                         'split': split, 'group_id': f})
+
+    def _read_metadata(self, root, split, filters=None):
+        with open(os.path.join(root, 'metadata.csv'), 'r') as f:
+            for row in csv.DictReader(f):
+                if row['split'] != split or row['label'] not in self.classes:
+                    continue
+                if filters and any(row.get(k, '') not in v for k, v in filters.items()):
+                    continue
+                yield row
+
+    def _add(self, root, row):
+        path = os.path.join(root, row['file_name'])
+        if not os.path.exists(path):
+            return False
+        self.samples.append((path, self.classes.index(row['label']), row.get('group_id', '')))
+        self.rows.append({**row, 'root': root})
+        return True
+
+    def _keep(self, indices):
+        indices = sorted(indices)
+        self.samples = [self.samples[i] for i in indices]
+        self.rows = [self.rows[i] for i in indices]
+        return len(self.samples)
 
     def add_root(self, root, split='train', fraction=1.0, seed=0, filters=None):
         """Append clips from another StimBench-schema root (e.g. StimBench-Syn).
@@ -79,38 +91,25 @@ class StimBenchDataset(Dataset):
         metadata column -> allowed values (e.g. {'severity': ['subtle']}).
         Returns the number of clips added.
         """
-        meta_path = os.path.join(root, 'metadata.csv')
-        rows = []
-        with open(meta_path, 'r') as f:
-            for row in csv.DictReader(f):
-                if row['split'] != split or row['label'] not in self.classes:
-                    continue
-                if filters and any(row.get(k, '') not in v for k, v in filters.items()):
-                    continue
-                path = os.path.join(root, row['file_name'])
-                if os.path.exists(path):
-                    rows.append((path, self.classes.index(row['label']), row.get('group_id', '')))
-        rows.sort()
+        first = len(self.samples)
+        rows = sorted(self._read_metadata(root, split, filters), key=lambda r: r['file_name'])
+        added = [i for i, row in enumerate(rows, first) if self._add(root, row)]
         if fraction < 1.0:
-            rng = np.random.RandomState(seed)
-            kept = []
-            for label in sorted({r[1] for r in rows}):
-                idx = [i for i, r in enumerate(rows) if r[1] == label]
-                kept.extend(rng.permutation(idx)[:int(round(fraction * len(idx)))].tolist())
-            rows = [rows[i] for i in sorted(kept)]
-        self.samples.extend(rows)
-        return len(rows)
+            kept = set(range(first)) | set(self._stratified(added, fraction, seed))
+            self._keep(kept)
+        return len(self.samples) - first
+
+    def _stratified(self, indices, fraction, seed):
+        rng = np.random.RandomState(seed)
+        kept = []
+        for label in sorted({self.samples[i][1] for i in indices}):
+            idx = [i for i in indices if self.samples[i][1] == label]
+            kept.extend(rng.permutation(idx)[:int(round(fraction * len(idx)))].tolist())
+        return kept
 
     def subsample(self, fraction, seed=0):
         """Keep a seeded random fraction of the current samples (stratified by class)."""
-        rng = np.random.RandomState(seed)
-        kept = []
-        for label in sorted({s[1] for s in self.samples}):
-            idx = [i for i, s in enumerate(self.samples) if s[1] == label]
-            n = int(round(fraction * len(idx)))
-            kept.extend(rng.permutation(idx)[:n].tolist())
-        self.samples = [self.samples[i] for i in sorted(kept)]
-        return len(self.samples)
+        return self._keep(self._stratified(range(len(self.samples)), fraction, seed))
 
     def __len__(self):
         return len(self.samples)

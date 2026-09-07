@@ -1,0 +1,7 @@
+# Overlay for a pipeline check on any machine: one short epoch, small batches, no mixed precision.
+experiment:
+  suffix: _smoke
+training:
+  epochs: 1
+  batch_size: 2
+  fp16: false

@@ -4,25 +4,25 @@
 #   bash run_all.sh              # sequential on GPU 0
 #   bash run_all.sh --parallel   # parallel across GPUs 0-3
 
+#   OVERLAY=configs/synth_train/synonly.yaml bash run_all.sh   # same 27 runs, trained on StimBench-Syn
+#   SYN_DIR=/path/to/synth_v2                                   # where the synthetic clips are on this machine
 set -e
-cd /workspace/StimBench-repo
-
-export PYTHONPATH=/workspace/py_packages:$PYTHONPATH
-export PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/workspace/py_packages/bin
+cd "$(dirname "$0")"
 
 PARALLEL=false
 [[ "$1" == "--parallel" ]] && PARALLEL=true
+EXTRA=(${OVERLAY:+--overlay $OVERLAY} ${SYN_DIR:+--syn_dir $SYN_DIR})
 
 run() {
     local gpu=$1 config=$2 name=$3
     echo ">>> [$name] GPU=$gpu — $(date)"
-    CUDA_VISIBLE_DEVICES=$gpu python run.py --config "configs/$config"
+    CUDA_VISIBLE_DEVICES=$gpu python run.py --config "configs/$config" "${EXTRA[@]}"
 }
 
 run_bg() {
     local gpu=$1 config=$2 name=$3
     echo ">>> [$name] GPU=$gpu — $(date)"
-    CUDA_VISIBLE_DEVICES=$gpu python run.py --config "configs/$config" &
+    CUDA_VISIBLE_DEVICES=$gpu python run.py --config "configs/$config" "${EXTRA[@]}" &
 }
 
 echo "=========================================="

@@ -195,16 +195,25 @@ reproducible from the config alone (`plan` is deterministic across machines);
 pixels are not, because compiled kernels change floating-point order, so every
 clip's `speed_mode` is recorded in the manifest and the release ships checksums.
 
-Train with synthetic clips mixed into the real training split only:
+Train any of the 27 configs with synthetic clips by merging an overlay over it;
+the overlay adds a suffix to the experiment name, so results land beside the
+real-only run:
 
 ```bash
-python run.py --config configs/synth_train/vjepa2_ssv2_lora_realsyn.yaml   # real + synthetic
-python run.py --config configs/synth_train/vjepa2_ssv2_lora_synonly.yaml   # synthetic only
+python run.py --config configs/vjepa2_ssv2_lora.yaml --overlay configs/synth_train/synonly.yaml   # synthetic only (P2)
+python run.py --config configs/vjepa2_ssv2_lora.yaml --overlay configs/synth_train/realsyn.yaml   # real + synthetic (P1)
+OVERLAY=configs/synth_train/synonly.yaml SYN_DIR=/path/to/synth_v2 bash run_all.sh                 # all 27
 ```
 
+`--syn_dir` (or `SYN_DIR`) points at the synthetic root on the current machine.
 The `dataset.synthetic` block takes `path`, `fraction` and optional metadata
 `filters` (for example `{severity: [subtle]}`); `dataset.real_train_fraction`
-thins the real training clips. The test split is never touched.
+thins the real training clips. The test split is never touched. Every run
+writes `predictions_<protocol>.csv` with one row per test clip, its metadata
+columns (gender, source dataset, group) and `correct`, so any split can be
+computed afterwards; `leaderboard.py` reads the gender gap from it.
+`configs/synth_train/smoke.yaml` is a one-epoch overlay for checking the
+pipeline on any machine.
 
 ## Configs
 

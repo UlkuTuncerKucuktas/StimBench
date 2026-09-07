@@ -21,12 +21,28 @@ from stimbench.registry import MODEL_REGISTRY, EVAL_REGISTRY
 import stimbench.models
 import stimbench.eval
 from stimbench.data import StimBenchDataset
-from stimbench.reporting import save_history_csv, save_plots, save_confusion_matrix
+from stimbench.reporting import save_history_csv, save_plots, save_confusion_matrix, save_predictions
 
 
-def load_config(path):
+def load_config(path, overlays=()):
     with open(path, 'r') as f:
-        return yaml.safe_load(f)
+        config = yaml.safe_load(f)
+    for overlay in overlays:
+        with open(overlay, 'r') as f:
+            config = deep_merge(config, yaml.safe_load(f))
+    suffix = config['experiment'].pop('suffix', '')
+    config['experiment']['name'] += suffix
+    return config
+
+
+def deep_merge(base, overlay):
+    merged = dict(base)
+    for key, value in overlay.items():
+        if isinstance(value, dict) and isinstance(merged.get(key), dict):
+            merged[key] = deep_merge(merged[key], value)
+        else:
+            merged[key] = value
+    return merged
 
 
 def set_seed(seed):
@@ -115,11 +131,16 @@ def save_misclassified(dataset, preds, labels, classes, output_dir, tag):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', required=True, help='Path to YAML config')
+    parser.add_argument('--overlay', nargs='*', default=[],
+                        help='YAML files merged over the config, e.g. configs/synth_train/synonly.yaml')
     parser.add_argument('--data_dir', default=None, help='Override dataset path')
+    parser.add_argument('--syn_dir', default=None, help='Override dataset.synthetic.path')
     parser.add_argument('--output_dir', default=None, help='Override output directory')
     args = parser.parse_args()
 
-    config = load_config(args.config)
+    config = load_config(args.config, args.overlay)
+    if args.syn_dir:
+        config['dataset'].setdefault('synthetic', {})['path'] = args.syn_dir
     set_seed(config['experiment'].get('seed', 42))
 
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -274,8 +295,8 @@ def main():
         print(f"  F1 (macro):    {result['f1_macro']:.4f}")
         print(result['report'])
 
-        # Always save confusion matrix
         save_confusion_matrix(result['confusion_matrix'], classes, output_dir, protocol)
+        save_predictions(test_ds, result['preds'], result['labels'], classes, output_dir, protocol)
 
         # Optionally save misclassified clips
         if config['evaluation'].get('save_misclassified', False):
