@@ -29,9 +29,9 @@ def load_config(path, overlays=()):
         config = yaml.safe_load(f)
     for overlay in overlays:
         with open(overlay, 'r') as f:
-            config = deep_merge(config, yaml.safe_load(f))
-    suffix = config['experiment'].pop('suffix', '')
-    config['experiment']['name'] += suffix
+            extra = yaml.safe_load(f)
+        config['experiment']['name'] += extra.get('experiment', {}).pop('suffix', '')
+        config = deep_merge(config, extra)
     return config
 
 
