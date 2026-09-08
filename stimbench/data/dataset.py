@@ -40,6 +40,7 @@ class StimBenchDataset(Dataset):
         self.processor = processor
         self.num_frames = config['preprocessing']['num_frames']
         self.stride = config['preprocessing']['stride']
+        self.resize = config['preprocessing'].get('resize', 224)
         self.mode = mode
         self.classes = config['dataset']['classes']
         self.aug = config['preprocessing'].get('augmentation', {})
@@ -118,21 +119,18 @@ class StimBenchDataset(Dataset):
         return [s[1] for s in self.samples]
 
     def _cache_key(self, path):
-        res = getattr(self.processor, 'size', 224)
-        if isinstance(res, dict):
-            h = res.get('height', res.get('shortest_edge', 224))
-        elif isinstance(res, (int, float)):
-            h = int(res)
-        else:
-            h = 224
         st = os.stat(path)
-        key = f"{path}_{st.st_size}_{st.st_mtime_ns}_{self.num_frames}_{self.stride}_{h}"
+        key = f"{path}_{st.st_size}_{st.st_mtime_ns}_{self._cache_variant()}"
         return hashlib.md5(key.encode()).hexdigest()[:12]
+
+    def _cache_variant(self):
+        # everything that changes the cached tensor: frame sampling, the configured
+        # resolution and the processor that produced it
+        return f"{self.mode}_f{self.num_frames}_s{self.stride}_r{self.resize}_{type(self.processor).__name__}"
 
     def _get_cache_dir(self):
         base = os.path.dirname(self.samples[0][0])
-        cache_dir = os.path.abspath(os.path.join(base, '..', '.tensor_cache',
-                                                  f"{self.mode}_f{self.num_frames}_s{self.stride}"))
+        cache_dir = os.path.abspath(os.path.join(base, '..', '.tensor_cache', self._cache_variant()))
         return cache_dir
 
     def cache_all(self):
